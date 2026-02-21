@@ -1,0 +1,39 @@
+John Doe
+123 Main Street
+New York, NY 10001
+john.doe@email.com
+(555) 123-4567
+
+PROFESSIONAL SUMMARY
+Forward-thinking software engineer with 5+ years of experience developing scalable web applications. Expertise in full-stack development, cloud architecture, and team leadership. Proven track record of delivering high-quality products on tight deadlines.
+
+WORK EXPERIENCE
+
+Senior Software Engineer
+Tech Corp Inc. | New York, NY | Jan 2022 - Present
+• Led development of microservices architecture, reducing system latency by 40%
+• Mentored 3 junior developers, helping them grow technical skills
+• Implemented CI/CD pipeline using Jenkins, increasing deployment frequency by 200%
+• Collaborated with product team to define requirements for new features
+
+Software Engineer
+StartUp Labs | San Francisco, CA | Jun 2019 - Dec 2021
+• Developed and maintained React-based web applications serving 500K+ users
+• Optimized database queries, reducing query time by 60%
+• Implemented automated testing framework, improving code coverage to 85%
+• Participated in code reviews and architectural discussions
+
+EDUCATION
+
+Bachelor of Science in Computer Science
+State University | Graduated: May 2019
+
+SKILLS
+Programming Languages: Python, JavaScript, Java, SQL
+Web Frameworks: React, Django, Flask
+Cloud Platforms: AWS, Google Cloud Platform
+Databases: PostgreSQL, MongoDB, Redis
+Tools: Git, Docker, Kubernetes, Jenkins
+
+CERTIFICATIONS
+AWS Certified Solutions Architect - Associate (2022)

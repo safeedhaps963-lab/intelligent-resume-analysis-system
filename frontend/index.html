@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analysis & Recommendation System - Interactive Demo</title>
+    <!--
+    ╔═══════════════════════════════════════════════════════════════════════════════╗
+    ║          INTELLIGENT RESUME ANALYSIS & RECOMMENDATION SYSTEM                   ║
+    ║                        Full-Stack Architecture                                 ║
+    ╠═══════════════════════════════════════════════════════════════════════════════╣
+    ║                                                                               ║
+    ║  This HTML file serves as an INTERACTIVE DEMO of the complete system.         ║
+    ║  For the full implementation, see the following project files:                ║
+    ║                                                                               ║
+    ║  📁 PROJECT STRUCTURE:                                                        ║
+    ║  ├── backend/                    # Flask Backend                              ║
+    ║  │   ├── app/                                                                 ║
+    ║  │   │   ├── __init__.py         # Flask app factory                         ║
+    ║  │   │   ├── config.py           # Configuration                             ║
+    ║  │   │   ├── services/                                                        ║
+    ║  │   │   │   ├── nlp_analyzer.py # AI skill extraction                       ║
+    ║  │   │   │   └── ats_scorer.py   # ATS scoring algorithm                     ║
+    ║  │   │   └── routes/                                                          ║
+    ║  │   │       ├── resume.py       # Resume API endpoints                      ║
+    ║  │   │       └── jobs.py         # Job recommendations + WebSocket           ║
+    ║  │   ├── requirements.txt        # Python dependencies                        ║
+    ║  │   └── run.py                  # Entry point                               ║
+    ║  │                                                                            ║
+    ║  ├── frontend/                   # React Frontend                             ║
+    ║  │   ├── src/                                                                 ║
+    ║  │   │   ├── App.jsx             # Main React component                      ║
+    ║  │   │   ├── services/                                                        ║
+    ║  │   │   │   ├── api.js          # Axios API client                          ║
+    ║  │   │   │   └── socket.js       # Socket.IO client                          ║
+    ║  │   │   └── components/         # React components                          ║
+    ║  │   └── package.json            # NPM dependencies                           ║
+    ║  │                                                                            ║
+    ║  └── README.md                   # Setup instructions                         ║
+    ║                                                                               ║
+    ║  🚀 TO RUN THE FULL SYSTEM:                                                   ║
+    ║  1. Backend: cd backend && pip install -r requirements.txt && python run.py  ║
+    ║  2. Frontend: cd frontend && npm install && npm start                        ║
+    ║                                                                               ║
+    ╚═══════════════════════════════════════════════════════════════════════════════╝
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom animations and styles */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes progressFill {
+            from { width: 0%; }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-slide-in { animation: slideIn 0.5s ease-out; }
+        .notification-enter { animation: slideIn 0.3s ease-out; }
+        .skill-bar { animation: progressFill 1s ease-out; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .ats-circle {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1.5s ease-out;
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        #notification-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 350px;
+        }
+        .notification-item {
+            animation: slideIn 0.3s ease-out;
+        }
+        /* Resume Preview Styles */
+        .resume-preview {
+            font-family: 'Georgia', serif;
+            background: white;
+            color: #333;
+        }
+        /* Drag and drop */
+        .drop-zone.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                        <i class="fas fa-brain text-purple-600 text-xl"></i>
+                    </div>
+                    <span class="text-xl font-bold">ResumeAI Pro</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <button onclick="showSection('dashboard')" class="hover:text-purple-200 transition">
+                        <i class="fas fa-home mr-2"></i>Dashboard
+                    </button>
+                    <button onclick="showSection('analyzer')" class="hover:text-purple-200 transition">
+                        <i class="fas fa-search-plus mr-2"></i>Analyze
+                    </button>
+                    <button onclick="showSection('builder')" class="hover:text-purple-200 transition">
+                        <i class="fas fa-file-alt mr-2"></i>Builder
+                    </button>
+                    <button onclick="showSection('jobs')" class="hover:text-purple-200 transition">
+                        <i class="fas fa-briefcase mr-2"></i>Jobs
+                    </button>
+                    <div class="relative">
+                        <button onclick="toggleNotifications()" class="relative hover:text-purple-200 transition">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span id="notification-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                </div>
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden gradient-bg text-white px-4 py-4">
+        <div class="flex flex-col space-y-4">
+            <button onclick="showSection('dashboard')" class="text-left hover:text-purple-200">
+                <i class="fas fa-home mr-2"></i>Dashboard
+            </button>
+            <button onclick="showSection('analyzer')" class="text-left hover:text-purple-200">
+                <i class="fas fa-search-plus mr-2"></i>Analyze Resume
+            </button>
+            <button onclick="showSection('builder')" class="text-left hover:text-purple-200">
+                <i class="fas fa-file-alt mr-2"></i>Resume Builder
+            </button>
+            <button onclick="showSection('jobs')" class="text-left hover:text-purple-200">
+                <i class="fas fa-briefcase mr-2"></i>Job Recommendations
+            </button>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="section-content">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-4">
+                    Intelligent Resume Analysis System
+                </h1>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                    AI-powered resume analysis, ATS optimization, and smart job recommendations
+                </p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">ATS Score</p>
+                            <p class="text-3xl font-bold text-purple-600" id="dashboard-ats">--</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-chart-line text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Skills Detected</p>
+                            <p class="text-3xl font-bold text-blue-600" id="dashboard-skills">--</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-cogs text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Job Matches</p>
+                            <p class="text-3xl font-bold text-green-600" id="dashboard-jobs">--</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-briefcase text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-lg card-hover transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Improvements</p>
+                            <p class="text-3xl font-bold text-orange-600" id="dashboard-improvements">--</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="showSection('analyzer')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-purple-500">
+                    <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-4 animate-float">
+                        <i class="fas fa-microscope text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">AI Skill Analysis</h3>
+                    <p class="text-gray-600 text-sm">Extract and analyze skills from your resume using advanced NLP</p>
+                </div>
+
+                <div onclick="showSection('analyzer')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-blue-500">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 animate-float" style="animation-delay: 0.5s;">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">ATS Score Prediction</h3>
+                    <p class="text-gray-600 text-sm">Get your resume's ATS compatibility score with detailed insights</p>
+                </div>
+
+                <div onclick="showSection('builder')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-green-500">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 animate-float" style="animation-delay: 1s;">
+                        <i class="fas fa-magic text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Smart Resume Builder</h3>
+                    <p class="text-gray-600 text-sm">Build ATS-friendly resumes with AI-powered suggestions</p>
+                </div>
+
+                <div onclick="showSection('jobs')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-orange-500">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-4 animate-float" style="animation-delay: 1.5s;">
+                        <i class="fas fa-search-dollar text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Job Recommendations</h3>
+                    <p class="text-gray-600 text-sm">Get personalized job matches based on your skills profile</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resume Analyzer Section -->
+        <section id="analyzer-section" class="section-content hidden">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Resume Analyzer</h2>
+                    <p class="text-gray-600">Upload your resume for AI-powered analysis</p>
+                </div>
+                <button onclick="showSection('dashboard')" class="text-purple-600 hover:text-purple-800">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </button>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Upload Section -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-upload mr-2 text-purple-600"></i>Upload Resume
+                    </h3>
+                    
+                    <div id="drop-zone" class="drop-zone border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500 transition-all"
+                         ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('file-input').click()">
+                        <input type="file" id="file-input" class="hidden" accept=".pdf,.doc,.docx,.txt" onchange="handleFileSelect(event)">
+                        <div class="text-gray-400 mb-4">
+                            <i class="fas fa-cloud-upload-alt text-5xl"></i>
+                        </div>
+                        <p class="text-gray-600 font-medium">Drag & drop your resume here</p>
+                        <p class="text-gray-400 text-sm mt-2">or click to browse (PDF, DOC, DOCX, TXT)</p>
+                    </div>
+
+                    <div id="file-info" class="hidden mt-4 p-4 bg-purple-50 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-pdf text-red-500 text-2xl mr-3"></i>
+                                <div>
+                                    <p id="file-name" class="font-medium text-gray-800">resume.pdf</p>
+                                    <p id="file-size" class="text-sm text-gray-500">2.5 MB</p>
+                                </div>
+                            </div>
+                            <button onclick="removeFile()" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Job Description for Matching -->
+                    <div class="mt-6">
+                        <label class="block text-gray-700 font-medium mb-2">
+                            <i class="fas fa-briefcase mr-2 text-blue-600"></i>Target Job Description (Optional)
+                        </label>
+                        <textarea id="job-description" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" rows="4" placeholder="Paste the job description here for better matching analysis..."></textarea>
+                    </div>
+
+                    <button onclick="analyzeResume()" class="w-full mt-6 gradient-bg text-white py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center" id="analyze-btn">
+                        <i class="fas fa-brain mr-2"></i>Analyze Resume
+                    </button>
+                </div>
+
+                <!-- Results Section -->
+                <div class="space-y-6">
+                    <!-- ATS Score Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            <i class="fas fa-chart-pie mr-2 text-blue-600"></i>ATS Score Prediction
+                        </h3>
+                        <div class="flex items-center justify-center">
+                            <div class="relative">
+                                <svg class="w-40 h-40 transform -rotate-90">
+                                    <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="10" fill="none"/>
+                                    <circle id="ats-progress" class="ats-circle" cx="80" cy="80" r="70" stroke="url(#gradient)" stroke-width="10" fill="none" stroke-linecap="round"/>
+                                    <defs>
+                                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#667eea"/>
+                                            <stop offset="100%" style="stop-color:#764ba2"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <span id="ats-score" class="text-4xl font-bold gradient-text">--</span>
+                                        <p class="text-gray-500 text-sm">ATS Score</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="ats-breakdown" class="mt-6 space-y-3 hidden">
+                            <!-- Breakdown items will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Skills Analysis -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            <i class="fas fa-cogs mr-2 text-green-600"></i>Detected Skills
+                        </h3>
+                        <div id="skills-container" class="space-y-4">
+                            <p class="text-gray-500 text-center py-8">Upload a resume to see skill analysis</p>
+                        </div>
+                    </div>
+
+                    <!-- Missing Skills Suggestions -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            <i class="fas fa-puzzle-piece mr-2 text-red-500"></i>Missing Skills Analysis
+                        </h3>
+                        <div id="missing-skills-container">
+                            <p class="text-gray-500 text-center py-8">Add a job description above to see missing skills</p>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">
+                            <i class="fas fa-lightbulb mr-2 text-orange-600"></i>AI Recommendations
+                        </h3>
+                        <div id="recommendations-container">
+                            <p class="text-gray-500 text-center py-8">Recommendations will appear after analysis</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resume Builder Section -->
+        <section id="builder-section" class="section-content hidden">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">ATS-Friendly Resume Builder</h2>
+                    <p class="text-gray-600">Build a professional resume optimized for ATS systems</p>
+                </div>
+                <button onclick="showSection('dashboard')" class="text-purple-600 hover:text-purple-800">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </button>
+            </div>
+
+            <!-- Builder Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="switchBuilderTab('personal')" class="builder-tab tab-active px-6 py-3 rounded-full font-medium transition-all" data-tab="personal">
+                    <i class="fas fa-user mr-2"></i>Personal Info
+                </button>
+                <button onclick="switchBuilderTab('experience')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="experience">
+                    <i class="fas fa-briefcase mr-2"></i>Experience
+                </button>
+                <button onclick="switchBuilderTab('education')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="education">
+                    <i class="fas fa-graduation-cap mr-2"></i>Education
+                </button>
+                <button onclick="switchBuilderTab('skills')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="skills">
+                    <i class="fas fa-tools mr-2"></i>Skills
+                </button>
+                <button onclick="switchBuilderTab('preview')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="preview">
+                    <i class="fas fa-eye mr-2"></i>Preview
+                </button>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Form Section -->
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <!-- Personal Info Tab -->
+                    <div id="personal-tab" class="builder-tab-content">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Personal Information</h3>
+                        <div class="space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Full Name *</label>
+                                    <input type="text" id="resume-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="John Doe" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Professional Title *</label>
+                                    <input type="text" id="resume-title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Senior Software Engineer" oninput="updatePreview()">
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Email *</label>
+                                    <input type="email" id="resume-email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="john@example.com" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Phone *</label>
+                                    <input type="tel" id="resume-phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="+1 234 567 8900" oninput="updatePreview()">
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">Location</label>
+                                    <input type="text" id="resume-location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="New York, NY" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-medium mb-2">LinkedIn</label>
+                                    <input type="url" id="resume-linkedin" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="linkedin.com/in/johndoe" oninput="updatePreview()">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Professional Summary</label>
+                                <textarea id="resume-summary" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" rows="4" placeholder="Experienced software engineer with 5+ years..." oninput="updatePreview()"></textarea>
+                                <button onclick="generateSummary()" class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium">
+                                    <i class="fas fa-magic mr-1"></i>Generate AI Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Tab -->
+                    <div id="experience-tab" class="builder-tab-content hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-800">Work Experience</h3>
+                            <button onclick="addExperience()" class="gradient-bg text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
+                                <i class="fas fa-plus mr-2"></i>Add Experience
+                            </button>
+                        </div>
+                        <div id="experience-list" class="space-y-6">
+                            <!-- Experience entries will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Education Tab -->
+                    <div id="education-tab" class="builder-tab-content hidden">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-800">Education</h3>
+                            <button onclick="addEducation()" class="gradient-bg text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
+                                <i class="fas fa-plus mr-2"></i>Add Education
+                            </button>
+                        </div>
+                        <div id="education-list" class="space-y-6">
+                            <!-- Education entries will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Skills Tab -->
+                    <div id="skills-tab" class="builder-tab-content hidden">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Skills & Technologies</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Technical Skills</label>
+                                <div id="technical-skills-container" class="flex flex-wrap gap-2 mb-2">
+                                    <!-- Skills tags will be added here -->
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="new-tech-skill" class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Add a skill (e.g., Python, React, AWS)" onkeypress="if(event.key==='Enter')addSkill('technical')">
+                                    <button onclick="addSkill('technical')" class="gradient-bg text-white px-4 rounded-lg">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button onclick="suggestSkills()" class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium">
+                                    <i class="fas fa-lightbulb mr-1"></i>AI Skill Suggestions
+                                </button>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Soft Skills</label>
+                                <div id="soft-skills-container" class="flex flex-wrap gap-2 mb-2">
+                                    <!-- Soft skills tags will be added here -->
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="new-soft-skill" class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Add a skill (e.g., Leadership, Communication)" onkeypress="if(event.key==='Enter')addSkill('soft')">
+                                    <button onclick="addSkill('soft')" class="gradient-bg text-white px-4 rounded-lg">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Tab (Mobile) -->
+                    <div id="preview-tab" class="builder-tab-content hidden lg:hidden">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Resume Preview</h3>
+                        <div id="mobile-resume-preview" class="resume-preview border rounded-lg p-6 text-sm">
+                            <!-- Preview content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview (Desktop) -->
+                <div class="hidden lg:block">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden sticky top-24">
+                        <div class="gradient-bg text-white p-4 flex items-center justify-between">
+                            <span class="font-medium"><i class="fas fa-eye mr-2"></i>Live Preview</span>
+                            <div class="flex gap-2">
+                                <button onclick="downloadResume('pdf')" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-download mr-1"></i>PDF
+                                </button>
+                                <button onclick="downloadResume('docx')" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-file-word mr-1"></i>DOCX
+                                </button>
+                            </div>
+                        </div>
+                        <div id="resume-preview" class="resume-preview p-8 min-h-[600px] text-sm overflow-y-auto max-h-[800px]">
+                            <div class="text-center text-gray-400 py-20">
+                                <i class="fas fa-file-alt text-5xl mb-4"></i>
+                                <p>Start filling the form to see your resume preview</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Job Recommendations Section -->
+        <section id="jobs-section" class="section-content hidden">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Smart Job Recommendations</h2>
+                    <p class="text-gray-600">AI-matched job opportunities based on your profile</p>
+                </div>
+                <button onclick="showSection('dashboard')" class="text-purple-600 hover:text-purple-800">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-xl p-6 shadow-lg mb-8">
+                <div class="grid md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Job Title</label>
+                        <input type="text" id="job-search" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="e.g., Software Engineer" oninput="filterJobs()">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Location</label>
+                        <select id="job-location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterJobs()">
+                            <option value="">All Locations</option>
+                            <option value="remote">Remote</option>
+                            <option value="new-york">New York</option>
+                            <option value="san-francisco">San Francisco</option>
+                            <option value="london">London</option>
+                            <option value="bangalore">Bangalore</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Experience Level</label>
+                        <select id="job-experience" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterJobs()">
+                            <option value="">All Levels</option>
+                            <option value="entry">Entry Level</option>
+                            <option value="mid">Mid Level</option>
+                            <option value="senior">Senior Level</option>
+                            <option value="lead">Lead/Manager</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Match Score</label>
+                        <select id="job-match" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterJobs()">
+                            <option value="">All Matches</option>
+                            <option value="90">90%+ Match</option>
+                            <option value="80">80%+ Match</option>
+                            <option value="70">70%+ Match</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-time Updates Toggle -->
+            <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-4 mb-8 text-white flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">Real-time Job Notifications</p>
+                        <p class="text-purple-200 text-sm">Get notified instantly when matching jobs are posted</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="realtime-toggle" class="sr-only peer" onchange="toggleRealtimeNotifications()">
+                    <div class="w-14 h-7 bg-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
+                </label>
+            </div>
+
+            <!-- Job Listings -->
+            <div id="job-listings" class="grid md:grid-cols-2 gap-6">
+                <!-- Job cards will be dynamically added here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-400">© 2024 ResumeAI Pro - Intelligent Resume Analysis System</p>
+            <p class="text-gray-500 text-sm mt-2">Built with React, Flask, MongoDB | AI-Powered by Advanced NLP</p>
+        </div>
+    </footer>
+
+    <script>
+        // ==========================================
+        // APPLICATION STATE
+        // ==========================================
+        const appState = {
+            currentSection: 'dashboard',
+            resumeData: null,
+            analysisResults: null,
+            notifications: [],
+            realtimeEnabled: false,
+            builderData: {
+                personal: {},
+                experience: [],
+                education: [],
+                technicalSkills: [],
+                softSkills: []
+            },
+            jobs: []
+        };
+
+        // ==========================================
+        // SAMPLE DATA (Simulates MongoDB/Backend)
+        // ==========================================
+        const sampleJobs = [
+            {
+                id: 1,
+                title: "Senior Full Stack Developer",
+                company: "TechCorp Inc.",
+                location: "San Francisco, CA",
+                type: "remote",
+                level: "senior",
+                salary: "$150,000 - $200,000",
+                matchScore: 95,
+                skills: ["React", "Node.js", "Python", "AWS", "MongoDB"],
+                posted: "2 hours ago",
+                logo: "🏢"
+            },
+            {
+                id: 2,
+                title: "Machine Learning Engineer",
+                company: "AI Solutions Ltd.",
+                location: "New York, NY",
+                type: "new-york",
+                level: "mid",
+                salary: "$130,000 - $170,000",
+                matchScore: 88,
+                skills: ["Python", "TensorFlow", "PyTorch", "AWS", "Docker"],
+                posted: "5 hours ago",
+                logo: "🤖"
+            },
+            {
+                id: 3,
+                title: "Frontend Developer",
+                company: "StartupX",
+                location: "Remote",
+                type: "remote",
+                level: "entry",
+                salary: "$80,000 - $110,000",
+                matchScore: 92,
+                skills: ["React", "TypeScript", "CSS", "Redux", "Jest"],
+                posted: "1 day ago",
+                logo: "🚀"
+            },
+            {
+                id: 4,
+                title: "DevOps Engineer",
+                company: "CloudNine Systems",
+                location: "London, UK",
+                type: "london",
+                level: "senior",
+                salary: "£70,000 - £90,000",
+                matchScore: 78,
+                skills: ["Kubernetes", "Docker", "AWS", "Terraform", "Jenkins"],
+                posted: "3 days ago",
+                logo: "☁️"
+            },
+            {
+                id: 5,
+                title: "Data Scientist",
+                company: "DataDriven Co.",
+                location: "Bangalore, India",
+                type: "bangalore",
+                level: "mid",
+                salary: "₹25,00,000 - ₹35,00,000",
+                matchScore: 85,
+                skills: ["Python", "R", "SQL", "Machine Learning", "Tableau"],
+                posted: "1 week ago",
+                logo: "📊"
+            },
+            {
+                id: 6,
+                title: "Backend Developer",
+                company: "FinTech Solutions",
+                location: "San Francisco, CA",
+                type: "san-francisco",
+                level: "lead",
+                salary: "$160,000 - $200,000",
+                matchScore: 91,
+                skills: ["Java", "Spring Boot", "Microservices", "PostgreSQL", "Redis"],
+                posted: "4 hours ago",
+                logo: "💰"
+            }
+        ];
+
+        const skillsDatabase = {
+            technical: {
+                programming: ["Python", "JavaScript", "Java", "C++", "TypeScript", "Go", "Rust", "Ruby", "PHP", "Swift"],
+                frameworks: ["React", "Angular", "Vue.js", "Node.js", "Django", "Flask", "Spring Boot", "Express.js"],
+                databases: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Elasticsearch", "Cassandra"],
+                cloud: ["AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform"],
+                tools: ["Git", "Jenkins", "CircleCI", "JIRA", "Confluence", "VS Code"]
+            },
+            soft: ["Leadership", "Communication", "Problem Solving", "Team Collaboration", "Time Management", "Critical Thinking", "Adaptability", "Creativity"]
+        };
+
+        // ==========================================
+        // NAVIGATION FUNCTIONS
+        // ==========================================
+        
+        /**
+         * showSection - Switches between main sections of the application
+         * @param {string} sectionName - The section to display (dashboard, analyzer, builder, jobs)
+         * This function hides all sections and shows only the selected one
+         */
+        function showSection(sectionName) {
+            // Hide all sections first
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            // Show the selected section
+            document.getElementById(`${sectionName}-section`).classList.remove('hidden');
+            appState.currentSection = sectionName;
+            
+            // Load section-specific content
+            if (sectionName === 'jobs') {
+                loadJobs();
+            }
+            
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        /**
+         * toggleMobileMenu - Shows/hides the mobile navigation menu
+         * Called when user clicks the hamburger icon on mobile devices
+         */
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // FILE HANDLING (Resume Upload)
+        // ==========================================
+        
+        /**
+         * handleDragOver - Handles drag over event for file drop zone
+         * @param {Event} e - The drag event
+         * Prevents default behavior and adds visual feedback
+         */
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.add('dragover');
+        }
+
+        /**
+         * handleDragLeave - Handles drag leave event
+         * @param {Event} e - The drag event
+         * Removes visual feedback when file leaves drop zone
+         */
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.remove('dragover');
+        }
+
+        /**
+         * handleDrop - Handles file drop event
+         * @param {Event} e - The drop event
+         * Processes the dropped file and prepares for analysis
+         */
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        /**
+         * handleFileSelect - Handles file selection from input
+         * @param {Event} e - The change event from file input
+         */
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        /**
+         * processFile - Processes the uploaded file
+         * @param {File} file - The file object
+         * Validates file type and displays file information
+         */
+        function processFile(file) {
+            // Validate file type
+            const validTypes = ['application/pdf', 'application/msword', 
+                              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                              'text/plain'];
+            
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|doc|docx|txt)$/i)) {
+                showNotification('error', 'Invalid File', 'Please upload a PDF, DOC, DOCX, or TXT file');
+                return;
+            }
+
+            // Store file data
+            appState.resumeData = {
+                name: file.name,
+                size: formatFileSize(file.size),
+                type: file.type,
+                file: file
+            };
+
+            // Update UI
+            document.getElementById('file-info').classList.remove('hidden');
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-size').textContent = formatFileSize(file.size);
+            
+            showNotification('success', 'File Uploaded', `${file.name} is ready for analysis`);
+        }
+
+        /**
+         * formatFileSize - Converts bytes to human-readable format
+         * @param {number} bytes - File size in bytes
+         * @returns {string} Formatted file size
+         */
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        /**
+         * removeFile - Removes the uploaded file and resets the UI
+         */
+        function removeFile() {
+            appState.resumeData = null;
+            document.getElementById('file-info').classList.add('hidden');
+            document.getElementById('file-input').value = '';
+        }
+
+        // ==========================================
+        // RESUME ANALYSIS (Simulates Flask Backend)
+        // ==========================================
+        
+        /**
+         * analyzeResume - Main function to analyze the uploaded resume
+         * In production, this would make an API call to Flask backend
+         * The Flask backend would:
+         * 1. Parse the resume using PyPDF2 or docx library
+         * 2. Extract text and analyze with NLP (spaCy, NLTK)
+         * 3. Calculate ATS score using keyword matching
+         * 4. Store results in MongoDB
+         */
+        async function analyzeResume() {
+            if (!appState.resumeData) {
+                showNotification('warning', 'No Resume', 'Please upload a resume first');
+                return;
+            }
+
+            const btn = document.getElementById('analyze-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Analyzing...';
+            btn.disabled = true;
+
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Simulated analysis results (in production, this comes from Flask/MongoDB)
+            const analysisResults = simulateResumeAnalysis();
+            appState.analysisResults = analysisResults;
+
+            // Update UI with results
+            displayATSScore(analysisResults.atsScore);
+            displaySkills(analysisResults.skills);
+            displayMissingSkills(analysisResults.missingSkills);
+            displayRecommendations(analysisResults.recommendations);
+            updateDashboardStats(analysisResults);
+
+            btn.innerHTML = '<i class="fas fa-brain mr-2"></i>Analyze Resume';
+            btn.disabled = false;
+
+            showNotification('success', 'Analysis Complete', 'Your resume has been analyzed successfully!');
+        }
+
+        /**
+         * simulateResumeAnalysis - Simulates the AI analysis
+         * In production, this logic runs on Flask backend with:
+         * - NLP processing using spaCy
+         * - Skill extraction using named entity recognition
+         * - ATS scoring using industry keyword databases
+         * - MongoDB storage for user history
+         */
+        function simulateResumeAnalysis() {
+            // Simulated NLP skill extraction
+            const extractedSkills = {
+                technical: {
+                    programming: { skills: ["Python", "JavaScript", "TypeScript", "Java"], score: 85 },
+                    frameworks: { skills: ["React", "Node.js", "Flask", "Django"], score: 78 },
+                    databases: { skills: ["MongoDB", "PostgreSQL", "Redis"], score: 72 },
+                    cloud: { skills: ["AWS", "Docker", "Kubernetes"], score: 68 }
+                },
+                soft: ["Leadership", "Problem Solving", "Communication", "Team Collaboration"]
+            };
+
+            // Simulated ATS scoring algorithm
+            const atsBreakdown = {
+                keywords: { score: 82, label: "Keyword Optimization" },
+                formatting: { score: 88, label: "Format & Structure" },
+                experience: { score: 75, label: "Experience Relevance" },
+                education: { score: 90, label: "Education Match" },
+                skills: { score: 85, label: "Skills Coverage" }
+            };
+
+            const overallATS = Math.round(
+                Object.values(atsBreakdown).reduce((acc, item) => acc + item.score, 0) / 
+                Object.keys(atsBreakdown).length
+            );
+
+            // Get job description for missing skills analysis
+            const jobDescription = document.getElementById('job-description').value;
+            
+            // Extract skills from job description to find missing ones
+            const missingSkills = analyzeMissingSkills(extractedSkills, jobDescription);
+
+            // AI-generated recommendations
+            const recommendations = [
+                {
+                    type: 'improvement',
+                    icon: 'fa-exclamation-triangle',
+                    color: 'text-orange-500',
+                    title: 'Add Quantifiable Achievements',
+                    description: 'Include specific metrics like "Improved system performance by 40%"'
+                },
+                {
+                    type: 'improvement',
+                    icon: 'fa-plus-circle',
+                    color: 'text-blue-500',
+                    title: 'Add Missing Keywords',
+                    description: `Consider adding: ${missingSkills.critical.slice(0, 4).join(', ') || 'CI/CD, Agile, RESTful APIs'}`
+                },
+                {
+                    type: 'success',
+                    icon: 'fa-check-circle',
+                    color: 'text-green-500',
+                    title: 'Strong Technical Skills',
+                    description: 'Your programming languages section is well-optimized'
+                },
+                {
+                    type: 'improvement',
+                    icon: 'fa-lightbulb',
+                    color: 'text-purple-500',
+                    title: 'Enhance Summary Section',
+                    description: 'Add industry-specific keywords to your professional summary'
+                }
+            ];
+
+            return {
+                atsScore: overallATS,
+                atsBreakdown,
+                skills: extractedSkills,
+                missingSkills,
+                recommendations,
+                matchingJobs: 12
+            };
+        }
+
+        /**
+         * analyzeMissingSkills - Analyzes job description to find missing skills
+         * @param {object} resumeSkills - Skills extracted from resume
+         * @param {string} jobDescription - Target job description
+         * @returns {object} Object containing critical and recommended missing skills
+         * 
+         * This function simulates what the Flask backend would do:
+         * 1. Parse job description with NLP
+         * 2. Extract required skills from job posting
+         * 3. Compare with resume skills
+         * 4. Categorize by importance (critical vs nice-to-have)
+         */
+        function analyzeMissingSkills(resumeSkills, jobDescription) {
+            // Get all resume skills as a flat lowercase array
+            const resumeSkillsFlat = [];
+            Object.values(resumeSkills.technical).forEach(category => {
+                category.skills.forEach(skill => {
+                    resumeSkillsFlat.push(skill.toLowerCase());
+                });
+            });
+            resumeSkills.soft.forEach(skill => {
+                resumeSkillsFlat.push(skill.toLowerCase());
+            });
+
+            // Common job requirement skills database (simulated NLP extraction)
+            const allJobSkills = {
+                // Technical skills commonly required
+                technical: {
+                    programming: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C++', 'Go', 'Rust', 'Ruby', 'PHP', 'C#', 'Scala', 'Kotlin'],
+                    frameworks: ['React', 'Angular', 'Vue.js', 'Node.js', 'Django', 'Flask', 'Spring Boot', 'Express.js', 'Next.js', 'FastAPI', 'Laravel'],
+                    databases: ['MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'Elasticsearch', 'Cassandra', 'DynamoDB', 'SQLite', 'Oracle'],
+                    cloud: ['AWS', 'Azure', 'GCP', 'Docker', 'Kubernetes', 'Terraform', 'CloudFormation', 'Ansible', 'Jenkins'],
+                    tools: ['Git', 'GitHub', 'GitLab', 'JIRA', 'Confluence', 'VS Code', 'CI/CD', 'Agile', 'Scrum'],
+                    data: ['Machine Learning', 'TensorFlow', 'PyTorch', 'Pandas', 'NumPy', 'Spark', 'Hadoop', 'Data Analysis', 'SQL'],
+                    web: ['HTML', 'CSS', 'REST API', 'GraphQL', 'WebSocket', 'OAuth', 'JWT', 'Microservices']
+                },
+                soft: ['Leadership', 'Communication', 'Problem Solving', 'Team Collaboration', 'Time Management', 
+                       'Critical Thinking', 'Adaptability', 'Project Management', 'Mentoring', 'Public Speaking']
+            };
+
+            // Parse job description for skill keywords (simulated NLP)
+            const jobDescLower = jobDescription.toLowerCase();
+            const detectedJobSkills = [];
+            
+            // Check technical skills in job description
+            Object.values(allJobSkills.technical).forEach(skillList => {
+                skillList.forEach(skill => {
+                    if (jobDescLower.includes(skill.toLowerCase())) {
+                        detectedJobSkills.push({
+                            skill: skill,
+                            type: 'technical',
+                            importance: jobDescLower.includes('required') || jobDescLower.includes('must have') ? 'critical' : 'recommended'
+                        });
+                    }
+                });
+            });
+
+            // Check soft skills in job description
+            allJobSkills.soft.forEach(skill => {
+                if (jobDescLower.includes(skill.toLowerCase())) {
+                    detectedJobSkills.push({
+                        skill: skill,
+                        type: 'soft',
+                        importance: 'recommended'
+                    });
+                }
+            });
+
+            // If no job description, suggest common industry skills
+            if (!jobDescription.trim()) {
+                return {
+                    critical: ['CI/CD', 'Agile', 'REST API', 'Docker'],
+                    recommended: ['GraphQL', 'Microservices', 'Cloud Computing', 'Testing'],
+                    soft: ['Leadership', 'Public Speaking'],
+                    hasJobDescription: false,
+                    matchPercentage: 0
+                };
+            }
+
+            // Find missing skills (skills in job description but not in resume)
+            const missingCritical = [];
+            const missingRecommended = [];
+            const missingSoft = [];
+
+            detectedJobSkills.forEach(jobSkill => {
+                const isInResume = resumeSkillsFlat.includes(jobSkill.skill.toLowerCase());
+                if (!isInResume) {
+                    if (jobSkill.type === 'soft') {
+                        missingSoft.push(jobSkill.skill);
+                    } else if (jobSkill.importance === 'critical') {
+                        missingCritical.push(jobSkill.skill);
+                    } else {
+                        missingRecommended.push(jobSkill.skill);
+                    }
+                }
+            });
+
+            // Calculate match percentage
+            const totalJobSkills = detectedJobSkills.length;
+            const matchedSkills = totalJobSkills - (missingCritical.length + missingRecommended.length + missingSoft.length);
+            const matchPercentage = totalJobSkills > 0 ? Math.round((matchedSkills / totalJobSkills) * 100) : 0;
+
+            return {
+                critical: missingCritical,
+                recommended: missingRecommended,
+                soft: missingSoft,
+                hasJobDescription: true,
+                matchPercentage: matchPercentage,
+                totalJobSkills: totalJobSkills,
+                matchedSkills: matchedSkills
+            };
+        }
+
+        /**
+         * displayMissingSkills - Renders the missing skills analysis UI
+         * @param {object} missingSkills - Object containing missing skills data
+         */
+        function displayMissingSkills(missingSkills) {
+            const container = document.getElementById('missing-skills-container');
+            container.innerHTML = '';
+
+            if (!missingSkills.hasJobDescription) {
+                // Show general suggestions when no job description
+                container.innerHTML = `
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-yellow-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-medium text-yellow-800">No Job Description Provided</p>
+                                <p class="text-sm text-yellow-700 mt-1">Add a target job description above to get personalized missing skills analysis.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="font-medium text-gray-700 mb-3">💡 Generally Recommended Skills to Add:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${[...missingSkills.critical, ...missingSkills.recommended].map(skill => `
+                                <button onclick="addMissingSkillToBuilder('${skill}')" 
+                                    class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm hover:bg-blue-200 transition-all flex items-center gap-2 group">
+                                    <span>${skill}</span>
+                                    <i class="fas fa-plus text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show match percentage
+            const matchColor = missingSkills.matchPercentage >= 70 ? 'green' : 
+                              missingSkills.matchPercentage >= 50 ? 'yellow' : 'red';
+            
+            container.innerHTML = `
+                <!-- Match Score Header -->
+                <div class="bg-gradient-to-r from-${matchColor}-50 to-${matchColor}-100 rounded-lg p-4 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-${matchColor}-700 font-medium">Skills Match Score</p>
+                            <p class="text-3xl font-bold text-${matchColor}-600">${missingSkills.matchPercentage}%</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-${matchColor}-600">${missingSkills.matchedSkills} of ${missingSkills.totalJobSkills} skills matched</p>
+                            <div class="w-32 bg-${matchColor}-200 rounded-full h-2 mt-2">
+                                <div class="bg-${matchColor}-500 h-2 rounded-full skill-bar" style="width: ${missingSkills.matchPercentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Critical Missing Skills -->
+                ${missingSkills.critical.length > 0 ? `
+                <div class="mb-6">
+                    <div class="flex items-center mb-3">
+                        <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                        <span class="font-bold text-gray-800">Critical Skills Missing</span>
+                        <span class="ml-2 px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium">${missingSkills.critical.length} skills</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">These skills are frequently mentioned as requirements. Adding them could significantly improve your match rate.</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${missingSkills.critical.map(skill => `
+                            <button onclick="addMissingSkillToBuilder('${skill}')" 
+                                class="px-3 py-2 bg-red-50 border-2 border-red-200 text-red-700 rounded-lg text-sm hover:bg-red-100 hover:border-red-300 transition-all flex items-center gap-2 group">
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                                <span>${skill}</span>
+                                <i class="fas fa-plus text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : `
+                <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+                        <div>
+                            <p class="font-medium text-green-800">All Critical Skills Present!</p>
+                            <p class="text-sm text-green-700">Your resume contains all the critical skills mentioned in the job description.</p>
+                        </div>
+                    </div>
+                </div>
+                `}
+
+                <!-- Recommended Missing Skills -->
+                ${missingSkills.recommended.length > 0 ? `
+                <div class="mb-6">
+                    <div class="flex items-center mb-3">
+                        <span class="w-3 h-3 bg-orange-500 rounded-full mr-2"></span>
+                        <span class="font-bold text-gray-800">Recommended Skills</span>
+                        <span class="ml-2 px-2 py-1 bg-orange-100 text-orange-600 rounded-full text-xs font-medium">${missingSkills.recommended.length} skills</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">These skills would strengthen your application and show broader expertise.</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${missingSkills.recommended.map(skill => `
+                            <button onclick="addMissingSkillToBuilder('${skill}')" 
+                                class="px-3 py-2 bg-orange-50 border-2 border-orange-200 text-orange-700 rounded-lg text-sm hover:bg-orange-100 hover:border-orange-300 transition-all flex items-center gap-2 group">
+                                <i class="fas fa-star text-orange-400"></i>
+                                <span>${skill}</span>
+                                <i class="fas fa-plus text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+
+                <!-- Missing Soft Skills -->
+                ${missingSkills.soft.length > 0 ? `
+                <div class="mb-4">
+                    <div class="flex items-center mb-3">
+                        <span class="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
+                        <span class="font-bold text-gray-800">Soft Skills to Highlight</span>
+                        <span class="ml-2 px-2 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-medium">${missingSkills.soft.length} skills</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${missingSkills.soft.map(skill => `
+                            <button onclick="addMissingSkillToBuilder('${skill}', 'soft')" 
+                                class="px-3 py-2 bg-purple-50 border-2 border-purple-200 text-purple-700 rounded-lg text-sm hover:bg-purple-100 hover:border-purple-300 transition-all flex items-center gap-2 group">
+                                <i class="fas fa-user-tie text-purple-400"></i>
+                                <span>${skill}</span>
+                                <i class="fas fa-plus text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+
+                <!-- Quick Add All Button -->
+                ${(missingSkills.critical.length > 0 || missingSkills.recommended.length > 0) ? `
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <button onclick="addAllMissingSkills()" 
+                        class="w-full gradient-bg text-white py-3 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center">
+                        <i class="fas fa-magic mr-2"></i>
+                        Add All Missing Skills to Resume Builder
+                    </button>
+                    <p class="text-center text-sm text-gray-500 mt-2">This will add all missing skills to your resume builder</p>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        /**
+         * addMissingSkillToBuilder - Adds a single missing skill to the resume builder
+         * @param {string} skill - The skill to add
+         * @param {string} type - 'technical' or 'soft'
+         */
+        function addMissingSkillToBuilder(skill, type = 'technical') {
+            const container = document.getElementById(`${type}-skills-container`);
+            
+            // Check if skill already exists
+            const existingSkills = Array.from(container.children)
+                .map(el => el.textContent.trim().toLowerCase());
+            
+            if (existingSkills.includes(skill.toLowerCase())) {
+                showNotification('warning', 'Skill Exists', `${skill} is already in your skills list`);
+                return;
+            }
+
+            // Create skill tag
+            const span = document.createElement('span');
+            span.className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex items-center gap-2 animate-pulse';
+            span.innerHTML = `
+                ${skill}
+                <button onclick="this.parentElement.remove(); updatePreview();" class="hover:text-red-500">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            `;
+            container.appendChild(span);
+
+            // Remove animation after 1 second
+            setTimeout(() => span.classList.remove('animate-pulse'), 1000);
+
+            // Update state
+            if (type === 'technical') {
+                appState.builderData.technicalSkills.push(skill);
+            } else {
+                appState.builderData.softSkills.push(skill);
+            }
+
+            updatePreview();
+            showNotification('success', 'Skill Added', `${skill} added to your ${type} skills`);
+        }
+
+        /**
+         * addAllMissingSkills - Adds all missing skills to the resume builder
+         */
+        function addAllMissingSkills() {
+            if (!appState.analysisResults?.missingSkills) {
+                showNotification('error', 'No Analysis', 'Please analyze your resume first');
+                return;
+            }
+
+            const missing = appState.analysisResults.missingSkills;
+            let addedCount = 0;
+
+            // Add critical and recommended skills
+            [...missing.critical, ...missing.recommended].forEach(skill => {
+                const container = document.getElementById('technical-skills-container');
+                const existingSkills = Array.from(container.children)
+                    .map(el => el.textContent.trim().toLowerCase());
+                
+                if (!existingSkills.includes(skill.toLowerCase())) {
+                    const span = document.createElement('span');
+                    span.className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex items-center gap-2';
+                    span.innerHTML = `
+                        ${skill}
+                        <button onclick="this.parentElement.remove(); updatePreview();" class="hover:text-red-500">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    `;
+                    container.appendChild(span);
+                    appState.builderData.technicalSkills.push(skill);
+                    addedCount++;
+                }
+            });
+
+            // Add soft skills
+            missing.soft.forEach(skill => {
+                const container = document.getElementById('soft-skills-container');
+                const existingSkills = Array.from(container.children)
+                    .map(el => el.textContent.trim().toLowerCase());
+                
+                if (!existingSkills.includes(skill.toLowerCase())) {
+                    const span = document.createElement('span');
+                    span.className = 'px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm flex items-center gap-2';
+                    span.innerHTML = `
+                        ${skill}
+                        <button onclick="this.parentElement.remove(); updatePreview();" class="hover:text-red-500">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    `;
+                    container.appendChild(span);
+                    appState.builderData.softSkills.push(skill);
+                    addedCount++;
+                }
+            });
+
+            updatePreview();
+            showNotification('success', 'Skills Added', `Added ${addedCount} missing skills to your resume builder`);
+            
+            // Navigate to builder
+            setTimeout(() => {
+                showSection('builder');
+                switchBuilderTab('skills');
+            }, 1000);
+        }
+
+        /**
+         * displayATSScore - Animates and displays the ATS score
+         * @param {number} score - The ATS score (0-100)
+         */
+        function displayATSScore(score) {
+            const circle = document.getElementById('ats-progress');
+            const scoreDisplay = document.getElementById('ats-score');
+            
+            // Animate the circular progress
+            const circumference = 2 * Math.PI * 70;
+            const offset = circumference - (score / 100) * circumference;
+            
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 100);
+
+            // Animate the score number
+            let currentScore = 0;
+            const interval = setInterval(() => {
+                currentScore++;
+                scoreDisplay.textContent = currentScore + '%';
+                if (currentScore >= score) clearInterval(interval);
+            }, 20);
+
+            // Display breakdown
+            const breakdown = appState.analysisResults.atsBreakdown;
+            const breakdownContainer = document.getElementById('ats-breakdown');
+            breakdownContainer.innerHTML = '';
+            breakdownContainer.classList.remove('hidden');
+
+            Object.values(breakdown).forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-600">${item.label}</span>
+                        <span class="font-medium">${item.score}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="skill-bar h-2 rounded-full gradient-bg" style="width: ${item.score}%"></div>
+                    </div>
+                `;
+                breakdownContainer.appendChild(div);
+            });
+        }
+
+        /**
+         * displaySkills - Renders the extracted skills with progress bars
+         * @param {object} skills - The extracted skills object
+         */
+        function displaySkills(skills) {
+            const container = document.getElementById('skills-container');
+            container.innerHTML = '';
+
+            // Technical skills
+            Object.entries(skills.technical).forEach(([category, data]) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium text-gray-700 capitalize">${category}</span>
+                        <span class="text-sm text-purple-600 font-medium">${data.score}%</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        ${data.skills.map(skill => `
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">${skill}</span>
+                        `).join('')}
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="skill-bar h-2 rounded-full gradient-bg" style="width: ${data.score}%"></div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            // Soft skills
+            const softDiv = document.createElement('div');
+            softDiv.className = 'mt-4';
+            softDiv.innerHTML = `
+                <span class="font-medium text-gray-700">Soft Skills</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    ${skills.soft.map(skill => `
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">${skill}</span>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(softDiv);
+        }
+
+        /**
+         * displayRecommendations - Shows AI-generated improvement suggestions
+         * @param {array} recommendations - Array of recommendation objects
+         */
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
+
+            recommendations.forEach(rec => {
+                const div = document.createElement('div');
+                div.className = 'flex items-start space-x-3 p-3 bg-gray-50 rounded-lg mb-3';
+                div.innerHTML = `
+                    <i class="fas ${rec.icon} ${rec.color} mt-1"></i>
+                    <div>
+                        <p class="font-medium text-gray-800">${rec.title}</p>
+                        <p class="text-sm text-gray-600">${rec.description}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        /**
+         * updateDashboardStats - Updates the dashboard statistics
+         * @param {object} results - The analysis results
+         */
+        function updateDashboardStats(results) {
+            document.getElementById('dashboard-ats').textContent = results.atsScore + '%';
+            document.getElementById('dashboard-skills').textContent = 
+                Object.values(results.skills.technical).reduce((acc, cat) => acc + cat.skills.length, 0);
+            document.getElementById('dashboard-jobs').textContent = results.matchingJobs;
+            
+            // Calculate total improvements including missing skills
+            const missingSkillsCount = results.missingSkills.critical.length + 
+                                       results.missingSkills.recommended.length;
+            const recommendationsCount = results.recommendations.filter(r => r.type === 'improvement').length;
+            document.getElementById('dashboard-improvements').textContent = missingSkillsCount + recommendationsCount;
+        }
+
+        // ==========================================
+        // RESUME BUILDER FUNCTIONS
+        // ==========================================
+        
+        /**
+         * switchBuilderTab - Switches between resume builder tabs
+         * @param {string} tabName - The tab to switch to
+         */
+        function switchBuilderTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.builder-tab').forEach(tab => {
+                tab.classList.remove('tab-active');
+                tab.classList.add('bg-gray-200');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('tab-active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.remove('bg-gray-200');
+
+            // Update tab content
+            document.querySelectorAll('.builder-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+        }
+
+        /**
+         * addExperience - Adds a new experience entry form
+         * Creates dynamic form fields for work experience
+         */
+        function addExperience() {
+            const container = document.getElementById('experience-list');
+            const id = Date.now();
+            
+            const div = document.createElement('div');
+            div.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
+            div.id = `exp-${id}`;
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-medium text-gray-800">New Position</h4>
+                    <button onclick="removeEntry('exp-${id}')" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="text" placeholder="Job Title" class="exp-title p-3 border rounded-lg w-full" oninput="updatePreview()">
+                        <input type="text" placeholder="Company Name" class="exp-company p-3 border rounded-lg w-full" oninput="updatePreview()">
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="text" placeholder="Start Date (MM/YYYY)" class="exp-start p-3 border rounded-lg w-full" oninput="updatePreview()">
+                        <input type="text" placeholder="End Date (MM/YYYY or Present)" class="exp-end p-3 border rounded-lg w-full" oninput="updatePreview()">
+                    </div>
+                    <textarea placeholder="Description of responsibilities and achievements..." class="exp-desc w-full p-3 border rounded-lg" rows="3" oninput="updatePreview()"></textarea>
+                    <button onclick="enhanceDescription(this)" class="text-purple-600 hover:text-purple-800 text-sm font-medium">
+                        <i class="fas fa-magic mr-1"></i>Enhance with AI
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+            updatePreview();
+        }
+
+        /**
+         * addEducation - Adds a new education entry form
+         */
+        function addEducation() {
+            const container = document.getElementById('education-list');
+            const id = Date.now();
+            
+            const div = document.createElement('div');
+            div.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
+            div.id = `edu-${id}`;
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-medium text-gray-800">New Education</h4>
+                    <button onclick="removeEntry('edu-${id}')" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="text" placeholder="Degree" class="edu-degree p-3 border rounded-lg w-full" oninput="updatePreview()">
+                        <input type="text" placeholder="Field of Study" class="edu-field p-3 border rounded-lg w-full" oninput="updatePreview()">
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <input type="text" placeholder="Institution Name" class="edu-school p-3 border rounded-lg w-full" oninput="updatePreview()">
+                        <input type="text" placeholder="Graduation Year" class="edu-year p-3 border rounded-lg w-full" oninput="updatePreview()">
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            updatePreview();
+        }
+
+        /**
+         * removeEntry - Removes a dynamic form entry
+         * @param {string} id - The element ID to remove
+         */
+        function removeEntry(id) {
+            document.getElementById(id).remove();
+            updatePreview();
+        }
+
+        /**
+         * addSkill - Adds a skill tag to the skills section
+         * @param {string} type - 'technical' or 'soft'
+         */
+        function addSkill(type) {
+            const input = document.getElementById(`new-${type === 'technical' ? 'tech' : 'soft'}-skill`);
+            const skill = input.value.trim();
+            
+            if (!skill) return;
+
+            const container = document.getElementById(`${type}-skills-container`);
+            const span = document.createElement('span');
+            span.className = 'px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm flex items-center gap-2';
+            span.innerHTML = `
+                ${skill}
+                <button onclick="this.parentElement.remove(); updatePreview();" class="hover:text-red-500">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+            `;
+            container.appendChild(span);
+            
+            input.value = '';
+            
+            // Update state
+            if (type === 'technical') {
+                appState.builderData.technicalSkills.push(skill);
+            } else {
+                appState.builderData.softSkills.push(skill);
+            }
+            
+            updatePreview();
+        }
+
+        /**
+         * suggestSkills - AI suggests relevant skills based on job title
+         * In production, this would call Flask API with ML model
+         */
+        function suggestSkills() {
+            const title = document.getElementById('resume-title').value.toLowerCase();
+            let suggestions = [];
+
+            // Simple keyword-based suggestion (in production, use ML model)
+            if (title.includes('frontend') || title.includes('react')) {
+                suggestions = ['React', 'TypeScript', 'CSS', 'Redux', 'Webpack'];
+            } else if (title.includes('backend') || title.includes('python')) {
+                suggestions = ['Python', 'Django', 'Flask', 'PostgreSQL', 'Redis'];
+            } else if (title.includes('full stack')) {
+                suggestions = ['React', 'Node.js', 'Python', 'MongoDB', 'AWS'];
+            } else if (title.includes('data')) {
+                suggestions = ['Python', 'SQL', 'Pandas', 'TensorFlow', 'Tableau'];
+            } else {
+                suggestions = ['JavaScript', 'Python', 'SQL', 'Git', 'Agile'];
+            }
+
+            // Add suggested skills
+            const container = document.getElementById('technical-skills-container');
+            suggestions.forEach(skill => {
+                if (!appState.builderData.technicalSkills.includes(skill)) {
+                    const span = document.createElement('span');
+                    span.className = 'px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex items-center gap-2';
+                    span.innerHTML = `
+                        ${skill}
+                        <button onclick="this.parentElement.remove(); updatePreview();" class="hover:text-red-500">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    `;
+                    container.appendChild(span);
+                    appState.builderData.technicalSkills.push(skill);
+                }
+            });
+
+            showNotification('success', 'Skills Added', `Added ${suggestions.length} suggested skills`);
+            updatePreview();
+        }
+
+        /**
+         * generateSummary - AI generates professional summary
+         * In production, this uses GPT/LLM via Flask API
+         */
+        function generateSummary() {
+            const title = document.getElementById('resume-title').value || 'Professional';
+            const skills = appState.builderData.technicalSkills.slice(0, 4).join(', ') || 'relevant technologies';
+            
+            const summary = `Results-driven ${title} with proven expertise in ${skills}. Passionate about delivering high-quality solutions and driving business value through innovative technology. Strong communicator with a track record of collaborating effectively with cross-functional teams to achieve project goals.`;
+            
+            document.getElementById('resume-summary').value = summary;
+            showNotification('success', 'Summary Generated', 'AI-powered summary added');
+            updatePreview();
+        }
+
+        /**
+         * enhanceDescription - AI enhances job description with action verbs
+         * @param {HTMLElement} button - The clicked button element
+         */
+        function enhanceDescription(button) {
+            const textarea = button.previousElementSibling;
+            const original = textarea.value || "Worked on various projects";
+            
+            // Simple enhancement (in production, use LLM)
+            const enhanced = original
+                .replace(/worked on/gi, 'Spearheaded')
+                .replace(/helped/gi, 'Contributed to')
+                .replace(/made/gi, 'Developed')
+                .replace(/did/gi, 'Executed');
+            
+            const actionVerbs = ['Implemented', 'Optimized', 'Architected', 'Led', 'Delivered'];
+            const randomVerb = actionVerbs[Math.floor(Math.random() * actionVerbs.length)];
+            
+            textarea.value = enhanced || `${randomVerb} key initiatives resulting in measurable improvements to team productivity and project delivery.`;
+            updatePreview();
+            showNotification('success', 'Enhanced', 'Description enhanced with action verbs');
+        }
+
+        /**
+         * updatePreview - Updates the live resume preview
+         * Collects all form data and renders the preview
+         */
+        function updatePreview() {
+            const preview = document.getElementById('resume-preview');
+            
+            // Collect personal info
+            const name = document.getElementById('resume-name').value || 'Your Name';
+            const title = document.getElementById('resume-title').value || 'Professional Title';
+            const email = document.getElementById('resume-email').value || 'email@example.com';
+            const phone = document.getElementById('resume-phone').value || '+1 234 567 8900';
+            const location = document.getElementById('resume-location').value || 'City, State';
+            const linkedin = document.getElementById('resume-linkedin').value || '';
+            const summary = document.getElementById('resume-summary').value || '';
+
+            // Collect experience
+            let experienceHTML = '';
+            document.querySelectorAll('[id^="exp-"]').forEach(exp => {
+                const expTitle = exp.querySelector('.exp-title')?.value || '';
+                const company = exp.querySelector('.exp-company')?.value || '';
+                const start = exp.querySelector('.exp-start')?.value || '';
+                const end = exp.querySelector('.exp-end')?.value || '';
+                const desc = exp.querySelector('.exp-desc')?.value || '';
+                
+                if (expTitle || company) {
+                    experienceHTML += `
+                        <div class="mb-4">
+                            <div class="flex justify-between">
+                                <strong>${expTitle}</strong>
+                                <span class="text-gray-500">${start} - ${end}</span>
+                            </div>
+                            <div class="text-purple-600">${company}</div>
+                            <p class="text-gray-600 mt-1">${desc}</p>
+                        </div>
+                    `;
+                }
+            });
+
+            // Collect education
+            let educationHTML = '';
+            document.querySelectorAll('[id^="edu-"]').forEach(edu => {
+                const degree = edu.querySelector('.edu-degree')?.value || '';
+                const field = edu.querySelector('.edu-field')?.value || '';
+                const school = edu.querySelector('.edu-school')?.value || '';
+                const year = edu.querySelector('.edu-year')?.value || '';
+                
+                if (degree || school) {
+                    educationHTML += `
+                        <div class="mb-3">
+                            <div class="flex justify-between">
+                                <strong>${degree} ${field ? 'in ' + field : ''}</strong>
+                                <span class="text-gray-500">${year}</span>
+                            </div>
+                            <div class="text-purple-600">${school}</div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Collect skills
+            let skillsHTML = '';
+            const techSkills = Array.from(document.getElementById('technical-skills-container').children)
+                .map(el => el.textContent.trim()).filter(s => s);
+            const softSkills = Array.from(document.getElementById('soft-skills-container').children)
+                .map(el => el.textContent.trim()).filter(s => s);
+
+            // Render preview
+            preview.innerHTML = `
+                <div class="border-b-2 border-purple-600 pb-4 mb-4">
+                    <h1 class="text-2xl font-bold text-gray-800">${name}</h1>
+                    <p class="text-purple-600 font-medium">${title}</p>
+                    <div class="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+                        <span><i class="fas fa-envelope mr-1"></i>${email}</span>
+                        <span><i class="fas fa-phone mr-1"></i>${phone}</span>
+                        <span><i class="fas fa-map-marker-alt mr-1"></i>${location}</span>
+                        ${linkedin ? `<span><i class="fab fa-linkedin mr-1"></i>${linkedin}</span>` : ''}
+                    </div>
+                </div>
+
+                ${summary ? `
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-purple-600 border-b pb-1 mb-2">PROFESSIONAL SUMMARY</h2>
+                    <p class="text-gray-700">${summary}</p>
+                </div>
+                ` : ''}
+
+                ${experienceHTML ? `
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-purple-600 border-b pb-1 mb-2">EXPERIENCE</h2>
+                    ${experienceHTML}
+                </div>
+                ` : ''}
+
+                ${educationHTML ? `
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-purple-600 border-b pb-1 mb-2">EDUCATION</h2>
+                    ${educationHTML}
+                </div>
+                ` : ''}
+
+                ${techSkills.length || softSkills.length ? `
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-purple-600 border-b pb-1 mb-2">SKILLS</h2>
+                    ${techSkills.length ? `<p class="mb-2"><strong>Technical:</strong> ${techSkills.join(', ')}</p>` : ''}
+                    ${softSkills.length ? `<p><strong>Soft Skills:</strong> ${softSkills.join(', ')}</p>` : ''}
+                </div>
+                ` : ''}
+            `;
+        }
+
+        /**
+         * downloadResume - Generates downloadable resume
+         * @param {string} format - 'pdf' or 'docx'
+         * In production, this calls Flask API to generate actual files
+         */
+        function downloadResume(format) {
+            showNotification('info', 'Download Started', `Generating ${format.toUpperCase()} file...`);
+            
+            // Simulate download delay
+            setTimeout(() => {
+                showNotification('success', 'Download Ready', `Your resume.${format} is ready!`);
+                // In production, this would trigger actual file download
+            }, 1500);
+        }
+
+        // ==========================================
+        // JOB RECOMMENDATIONS
+        // ==========================================
+        
+        /**
+         * loadJobs - Loads and displays job recommendations
+         * In production, this fetches from Flask API connected to MongoDB
+         */
+        function loadJobs() {
+            appState.jobs = [...sampleJobs];
+            renderJobs(appState.jobs);
+        }
+
+        /**
+         * renderJobs - Renders job cards in the UI
+         * @param {array} jobs - Array of job objects to display
+         */
+        function renderJobs(jobs) {
+            const container = document.getElementById('job-listings');
+            container.innerHTML = '';
+
+            jobs.forEach(job => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl p-6 shadow-lg card-hover transition-all duration-300';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl mr-4">
+                                ${job.logo}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-800">${job.title}</h3>
+                                <p class="text-gray-600">${job.company}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="inline-flex items-center px-3 py-1 rounded-full ${
+                                job.matchScore >= 90 ? 'bg-green-100 text-green-700' :
+                                job.matchScore >= 80 ? 'bg-blue-100 text-blue-700' :
+                                'bg-orange-100 text-orange-700'
+                            }">
+                                <i class="fas fa-chart-line mr-1"></i>
+                                ${job.matchScore}% Match
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                            <i class="fas fa-map-marker-alt mr-1"></i>${job.location}
+                        </span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                            <i class="fas fa-dollar-sign mr-1"></i>${job.salary}
+                        </span>
+                        <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">
+                            <i class="fas fa-clock mr-1"></i>${job.posted}
+                        </span>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${job.skills.slice(0, 4).map(skill => `
+                            <span class="px-2 py-1 bg-purple-50 text-purple-700 rounded text-xs">${skill}</span>
+                        `).join('')}
+                        ${job.skills.length > 4 ? `<span class="px-2 py-1 bg-gray-50 text-gray-500 rounded text-xs">+${job.skills.length - 4} more</span>` : ''}
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="applyJob(${job.id})" class="flex-1 gradient-bg text-white py-2 rounded-lg font-medium hover:opacity-90 transition">
+                            <i class="fas fa-paper-plane mr-2"></i>Quick Apply
+                        </button>
+                        <button onclick="saveJob(${job.id})" class="px-4 py-2 border border-purple-500 text-purple-500 rounded-lg hover:bg-purple-50 transition">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        /**
+         * filterJobs - Filters jobs based on search criteria
+         */
+        function filterJobs() {
+            const searchTerm = document.getElementById('job-search').value.toLowerCase();
+            const location = document.getElementById('job-location').value;
+            const experience = document.getElementById('job-experience').value;
+            const matchScore = parseInt(document.getElementById('job-match').value) || 0;
+
+            const filtered = sampleJobs.filter(job => {
+                const matchesSearch = job.title.toLowerCase().includes(searchTerm) || 
+                                     job.company.toLowerCase().includes(searchTerm);
+                const matchesLocation = !location || job.type === location;
+                const matchesExperience = !experience || job.level === experience;
+                const matchesScore = job.matchScore >= matchScore;
+
+                return matchesSearch && matchesLocation && matchesExperience && matchesScore;
+            });
+
+            renderJobs(filtered);
+        }
+
+        /**
+         * applyJob - Handles job application
+         * @param {number} jobId - The job ID to apply for
+         */
+        function applyJob(jobId) {
+            const job = sampleJobs.find(j => j.id === jobId);
+            showNotification('success', 'Application Submitted', `Applied to ${job.title} at ${job.company}`);
+        }
+
+        /**
+         * saveJob - Saves job for later
+         * @param {number} jobId - The job ID to save
+         */
+        function saveJob(jobId) {
+            const job = sampleJobs.find(j => j.id === jobId);
+            showNotification('info', 'Job Saved', `${job.title} saved to your list`);
+        }
+
+        // ==========================================
+        // REAL-TIME NOTIFICATIONS
+        // ==========================================
+        
+        /**
+         * toggleRealtimeNotifications - Toggles real-time job notifications
+         * In production, this connects to WebSocket/Flask-SocketIO
+         */
+        function toggleRealtimeNotifications() {
+            appState.realtimeEnabled = document.getElementById('realtime-toggle').checked;
+            
+            if (appState.realtimeEnabled) {
+                showNotification('success', 'Notifications Enabled', 'You will receive real-time job alerts');
+                // Start simulated notifications
+                startRealtimeSimulation();
+            } else {
+                showNotification('info', 'Notifications Disabled', 'Real-time alerts have been turned off');
+            }
+        }
+
+        /**
+         * startRealtimeSimulation - Simulates real-time job notifications
+         * In production, this would be WebSocket events from Flask-SocketIO
+         */
+        function startRealtimeSimulation() {
+            if (!appState.realtimeEnabled) return;
+
+            const newJobs = [
+                { title: "React Developer", company: "Meta", match: 94 },
+                { title: "Python Engineer", company: "Google", match: 88 },
+                { title: "Full Stack Developer", company: "Amazon", match: 91 }
+            ];
+
+            let index = 0;
+            const interval = setInterval(() => {
+                if (!appState.realtimeEnabled || index >= newJobs.length) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                const job = newJobs[index];
+                showNotification('job', 'New Job Match!', 
+                    `${job.title} at ${job.company} (${job.match}% match)`, true);
+                index++;
+            }, 5000);
+        }
+
+        /**
+         * showNotification - Displays a notification toast
+         * @param {string} type - Notification type (success, error, warning, info, job)
+         * @param {string} title - Notification title
+         * @param {string} message - Notification message
+         * @param {boolean} isJobAlert - Whether this is a job alert notification
+         */
+        function showNotification(type, title, message, isJobAlert = false) {
+            const container = document.getElementById('notification-container');
+            const id = Date.now();
+            
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-orange-500',
+                info: 'bg-blue-500',
+                job: 'bg-purple-500'
+            };
+
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-times-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle',
+                job: 'fa-briefcase'
+            };
+
+            const notification = document.createElement('div');
+            notification.id = `notif-${id}`;
+            notification.className = `notification-item bg-white rounded-lg shadow-lg p-4 mb-3 flex items-start space-x-3 border-l-4 ${colors[type].replace('bg-', 'border-')}`;
+            notification.innerHTML = `
+                <div class="w-8 h-8 ${colors[type]} rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas ${icons[type]} text-white text-sm"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-medium text-gray-800">${title}</p>
+                    <p class="text-sm text-gray-600">${message}</p>
+                    ${isJobAlert ? '<button onclick="showSection(\'jobs\')" class="text-purple-600 text-sm font-medium mt-1">View Job →</button>' : ''}
+                </div>
+                <button onclick="closeNotification('${id}')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(notification);
+
+            // Update badge
+            const badge = document.getElementById('notification-badge');
+            badge.textContent = parseInt(badge.textContent) + 1;
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => closeNotification(id), 5000);
+        }
+
+        /**
+         * closeNotification - Removes a notification
+         * @param {string} id - The notification ID to remove
+         */
+        function closeNotification(id) {
+            const notif = document.getElementById(`notif-${id}`);
+            if (notif) {
+                notif.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => notif.remove(), 300);
+            }
+        }
+
+        /**
+         * toggleNotifications - Shows/hides notification panel
+         */
+        function toggleNotifications() {
+            // In a full implementation, this would show a notification dropdown
+            showNotification('info', 'Notifications', 'You have 3 unread notifications');
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        
+        /**
+         * Initialize the application when DOM is loaded
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('ResumeAI Pro initialized');
+            
+            // Add default experience and education entries
+            addExperience();
+            addEducation();
+            
+            // Initialize jobs
+            loadJobs();
+        });
+
+        /*
+        ==========================================
+        FOLDER STRUCTURE FOR FULL-STACK VERSION
+        ==========================================
+        
+        intelligent-resume-system/
+        ├── frontend/                      # React.js Application
+        │   ├── public/
+        │   │   └── index.html
+        │   ├── src/
+        │   │   ├── components/
+        │   │   │   ├── Dashboard/
+        │   │   │   │   └── Dashboard.jsx
+        │   │   │   ├── ResumeAnalyzer/
+        │   │   │   │   ├── ResumeUploader.jsx
+        │   │   │   │   ├── SkillsAnalysis.jsx
+        │   │   │   │   └── ATSScore.jsx
+        │   │   │   ├── ResumeBuilder/
+        │   │   │   │   ├── PersonalInfo.jsx
+        │   │   │   │   ├── Experience.jsx
+        │   │   │   │   ├── Education.jsx
+        │   │   │   │   ├── Skills.jsx
+        │   │   │   │   └── Preview.jsx
+        │   │   │   ├── JobRecommendations/
+        │   │   │   │   ├── JobList.jsx
+        │   │   │   │   ├── JobCard.jsx
+        │   │   │   │   └── JobFilters.jsx
+        │   │   │   └── Common/
+        │   │   │       ├── Navbar.jsx
+        │   │   │       └── Notifications.jsx
+        │   │   ├── services/
+        │   │   │   ├── api.js              # Axios API calls
+        │   │   │   └── socket.js           # Socket.IO client
+        │   │   ├── store/
+        │   │   │   ├── resumeSlice.js      # Redux slice for resume
+        │   │   │   └── jobSlice.js         # Redux slice for jobs
+        │   │   ├── App.jsx
+        │   │   └── index.js
+        │   └── package.json
+        │
+        ├── backend/                       # Flask Application
+        │   ├── app/
+        │   │   ├── __init__.py            # Flask app factory
+        │   │   ├── config.py              # Configuration settings
+        │   │   ├── models/
+        │   │   │   ├── user.py            # User model (MongoDB)
+        │   │   │   ├── resume.py          # Resume model
+        │   │   │   └── job.py             # Job model
+        │   │   ├── routes/
+        │   │   │   ├── auth.py            # Authentication routes
+        │   │   │   ├── resume.py          # Resume analysis routes
+        │   │   │   ├── builder.py         # Resume builder routes
+        │   │   │   └── jobs.py            # Job recommendation routes
+        │   │   ├── services/
+        │   │   │   ├── nlp_analyzer.py    # NLP skill extraction
+        │   │   │   ├── ats_scorer.py      # ATS scoring algorithm
+        │   │   │   ├── job_matcher.py     # Job matching algorithm
+        │   │   │   └── ai_generator.py    # AI content generation
+        │   │   └── utils/
+        │   │       ├── pdf_parser.py      # PDF parsing utility
+        │   │       └── docx_parser.py     # DOCX parsing utility
+        │   ├── requirements.txt
+        │   └── run.py
+        │
+        └── README.md
+        
+        ==========================================
+        KEY FLASK BACKEND CODE SAMPLES
+        ==========================================
+        
+        # app/__init__.py
+        from flask import Flask
+        from flask_pymongo import PyMongo
+        from flask_cors import CORS
+        from flask_socketio import SocketIO
+        
+        mongo = PyMongo()
+        socketio = SocketIO()
+        
+        def create_app():
+            app = Flask(__name__)
+            app.config.from_object('app.config.Config')
+            
+            CORS(app)
+            mongo.init_app(app)
+            socketio.init_app(app, cors_allowed_origins="*")
+            
+            from app.routes import auth, resume, builder, jobs
+            app.register_blueprint(auth.bp)
+            app.register_blueprint(resume.bp)
+            app.register_blueprint(builder.bp)
+            app.register_blueprint(jobs.bp)
+            
+            return app
+        
+        # app/services/nlp_analyzer.py
+        import spacy
+        from collections import Counter
+        
+        nlp = spacy.load("en_core_web_lg")
+        
+        class NLPAnalyzer:
+            def __init__(self):
+                self.skill_patterns = [...]  # Skill patterns for matching
+            
+            def extract_skills(self, text):
+                doc = nlp(text)
+                skills = []
+                for ent in doc.ents:
+                    if ent.label_ in ["SKILL", "TECHNOLOGY"]:
+                        skills.append(ent.text)
+                return skills
+            
+            def calculate_ats_score(self, resume_text, job_description):
+                # Keyword matching algorithm
+                resume_keywords = set(self.extract_skills(resume_text))
+                job_keywords = set(self.extract_skills(job_description))
+                match_score = len(resume_keywords & job_keywords) / len(job_keywords)
+                return round(match_score * 100)
+        
+        # app/routes/resume.py
+        from flask import Blueprint, request, jsonify
+        from app.services.nlp_analyzer import NLPAnalyzer
+        from app.utils.pdf_parser import parse_pdf
+        
+        bp = Blueprint('resume', __name__, url_prefix='/api/resume')
+        analyzer = NLPAnalyzer()
+        
+        @bp.route('/analyze', methods=['POST'])
+        def analyze_resume():
+            file = request.files['resume']
+            job_desc = request.form.get('job_description', '')
+            
+            # Parse resume
+            resume_text = parse_pdf(file)
+            
+            # Extract skills
+            skills = analyzer.extract_skills(resume_text)
+            
+            # Calculate ATS score
+            ats_score = analyzer.calculate_ats_score(resume_text, job_desc)
+            
+            return jsonify({
+                'skills': skills,
+                'ats_score': ats_score,
+                'recommendations': analyzer.get_recommendations(resume_text)
+            })
+        */
+    </script>
+</body>
+</html>
