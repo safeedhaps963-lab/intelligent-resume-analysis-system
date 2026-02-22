@@ -54,7 +54,7 @@ function MinimalTemplate({ data }) {
         <div className="col-span-1 bg-gray-50 p-5">
 
           {technicalSkills && (
-            <Section title="Technical Skills" content={technicalSkills} />
+            <Section title="Key Skills" content={technicalSkills} />
           )}
 
           {softSkills && (
@@ -87,7 +87,7 @@ function MinimalTemplate({ data }) {
           )}
 
           {experience && (
-            <Section title="Experience" content={experience} />
+            <Section title="Professional Experience" content={experience} />
           )}
 
           {projects && (
@@ -99,7 +99,7 @@ function MinimalTemplate({ data }) {
           )}
 
           {academicExposure && (
-            <Section title="Academic Exposure" content={academicExposure} />
+            <Section title="Academic / Professional Exposure" content={academicExposure} />
           )}
 
           {activities && (

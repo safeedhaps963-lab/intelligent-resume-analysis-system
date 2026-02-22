@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { AppContext } from '../App';
 
@@ -8,7 +8,11 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const ctx = useContext(AppContext);
+
+  // Get the redirect path from state, or default to home
+  const from = location.state?.from?.pathname || "/";
 
   const submit = async (e) => {
     e.preventDefault();
@@ -25,7 +29,7 @@ const Login = () => {
         if (token) localStorage.setItem('authToken', token);
         if (ctx?.setIsAuthenticated) ctx.setIsAuthenticated(true);
         toast.success('Signed in');
-        navigate('/');
+        navigate(from, { replace: true });
       } else {
         toast.error((data && (data.error || data.message)) || 'Invalid credentials');
       }

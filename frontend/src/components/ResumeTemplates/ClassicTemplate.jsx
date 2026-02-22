@@ -54,7 +54,7 @@ function ClassicTemplate({ data }) {
         <div className="col-span-1 bg-gray-100 p-5">
 
           {technicalSkills && (
-            <Section title="TECHNICAL SKILLS" content={technicalSkills} />
+            <Section title="KEY SKILLS" content={technicalSkills} />
           )}
 
           {softSkills && (
@@ -87,7 +87,7 @@ function ClassicTemplate({ data }) {
           )}
 
           {experience && (
-            <Section title="EXPERIENCE" content={experience} />
+            <Section title="PROFESSIONAL EXPERIENCE" content={experience} />
           )}
 
           {projects && (
@@ -99,7 +99,7 @@ function ClassicTemplate({ data }) {
           )}
 
           {academicExposure && (
-            <Section title="ACADEMIC EXPOSURE" content={academicExposure} />
+            <Section title="ACADEMIC / PROFESSIONAL EXPOSURE" content={academicExposure} />
           )}
 
           {activities && (

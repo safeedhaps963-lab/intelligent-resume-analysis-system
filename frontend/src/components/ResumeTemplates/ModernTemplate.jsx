@@ -57,7 +57,7 @@ function ModernTemplate({ data }) {
           {technicalSkills && (
             <div className="mb-5">
               <h2 className="text-xs font-semibold text-indigo-700 mb-3 uppercase">
-                Technical Skills
+                Key Skills
               </h2>
               <div className="flex flex-wrap gap-2">
                 {technicalSkills.split(",").map((skill, index) => (
@@ -117,7 +117,7 @@ function ModernTemplate({ data }) {
           )}
 
           {experience && (
-            <Section title="Experience" content={experience} />
+            <Section title="Professional Experience" content={experience} />
           )}
 
           {projects && (
@@ -129,7 +129,7 @@ function ModernTemplate({ data }) {
           )}
 
           {academicExposure && (
-            <Section title="Academic Exposure" content={academicExposure} />
+            <Section title="Academic / Professional Exposure" content={academicExposure} />
           )}
 
           {activities && (

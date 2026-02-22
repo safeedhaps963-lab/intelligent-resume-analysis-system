@@ -22,7 +22,7 @@ code .
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate 
 pip install -r requirements.txt
 python -m spacy download en_core_web_lg
 python run.py

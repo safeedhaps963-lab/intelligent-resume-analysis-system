@@ -4,8 +4,8 @@
 
 import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  FaBrain, FaHome, FaSearchPlus, FaFileAlt, 
+import {
+  FaBrain, FaHome, FaSearchPlus, FaFileAlt,
   FaBriefcase, FaBell, FaBars, FaTimes, FaMagic, FaSignOutAlt, FaCommentAlt, FaSignInAlt
 } from 'react-icons/fa';
 import { AppContext } from '../../App';
@@ -27,7 +27,6 @@ const Navbar = () => {
     { path: '/builder', icon: <FaFileAlt />, label: 'Builder' },
     { path: '/jobs', icon: <FaBriefcase />, label: 'Jobs' },
     { path: '/feedback', icon: <FaCommentAlt />, label: 'Feedback' },
-    { path: '/login', icon: <FaSignInAlt />, label: 'Login' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -46,8 +45,8 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => (
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated && navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -61,21 +60,23 @@ const Navbar = () => {
               </Link>
             ))}
 
-            {/* Notification Bell */}
-            <div className="relative p-2">
-              <FaBell className="text-xl" />
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs 
-                  rounded-full w-5 h-5 flex items-center justify-center">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </div>
+            {/* Notification Bell - only show when authenticated */}
+            {isAuthenticated && (
+              <div className="relative p-2">
+                <FaBell className="text-xl" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs 
+                    rounded-full w-5 h-5 flex items-center justify-center">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </div>
+            )}
 
             {isAuthenticated ? (
-              <button 
+              <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-all"
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition-all font-medium"
                 title="Logout"
               >
                 <FaSignOutAlt />
@@ -84,7 +85,7 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all font-medium"
               >
                 <FaSignInAlt />
                 <span>Login</span>
@@ -93,7 +94,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Toggle */}
-          <button 
+          <button
             className="md:hidden p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -104,9 +105,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden px-4 py-4 bg-purple-700">
-          <div className="flex flex-col space-y-3">
-            {navItems.map((item) => (
+        <div className="md:hidden px-4 py-4 bg-purple-700 border-t border-purple-500/30">
+          <div className="flex flex-col space-y-2">
+            {isAuthenticated && navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -121,24 +122,26 @@ const Navbar = () => {
               </Link>
             ))}
 
-            {isAuthenticated ? (
-              <button
-                onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
-                className="flex items-center space-x-2 px-4 py-3 rounded-lg bg-red-600 hover:bg-red-700"
-              >
-                <FaSignOutAlt />
-                <span>Logout</span>
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 px-4 py-3 rounded-lg bg-white/10 hover:bg-white/20"
-              >
-                <FaSignInAlt />
-                <span>Login</span>
-              </Link>
-            )}
+            <div className="pt-2">
+              {isAuthenticated ? (
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-red-600 hover:bg-red-700 transition-all"
+                >
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+                >
+                  <FaSignInAlt />
+                  <span>Login</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -11,6 +11,7 @@ import Jobs from "./components/Jobs";
 import Notification from "./components/Common/Notification";
 import Feedback from "./components/Feedback";
 import Login from "./components/Login";
+import AuthGuard from "./components/Common/AuthGuard";
 
 import "./index.css";
 
@@ -77,9 +78,9 @@ function AppContent() {
         analysisResults,
         setAnalysisResults,
         // auth removed
-          handleLogout,
-          isAuthenticated,
-          setIsAuthenticated,
+        handleLogout,
+        isAuthenticated,
+        setIsAuthenticated,
       }}
     >
       <div className="min-h-screen bg-gray-50">
@@ -91,13 +92,52 @@ function AppContent() {
           <Routes>
             <Route
               path="/"
-              element={isAuthenticated ? <Dashboard /> : <Login setIsAuthenticated={setIsAuthenticated} />}
+              element={
+                <AuthGuard>
+                  <Dashboard />
+                </AuthGuard>
+              }
             />
-            <Route path="/analyzer" element={<ResumeAnalyzer />} />
-            <Route path="/builder" element={<Builder />} />
-            <Route path="/converter" element={<ATSConverter />} />
-            <Route path="/feedback" element={<Feedback />} />
-            <Route path="/jobs" element={<Jobs />} />
+            <Route
+              path="/analyzer"
+              element={
+                <AuthGuard>
+                  <ResumeAnalyzer />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/builder"
+              element={
+                <AuthGuard>
+                  <Builder />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/converter"
+              element={
+                <AuthGuard>
+                  <ATSConverter />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/feedback"
+              element={
+                <AuthGuard>
+                  <Feedback />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/jobs"
+              element={
+                <AuthGuard>
+                  <Jobs />
+                </AuthGuard>
+              }
+            />
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
