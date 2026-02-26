@@ -1,0 +1,1346 @@
+(20546) wsgi starting up on http://0.0.0.0:8000
+(20546) accepted ('127.0.0.1', 52441)
+[2026-02-26 14:22:49,418] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:22:49] "GET /api/auth/validate HTTP/1.1" 401 283 0.003715
+(20546) accepted ('127.0.0.1', 52442)
+[2026-02-26 14:22:49,422] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:22:49] "GET /api/auth/validate HTTP/1.1" 401 283 0.000443
+(20546) accepted ('127.0.0.1', 52451)
+[2026-02-26 14:23:20,771] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 14:23:20,868] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 428777
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:23:20] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.100587
+(20546) accepted ('127.0.0.1', 52460)
+[2026-02-26 14:23:47,976] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:23:47] "GET /api/auth/validate HTTP/1.1" 401 283 0.002104
+(20546) accepted ('127.0.0.1', 52464)
+[2026-02-26 14:23:48,204] INFO in __init__: 🚀 Request: GET /apple-touch-icon-precomposed.png from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:23:48] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 262 0.001262
+(20546) accepted ('127.0.0.1', 52465)
+(20546) accepted ('127.0.0.1', 52466)
+[2026-02-26 14:23:48,206] INFO in __init__: 🚀 Request: GET /apple-touch-icon.png from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:23:48] "GET /apple-touch-icon.png HTTP/1.1" 404 262 0.000724
+[2026-02-26 14:23:48,207] INFO in __init__: 🚀 Request: GET /favicon.ico from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:23:48] "GET /favicon.ico HTTP/1.1" 404 262 0.000943
+(20546) accepted ('127.0.0.1', 52468)
+[2026-02-26 14:23:58,324] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:23:58] "POST /api/auth/otp/send HTTP/1.1" 429 213 0.031084
+(20546) accepted ('127.0.0.1', 52476)
+[2026-02-26 14:24:55,414] INFO in __init__: 🚀 Request: POST /api/auth/otp/verify from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:24:55] "POST /api/auth/otp/verify HTTP/1.1" 400 202 0.031921
+(20546) accepted ('127.0.0.1', 52513)
+[2026-02-26 14:27:27,849] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 14:27:27,858] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 756291
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:27:27] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.013047
+(20546) accepted ('127.0.0.1', 52538)
+[2026-02-26 14:30:09,642] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 14:30:09,647] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 170138
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:30:09] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.008653
+(20546) accepted ('127.0.0.1', 52621)
+[2026-02-26 14:38:01,524] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:38:01] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.029220
+(20546) accepted ('127.0.0.1', 52626)
+[2026-02-26 14:38:09,224] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:38:09] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.003179
+(20546) accepted ('127.0.0.1', 52631)
+[2026-02-26 14:38:29,859] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:38:29] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.002268
+(20546) accepted ('127.0.0.1', 52664)
+[2026-02-26 14:43:20,244] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:43:20] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.011534
+(20546) accepted ('127.0.0.1', 52715)
+[2026-02-26 14:47:55,721] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:47:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.008936
+(20546) accepted ('127.0.0.1', 52716)
+[2026-02-26 14:47:55,728] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:47:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.000620
+(20546) accepted ('127.0.0.1', 52719)
+[2026-02-26 14:48:05,163] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 14:48:05,199] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 766400
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:48:05] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.036872
+(20546) accepted ('127.0.0.1', 52733)
+[2026-02-26 14:48:55,832] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:48:55] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.003231
+(20546) accepted ('127.0.0.1', 52736)
+[2026-02-26 14:49:04,042] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:49:04] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.002487
+(20546) accepted ('127.0.0.1', 52773)
+[2026-02-26 14:51:28,706] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:51:28] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.010527
+(20546) accepted ('127.0.0.1', 52822)
+[2026-02-26 14:55:38,756] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 14:55:38] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.010384
+(20546) accepted ('127.0.0.1', 52900)
+[2026-02-26 15:01:56,422] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:01:56] "GET /api/auth/validate HTTP/1.1" 401 283 0.003880
+(20546) accepted ('127.0.0.1', 52901)
+[2026-02-26 15:01:56,429] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:01:56] "GET /api/auth/validate HTTP/1.1" 401 283 0.000403
+(20546) accepted ('127.0.0.1', 52905)
+[2026-02-26 15:02:18,316] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:02:18] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.015465
+(20546) accepted ('127.0.0.1', 52911)
+[2026-02-26 15:02:39,648] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:02:39] "POST /api/auth/otp/send HTTP/1.1" 404 184 0.002236
+(20546) accepted ('127.0.0.1', 52915)
+[2026-02-26 15:03:09,796] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:03:09] "POST /api/auth/register HTTP/1.1" 201 1278 0.181258
+(20546) accepted ('127.0.0.1', 52919)
+[2026-02-26 15:03:11,944] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 15:03:11,955] WARNING in email_service: SMTP configuration missing. OTP for hinanazr123@gmail.com: 840491
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:03:11] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.012271
+(20546) accepted ('127.0.0.1', 52938)
+[2026-02-26 15:04:03,438] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:04:03] "GET /api/auth/validate HTTP/1.1" 401 283 0.003506
+(20546) accepted ('127.0.0.1', 52939)
+[2026-02-26 15:04:03,445] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:04:03] "GET /api/auth/validate HTTP/1.1" 401 283 0.001768
+(20546) accepted ('127.0.0.1', 52943)
+[2026-02-26 15:04:27,466] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 15:04:27,520] WARNING in email_service: SMTP configuration missing. OTP for hinanazr123@gmail.com: 419778
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:04:27] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.055257
+(20546) accepted ('127.0.0.1', 52952)
+[2026-02-26 15:05:31,980] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:05:31] "POST /api/auth/register HTTP/1.1" 409 175 0.007227
+(20546) accepted ('127.0.0.1', 52956)
+[2026-02-26 15:05:37,327] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 15:05:37,331] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 452479
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:05:37] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.004994
+(20546) accepted ('127.0.0.1', 52982)
+[2026-02-26 15:07:19,597] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:07:19] "GET /api/auth/validate HTTP/1.1" 401 283 0.011535
+(20546) accepted ('127.0.0.1', 52983)
+[2026-02-26 15:07:19,606] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:07:19] "GET /api/auth/validate HTTP/1.1" 401 283 0.000344
+(20546) accepted ('127.0.0.1', 52991)
+[2026-02-26 15:08:02,351] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:08:02] "POST /api/auth/register HTTP/1.1" 409 175 0.017539
+(20546) accepted ('127.0.0.1', 52996)
+[2026-02-26 15:08:23,299] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:08:23] "POST /api/auth/register HTTP/1.1" 409 175 0.004499
+(20546) accepted ('127.0.0.1', 53000)
+[2026-02-26 15:08:34,248] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 15:08:34,268] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 712856
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:08:34] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.021567
+(20546) accepted ('127.0.0.1', 53092)
+[2026-02-26 15:14:04,384] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:14:04] "GET /api/auth/validate HTTP/1.1" 401 283 0.010021
+(20546) accepted ('127.0.0.1', 53093)
+[2026-02-26 15:14:04,398] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:14:04] "GET /api/auth/validate HTTP/1.1" 401 283 0.000469
+(20546) accepted ('127.0.0.1', 53130)
+[2026-02-26 15:15:42,372] INFO in __init__: 🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+[2026-02-26 15:15:42,398] WARNING in email_service: SMTP configuration missing. OTP for safeedhaps963@gmail.com: 095378
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:15:42] "POST /api/auth/otp/send HTTP/1.1" 200 202 0.033826
+(20546) accepted ('127.0.0.1', 53162)
+[2026-02-26 15:17:31,684] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:31] "POST /api/auth/login HTTP/1.1" 200 1261 0.171425
+(20546) accepted ('127.0.0.1', 53170)
+[2026-02-26 15:17:36,063] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.005177
+(20546) accepted ('127.0.0.1', 53173)
+[2026-02-26 15:17:36,073] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.001435
+(20546) accepted ('127.0.0.1', 53177)
+[2026-02-26 15:17:38,703] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:38] "POST /api/auth/login HTTP/1.1" 200 1285 0.127416
+(20546) accepted ('127.0.0.1', 53180)
+[2026-02-26 15:17:38,845] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:38] "GET /api/resume/latest HTTP/1.1" 401 283 0.000464
+(20546) accepted ('127.0.0.1', 53183)
+[2026-02-26 15:17:38,857] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:38] "GET /api/resume/latest HTTP/1.1" 401 283 0.000513
+(20546) accepted ('127.0.0.1', 53190)
+[2026-02-26 15:17:43,262] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:43] "GET /api/auth/validate HTTP/1.1" 401 283 0.006443
+(20546) accepted ('127.0.0.1', 53191)
+[2026-02-26 15:17:43,270] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:43] "GET /api/auth/validate HTTP/1.1" 401 283 0.000449
+(20546) accepted ('127.0.0.1', 53198)
+[2026-02-26 15:17:45,435] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:45] "GET /api/auth/validate HTTP/1.1" 401 283 0.000928
+(20546) accepted ('127.0.0.1', 53199)
+[2026-02-26 15:17:45,439] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:45] "GET /api/auth/validate HTTP/1.1" 401 283 0.000740
+(20546) accepted ('127.0.0.1', 53210)
+[2026-02-26 15:17:59,673] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:59] "GET /api/auth/validate HTTP/1.1" 401 283 0.002374
+(20546) accepted ('127.0.0.1', 53211)
+[2026-02-26 15:17:59,677] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:17:59] "GET /api/auth/validate HTTP/1.1" 401 283 0.000347
+(20546) accepted ('127.0.0.1', 53215)
+[2026-02-26 15:18:02,688] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:02] "POST /api/auth/login HTTP/1.1" 200 1285 0.176706
+(20546) accepted ('127.0.0.1', 53218)
+[2026-02-26 15:18:04,375] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:04] "GET /api/resume/latest HTTP/1.1" 401 283 0.001099
+(20546) accepted ('127.0.0.1', 53221)
+[2026-02-26 15:18:04,380] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:04] "GET /api/resume/latest HTTP/1.1" 401 283 0.000958
+(20546) accepted ('127.0.0.1', 53224)
+[2026-02-26 15:18:07,412] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:07] "POST /api/auth/login HTTP/1.1" 200 1285 0.158389
+(20546) accepted ('127.0.0.1', 53227)
+[2026-02-26 15:18:07,587] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:07] "GET /api/resume/latest HTTP/1.1" 401 283 0.000749
+(20546) accepted ('127.0.0.1', 53230)
+[2026-02-26 15:18:07,592] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:07] "GET /api/resume/latest HTTP/1.1" 401 283 0.000441
+(20546) accepted ('127.0.0.1', 53240)
+[2026-02-26 15:18:44,751] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:44] "POST /api/auth/login HTTP/1.1" 200 1285 0.158788
+(20546) accepted ('127.0.0.1', 53244)
+[2026-02-26 15:18:49,631] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:49] "GET /api/resume/latest HTTP/1.1" 401 283 0.001003
+(20546) accepted ('127.0.0.1', 53247)
+[2026-02-26 15:18:49,638] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:18:49] "GET /api/resume/latest HTTP/1.1" 401 283 0.001701
+(20546) accepted ('127.0.0.1', 53257)
+[2026-02-26 15:19:16,613] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:16] "GET /api/auth/validate HTTP/1.1" 401 283 0.008390
+(20546) accepted ('127.0.0.1', 53258)
+[2026-02-26 15:19:16,627] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:16] "GET /api/auth/validate HTTP/1.1" 401 283 0.000791
+(20546) accepted ('127.0.0.1', 53261)
+[2026-02-26 15:19:18,147] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:18] "POST /api/auth/login HTTP/1.1" 200 1285 0.173934
+(20546) accepted ('127.0.0.1', 53264)
+[2026-02-26 15:19:23,336] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:23] "GET /api/resume/latest HTTP/1.1" 401 283 0.001080
+(20546) accepted ('127.0.0.1', 53267)
+[2026-02-26 15:19:23,342] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:23] "GET /api/resume/latest HTTP/1.1" 401 283 0.001798
+(20546) accepted ('127.0.0.1', 53276)
+[2026-02-26 15:19:41,751] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:41] "POST /api/auth/login HTTP/1.1" 200 1111 0.008336
+(20546) accepted ('127.0.0.1', 53279)
+[2026-02-26 15:19:41,775] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:41] "GET /api/resume/latest HTTP/1.1" 401 283 0.002503
+(20546) accepted ('127.0.0.1', 53282)
+[2026-02-26 15:19:41,780] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:41] "GET /api/resume/latest HTTP/1.1" 401 283 0.000523
+(20546) accepted ('127.0.0.1', 53295)
+[2026-02-26 15:19:55,955] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.003516
+(20546) accepted ('127.0.0.1', 53296)
+[2026-02-26 15:19:55,964] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.001943
+(20546) accepted ('127.0.0.1', 53299)
+[2026-02-26 15:19:57,374] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:57] "POST /api/auth/login HTTP/1.1" 200 1111 0.005610
+(20546) accepted ('127.0.0.1', 53302)
+[2026-02-26 15:19:57,403] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:57] "GET /api/resume/latest HTTP/1.1" 401 283 0.000999
+(20546) accepted ('127.0.0.1', 53305)
+[2026-02-26 15:19:57,409] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:19:57] "GET /api/resume/latest HTTP/1.1" 401 283 0.002117
+(20546) accepted ('127.0.0.1', 53308)
+[2026-02-26 15:20:00,573] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:00] "POST /api/auth/login HTTP/1.1" 200 1111 0.003060
+(20546) accepted ('127.0.0.1', 53311)
+[2026-02-26 15:20:00,592] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:00] "GET /api/resume/latest HTTP/1.1" 401 283 0.001017
+(20546) accepted ('127.0.0.1', 53314)
+[2026-02-26 15:20:00,597] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:00] "GET /api/resume/latest HTTP/1.1" 401 283 0.001282
+(20546) accepted ('127.0.0.1', 53318)
+[2026-02-26 15:20:05,892] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:06] "POST /api/auth/login HTTP/1.1" 200 1285 0.158086
+(20546) accepted ('127.0.0.1', 53321)
+[2026-02-26 15:20:06,066] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:06] "GET /api/resume/latest HTTP/1.1" 401 283 0.000405
+(20546) accepted ('127.0.0.1', 53324)
+[2026-02-26 15:20:06,069] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:06] "GET /api/resume/latest HTTP/1.1" 401 283 0.000741
+(20546) accepted ('127.0.0.1', 53327)
+[2026-02-26 15:20:07,307] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:07] "POST /api/auth/login HTTP/1.1" 200 1285 0.158948
+(20546) accepted ('127.0.0.1', 53330)
+[2026-02-26 15:20:07,479] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:07] "GET /api/resume/latest HTTP/1.1" 401 283 0.000482
+(20546) accepted ('127.0.0.1', 53333)
+[2026-02-26 15:20:07,484] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:07] "GET /api/resume/latest HTTP/1.1" 401 283 0.000472
+(20546) accepted ('127.0.0.1', 53340)
+[2026-02-26 15:20:29,615] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:29] "GET /api/auth/validate HTTP/1.1" 401 283 0.001131
+(20546) accepted ('127.0.0.1', 53341)
+[2026-02-26 15:20:29,621] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:29] "GET /api/auth/validate HTTP/1.1" 401 283 0.001355
+(20546) accepted ('127.0.0.1', 53344)
+[2026-02-26 15:20:31,474] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:31] "POST /api/auth/login HTTP/1.1" 200 1285 0.158511
+(20546) accepted ('127.0.0.1', 53347)
+[2026-02-26 15:20:33,184] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:33] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.018361
+(20546) accepted ('127.0.0.1', 53350)
+[2026-02-26 15:20:33,191] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:20:33] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.000543
+(20546) accepted ('127.0.0.1', 53375)
+[2026-02-26 15:21:55,661] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:21:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.007773
+(20546) accepted ('127.0.0.1', 53376)
+[2026-02-26 15:21:55,676] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:21:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.000357
+(20546) accepted ('127.0.0.1', 53380)
+[2026-02-26 15:22:08,915] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:22:09] "POST /api/auth/login HTTP/1.1" 200 1285 0.162651
+(20546) accepted ('127.0.0.1', 53383)
+[2026-02-26 15:22:13,155] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:22:13] "GET /api/resume/latest HTTP/1.1" 401 283 0.001788
+(20546) accepted ('127.0.0.1', 53386)
+[2026-02-26 15:22:13,163] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:22:13] "GET /api/resume/latest HTTP/1.1" 401 283 0.001506
+(20546) accepted ('127.0.0.1', 53389)
+[2026-02-26 15:22:15,875] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:22:16] "POST /api/auth/login HTTP/1.1" 200 1285 0.159515
+(20546) accepted ('127.0.0.1', 53392)
+[2026-02-26 15:22:16,048] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:22:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.000409
+(20546) accepted ('127.0.0.1', 53395)
+[2026-02-26 15:22:16,051] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:22:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.000906
+(20546) accepted ('127.0.0.1', 53473)
+[2026-02-26 15:28:29,248] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:28:29] "POST /api/auth/login HTTP/1.1" 200 1285 0.153097
+(20546) accepted ('127.0.0.1', 53476)
+[2026-02-26 15:28:29,426] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:28:29] "GET /api/resume/latest HTTP/1.1" 401 283 0.000708
+(20546) accepted ('127.0.0.1', 53479)
+[2026-02-26 15:28:29,430] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:28:29] "GET /api/resume/latest HTTP/1.1" 401 283 0.000437
+(20546) accepted ('127.0.0.1', 53484)
+[2026-02-26 15:28:36,111] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:28:36] "POST /api/auth/login HTTP/1.1" 200 1285 0.156446
+(20546) accepted ('127.0.0.1', 53487)
+[2026-02-26 15:28:36,282] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:28:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.000402
+(20546) accepted ('127.0.0.1', 53490)
+[2026-02-26 15:28:36,285] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 15:28:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.000703
+(20546) accepted ('127.0.0.1', 53722)
+[2026-02-26 18:33:55,437] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:33:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.005723
+(20546) accepted ('127.0.0.1', 53723)
+[2026-02-26 18:33:55,443] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:33:55] "GET /api/auth/validate HTTP/1.1" 401 283 0.000917
+(20546) accepted ('127.0.0.1', 53736)
+[2026-02-26 18:34:34,602] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:34] "GET /api/auth/validate HTTP/1.1" 401 283 0.003211
+(20546) accepted ('127.0.0.1', 53737)
+[2026-02-26 18:34:34,608] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:34] "GET /api/auth/validate HTTP/1.1" 401 283 0.001025
+(20546) accepted ('127.0.0.1', 53740)
+[2026-02-26 18:34:35,920] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:36] "POST /api/auth/login HTTP/1.1" 200 1285 0.165280
+(20546) accepted ('127.0.0.1', 53743)
+[2026-02-26 18:34:36,111] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.000464
+(20546) accepted ('127.0.0.1', 53746)
+[2026-02-26 18:34:36,117] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.000669
+(20546) accepted ('127.0.0.1', 53749)
+[2026-02-26 18:34:37,511] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:37] "POST /api/auth/login HTTP/1.1" 200 1285 0.155624
+(20546) accepted ('127.0.0.1', 53752)
+[2026-02-26 18:34:37,682] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:37] "GET /api/resume/latest HTTP/1.1" 401 283 0.000399
+(20546) accepted ('127.0.0.1', 53755)
+[2026-02-26 18:34:37,685] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:37] "GET /api/resume/latest HTTP/1.1" 401 283 0.000372
+(20546) accepted ('127.0.0.1', 53759)
+[2026-02-26 18:34:39,279] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:39] "POST /api/auth/login HTTP/1.1" 200 1285 0.161153
+(20546) accepted ('127.0.0.1', 53762)
+[2026-02-26 18:34:39,448] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:39] "GET /api/resume/latest HTTP/1.1" 401 283 0.000374
+(20546) accepted ('127.0.0.1', 53765)
+[2026-02-26 18:34:39,452] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:39] "GET /api/resume/latest HTTP/1.1" 401 283 0.003842
+(20546) accepted ('127.0.0.1', 53772)
+[2026-02-26 18:34:54,463] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:54] "POST /api/auth/login HTTP/1.1" 200 1285 0.156076
+(20546) accepted ('127.0.0.1', 53775)
+[2026-02-26 18:34:54,634] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:54] "GET /api/resume/latest HTTP/1.1" 401 283 0.000409
+(20546) accepted ('127.0.0.1', 53778)
+[2026-02-26 18:34:54,639] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:34:54] "GET /api/resume/latest HTTP/1.1" 401 283 0.001687
+(20546) accepted ('127.0.0.1', 53902)
+[2026-02-26 18:49:30,577] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:49:30] "POST /api/auth/login HTTP/1.1" 200 1285 0.164314
+(20546) accepted ('127.0.0.1', 53905)
+[2026-02-26 18:49:30,775] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:49:30] "GET /api/resume/latest HTTP/1.1" 401 283 0.001006
+(20546) accepted ('127.0.0.1', 53908)
+[2026-02-26 18:49:30,781] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:49:30] "GET /api/resume/latest HTTP/1.1" 401 283 0.000919
+(20546) accepted ('127.0.0.1', 53915)
+[2026-02-26 18:49:36,932] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:49:36] "POST /api/auth/login HTTP/1.1" 200 1111 0.003021
+(20546) accepted ('127.0.0.1', 53918)
+[2026-02-26 18:49:36,963] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:49:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.000932
+(20546) accepted ('127.0.0.1', 53921)
+[2026-02-26 18:49:36,967] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 18:49:36] "GET /api/resume/latest HTTP/1.1" 401 283 0.000801
+(20546) accepted ('127.0.0.1', 54085)
+[2026-02-26 19:04:31,026] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:31] "POST /api/auth/login HTTP/1.1" 200 1111 0.014865
+(20546) accepted ('127.0.0.1', 54088)
+[2026-02-26 19:04:31,075] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:31] "GET /api/admin/stats HTTP/1.1" 401 283 0.001486
+(20546) accepted ('127.0.0.1', 54091)
+[2026-02-26 19:04:31,079] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:31] "GET /api/admin/stats HTTP/1.1" 401 283 0.000501
+(20546) accepted ('127.0.0.1', 54095)
+[2026-02-26 19:04:42,180] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:42] "GET /api/admin/stats HTTP/1.1" 401 283 0.002033
+(20546) accepted ('127.0.0.1', 54098)
+[2026-02-26 19:04:44,534] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:44] "GET /api/admin/stats HTTP/1.1" 401 283 0.001085
+(20546) accepted ('127.0.0.1', 54101)
+[2026-02-26 19:04:44,541] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:44] "GET /api/admin/stats HTTP/1.1" 401 283 0.000887
+(20546) accepted ('127.0.0.1', 54104)
+[2026-02-26 19:04:45,601] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:45] "GET /api/admin/stats HTTP/1.1" 401 283 0.000966
+(20546) accepted ('127.0.0.1', 54107)
+[2026-02-26 19:04:45,606] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:45] "GET /api/admin/stats HTTP/1.1" 401 283 0.000812
+(20546) accepted ('127.0.0.1', 54111)
+[2026-02-26 19:04:47,016] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:47] "GET /api/admin/stats HTTP/1.1" 401 283 0.000818
+(20546) accepted ('127.0.0.1', 54114)
+[2026-02-26 19:04:47,023] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:47] "GET /api/admin/stats HTTP/1.1" 401 283 0.000694
+(20546) accepted ('127.0.0.1', 54117)
+[2026-02-26 19:04:47,933] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:47] "GET /api/admin/stats HTTP/1.1" 401 283 0.001350
+(20546) accepted ('127.0.0.1', 54120)
+[2026-02-26 19:04:47,938] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:47] "GET /api/admin/stats HTTP/1.1" 401 283 0.000870
+(20546) accepted ('127.0.0.1', 54123)
+[2026-02-26 19:04:48,729] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:48] "GET /api/admin/stats HTTP/1.1" 401 283 0.001012
+(20546) accepted ('127.0.0.1', 54126)
+[2026-02-26 19:04:48,734] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:48] "GET /api/admin/stats HTTP/1.1" 401 283 0.000846
+(20546) accepted ('127.0.0.1', 54130)
+[2026-02-26 19:04:49,667] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:49] "GET /api/admin/stats HTTP/1.1" 401 283 0.000861
+(20546) accepted ('127.0.0.1', 54133)
+[2026-02-26 19:04:49,672] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:49] "GET /api/admin/stats HTTP/1.1" 401 283 0.001143
+(20546) accepted ('127.0.0.1', 54136)
+[2026-02-26 19:04:50,429] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:50] "GET /api/admin/stats HTTP/1.1" 401 283 0.000827
+(20546) accepted ('127.0.0.1', 54139)
+[2026-02-26 19:04:50,433] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:50] "GET /api/admin/stats HTTP/1.1" 401 283 0.000827
+(20546) accepted ('127.0.0.1', 54143)
+[2026-02-26 19:04:51,134] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:51] "GET /api/admin/stats HTTP/1.1" 401 283 0.001803
+(20546) accepted ('127.0.0.1', 54146)
+[2026-02-26 19:04:51,139] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:04:51] "GET /api/admin/stats HTTP/1.1" 401 283 0.000421
+(20546) accepted ('127.0.0.1', 54151)
+[2026-02-26 19:05:01,424] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:01] "POST /api/auth/login HTTP/1.1" 200 1281 0.147799
+(20546) accepted ('127.0.0.1', 54157)
+[2026-02-26 19:05:07,317] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:07] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001452
+(20546) accepted ('127.0.0.1', 54160)
+[2026-02-26 19:05:07,322] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:07] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.000989
+(20546) accepted ('127.0.0.1', 54161)
+[2026-02-26 19:05:12,272] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:12] "POST /api/auth/login HTTP/1.1" 200 1281 0.161530
+(20546) accepted ('127.0.0.1', 54166)
+[2026-02-26 19:05:14,063] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:14] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001183
+(20546) accepted ('127.0.0.1', 54169)
+[2026-02-26 19:05:14,069] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:14] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.000992
+(20546) accepted ('127.0.0.1', 54172)
+[2026-02-26 19:05:15,467] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:15] "POST /api/auth/login HTTP/1.1" 200 1281 0.160663
+(20546) accepted ('127.0.0.1', 54177)
+[2026-02-26 19:05:21,117] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:21] "GET /api/resume/latest HTTP/1.1" 401 283 0.001036
+(20546) accepted ('127.0.0.1', 54180)
+[2026-02-26 19:05:21,122] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:21] "GET /api/resume/latest HTTP/1.1" 401 283 0.000920
+(20546) accepted ('127.0.0.1', 54185)
+[2026-02-26 19:05:23,071] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:23] "POST /api/auth/login HTTP/1.1" 200 1281 0.160946
+(20546) accepted ('127.0.0.1', 54190)
+[2026-02-26 19:05:24,024] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:24] "GET /api/resume/latest HTTP/1.1" 401 283 0.001421
+(20546) accepted ('127.0.0.1', 54193)
+🚀 Flask Backend is starting on http://0.0.0.0:8000
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /apple-touch-icon-precomposed.png from 127.0.0.1
+🚀 Request: GET /apple-touch-icon.png from 127.0.0.1
+🚀 Request: GET /favicon.ico from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/verify from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/otp/send from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1[2026-02-26 19:05:24,030] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:24] "GET /api/resume/latest HTTP/1.1" 401 283 0.001029
+(20546) accepted ('127.0.0.1', 54196)
+[2026-02-26 19:05:25,598] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:25] "POST /api/auth/login HTTP/1.1" 200 1281 0.147830
+(20546) accepted ('127.0.0.1', 54200)
+[2026-02-26 19:05:36,154] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:36] "POST /api/auth/login HTTP/1.1" 200 1111 0.003548
+(20546) accepted ('127.0.0.1', 54203)
+[2026-02-26 19:05:36,169] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:36] "GET /api/admin/stats HTTP/1.1" 401 283 0.000715
+(20546) accepted ('127.0.0.1', 54206)
+[2026-02-26 19:05:36,172] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:36] "GET /api/admin/stats HTTP/1.1" 401 283 0.000417
+(20546) accepted ('127.0.0.1', 54209)
+[2026-02-26 19:05:44,497] INFO in __init__: 🚀 Request: GET /api/admin/users from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:44] "GET /api/admin/users HTTP/1.1" 401 283 0.001018
+(20546) accepted ('127.0.0.1', 54212)
+[2026-02-26 19:05:44,504] INFO in __init__: 🚀 Request: GET /api/admin/users from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:44] "GET /api/admin/users HTTP/1.1" 401 283 0.000773
+(20546) accepted ('127.0.0.1', 54216)
+[2026-02-26 19:05:49,385] INFO in __init__: 🚀 Request: GET /api/admin/feedback from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:49] "GET /api/admin/feedback HTTP/1.1" 401 283 0.001002
+(20546) accepted ('127.0.0.1', 54219)
+[2026-02-26 19:05:49,390] INFO in __init__: 🚀 Request: GET /api/admin/feedback from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:49] "GET /api/admin/feedback HTTP/1.1" 401 283 0.000983
+(20546) accepted ('127.0.0.1', 54222)
+[2026-02-26 19:05:50,693] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:50] "GET /api/admin/stats HTTP/1.1" 401 283 0.001506
+(20546) accepted ('127.0.0.1', 54225)
+[2026-02-26 19:05:50,698] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:05:50] "GET /api/admin/stats HTTP/1.1" 401 283 0.000843
+(20546) accepted ('127.0.0.1', 54280)
+[2026-02-26 19:44:40,599] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:44:40] "POST /api/auth/login HTTP/1.1" 200 1278 0.166254
+(20546) accepted ('127.0.0.1', 54283)
+[2026-02-26 19:44:44,364] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:44:44] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001111
+(20546) accepted ('127.0.0.1', 54286)
+[2026-02-26 19:44:44,390] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:44:44] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.000595
+(20546) accepted ('127.0.0.1', 54299)
+[2026-02-26 19:45:17,861] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:17] "POST /api/auth/login HTTP/1.1" 200 1111 0.020315
+(20546) accepted ('127.0.0.1', 54300)
+[2026-02-26 19:45:17,900] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:17] "GET /api/admin/stats HTTP/1.1" 401 283 0.000769
+(20546) accepted ('127.0.0.1', 54303)
+[2026-02-26 19:45:17,904] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:17] "GET /api/admin/stats HTTP/1.1" 401 283 0.000860
+(20546) accepted ('127.0.0.1', 54306)
+[2026-02-26 19:45:22,179] INFO in __init__: 🚀 Request: GET /api/admin/resumes from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:22] "GET /api/admin/resumes?page=1&limit=10 HTTP/1.1" 401 283 0.001101
+(20546) accepted ('127.0.0.1', 54309)
+[2026-02-26 19:45:22,186] INFO in __init__: 🚀 Request: GET /api/admin/resumes from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:22] "GET /api/admin/resumes?page=1&limit=10 HTTP/1.1" 401 283 0.000743
+(20546) accepted ('127.0.0.1', 54312)
+[2026-02-26 19:45:23,922] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:23] "GET /api/admin/stats HTTP/1.1" 401 283 0.002125
+(20546) accepted ('127.0.0.1', 54315)
+[2026-02-26 19:45:23,928] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:23] "GET /api/admin/stats HTTP/1.1" 401 283 0.000958
+(20546) accepted ('127.0.0.1', 54321)
+[2026-02-26 19:45:25,326] INFO in __init__: 🚀 Request: GET /api/admin/resumes from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:25] "GET /api/admin/resumes?page=1&limit=10 HTTP/1.1" 401 283 0.000733
+(20546) accepted ('127.0.0.1', 54324)
+[2026-02-26 19:45:25,331] INFO in __init__: 🚀 Request: GET /api/admin/resumes from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:25] "GET /api/admin/resumes?page=1&limit=10 HTTP/1.1" 401 283 0.000810
+(20546) accepted ('127.0.0.1', 54327)
+[2026-02-26 19:45:27,387] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:27] "GET /api/admin/stats HTTP/1.1" 401 283 0.001023
+(20546) accepted ('127.0.0.1', 54330)
+[2026-02-26 19:45:27,392] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:27] "GET /api/admin/stats HTTP/1.1" 401 283 0.000925
+(20546) accepted ('127.0.0.1', 54333)
+[2026-02-26 19:45:28,123] INFO in __init__: 🚀 Request: GET /api/admin/users from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:28] "GET /api/admin/users HTTP/1.1" 401 283 0.001098
+(20546) accepted ('127.0.0.1', 54336)
+[2026-02-26 19:45:28,128] INFO in __init__: 🚀 Request: GET /api/admin/users from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:28] "GET /api/admin/users HTTP/1.1" 401 283 0.000985
+(20546) accepted ('127.0.0.1', 54339)
+[2026-02-26 19:45:29,755] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:29] "GET /api/admin/stats HTTP/1.1" 401 283 0.000932
+(20546) accepted ('127.0.0.1', 54342)
+[2026-02-26 19:45:29,760] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:29] "GET /api/admin/stats HTTP/1.1" 401 283 0.000784
+(20546) accepted ('127.0.0.1', 54345)
+[2026-02-26 19:45:48,199] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:48] "POST /api/auth/login HTTP/1.1" 200 1281 0.162576
+(20546) accepted ('127.0.0.1', 54348)
+[2026-02-26 19:45:51,063] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:51] "GET /api/resume/latest HTTP/1.1" 401 283 0.000998
+(20546) accepted ('127.0.0.1', 54351)
+[2026-02-26 19:45:51,067] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:51] "GET /api/resume/latest HTTP/1.1" 401 283 0.000862
+(20546) accepted ('127.0.0.1', 54354)
+[2026-02-26 19:45:54,585] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:54] "POST /api/auth/login HTTP/1.1" 200 1281 0.159134
+(20546) accepted ('127.0.0.1', 54357)
+[2026-02-26 19:45:58,176] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:58] "GET /api/resume/latest HTTP/1.1" 401 283 0.000966
+(20546) accepted ('127.0.0.1', 54360)
+[2026-02-26 19:45:58,180] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:58] "GET /api/resume/latest HTTP/1.1" 401 283 0.000934
+(20546) accepted ('127.0.0.1', 54363)
+[2026-02-26 19:45:59,402] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:45:59] "POST /api/auth/login HTTP/1.1" 200 1281 0.161124
+(20546) accepted ('127.0.0.1', 54366)
+[2026-02-26 19:46:02,623] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:02] "GET /api/resume/latest HTTP/1.1" 401 283 0.000971
+(20546) accepted ('127.0.0.1', 54369)
+[2026-02-26 19:46:02,627] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:02] "GET /api/resume/latest HTTP/1.1" 401 283 0.000993
+(20546) accepted ('127.0.0.1', 54372)
+[2026-02-26 19:46:03,867] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:04] "POST /api/auth/login HTTP/1.1" 200 1281 0.145991
+(20546) accepted ('127.0.0.1', 54375)
+[2026-02-26 19:46:06,074] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:06] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001449
+(20546) accepted ('127.0.0.1', 54378)
+[2026-02-26 19:46:06,080] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:06] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001022
+(20546) accepted ('127.0.0.1', 54381)
+[2026-02-26 19:46:21,003] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:21] "POST /api/auth/login HTTP/1.1" 200 1281 0.163602
+(20546) accepted ('127.0.0.1', 54384)
+[2026-02-26 19:46:26,544] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:26] "GET /api/resume/latest HTTP/1.1" 401 283 0.000882
+(20546) accepted ('127.0.0.1', 54387)
+[2026-02-26 19:46:26,551] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:26] "GET /api/resume/latest HTTP/1.1" 401 283 0.001271
+(20546) accepted ('127.0.0.1', 54390)
+[2026-02-26 19:46:27,934] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:46:28] "POST /api/auth/login HTTP/1.1" 200 1281 0.160651
+(20546) accepted ('127.0.0.1', 54466)
+[2026-02-26 19:47:31,947] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:47:31] "GET /api/auth/validate HTTP/1.1" 401 283 0.006808
+(20546) accepted ('127.0.0.1', 54467)
+[2026-02-26 19:47:31,954] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:47:31] "GET /api/auth/validate HTTP/1.1" 401 283 0.001218
+(20546) accepted ('127.0.0.1', 54470)
+[2026-02-26 19:47:34,579] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:47:34] "POST /api/auth/login HTTP/1.1" 200 1281 0.200905
+(20546) accepted ('127.0.0.1', 54473)
+[2026-02-26 19:47:38,657] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:47:38] "GET /api/resume/latest HTTP/1.1" 401 283 0.002329
+(20546) accepted ('127.0.0.1', 54476)
+[2026-02-26 19:47:38,664] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:47:38] "GET /api/resume/latest HTTP/1.1" 401 283 0.000856
+(20546) accepted ('127.0.0.1', 54479)
+[2026-02-26 19:47:40,549] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:47:40] "POST /api/auth/login HTTP/1.1" 200 1281 0.166383
+(20546) accepted ('127.0.0.1', 54555)
+(20546) accepted ('127.0.0.1', 54556)
+(20546) accepted ('127.0.0.1', 54557)
+[2026-02-26 19:53:37,956] INFO in __init__: 🚀 Request: GET /apple-touch-icon-precomposed.png from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:53:37] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 262 0.008161
+[2026-02-26 19:53:37,960] INFO in __init__: 🚀 Request: GET /apple-touch-icon.png from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:53:37] "GET /apple-touch-icon.png HTTP/1.1" 404 262 0.000299
+[2026-02-26 19:53:37,960] INFO in __init__: 🚀 Request: GET /favicon.ico from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:53:37] "GET /favicon.ico HTTP/1.1" 404 262 0.000280
+(20546) accepted ('127.0.0.1', 54581)
+[2026-02-26 19:54:59,062] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:54:59] "GET /api/auth/validate HTTP/1.1" 401 283 0.008138
+(20546) accepted ('127.0.0.1', 54582)
+[2026-02-26 19:54:59,079] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:54:59] "GET /api/auth/validate HTTP/1.1" 401 283 0.001434
+(20546) accepted ('127.0.0.1', 54589)
+[2026-02-26 19:55:10,737] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 19:55:10] "POST /api/auth/login HTTP/1.1" 200 1281 0.190649
+(20546) accepted ('127.0.0.1', 55159)
+[2026-02-26 20:35:11,282] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:11] "GET /api/auth/validate HTTP/1.1" 401 283 0.007799
+(20546) accepted ('127.0.0.1', 55160)
+[2026-02-26 20:35:11,291] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:11] "GET /api/auth/validate HTTP/1.1" 401 283 0.005982
+(20546) accepted ('127.0.0.1', 55168)
+[2026-02-26 20:35:17,883] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:18] "POST /api/auth/login HTTP/1.1" 200 1281 0.172113
+(20546) accepted ('127.0.0.1', 55171)
+[2026-02-26 20:35:22,613] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:22] "GET /api/resume/latest HTTP/1.1" 401 283 0.000968
+(20546) accepted ('127.0.0.1', 55174)
+[2026-02-26 20:35:22,618] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:22] "GET /api/resume/latest HTTP/1.1" 401 283 0.000933
+(20546) accepted ('127.0.0.1', 55177)
+[2026-02-26 20:35:30,575] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:30] "POST /api/auth/login HTTP/1.1" 200 1281 0.163253
+(20546) accepted ('127.0.0.1', 55180)
+[2026-02-26 20:35:32,830] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:32] "GET /api/resume/latest HTTP/1.1" 401 283 0.000952
+(20546) accepted ('127.0.0.1', 55183)
+[2026-02-26 20:35:32,836] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:32] "GET /api/resume/latest HTTP/1.1" 401 283 0.000869
+(20546) accepted ('127.0.0.1', 55190)
+[2026-02-26 20:35:36,874] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:37] "POST /api/auth/login HTTP/1.1" 200 1281 0.166106
+(20546) accepted ('127.0.0.1', 55195)
+[2026-02-26 20:35:42,952] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:42] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001422
+(20546) accepted ('127.0.0.1', 55198)
+[2026-02-26 20:35:42,958] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:42] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 401 283 0.001228
+(20546) accepted ('127.0.0.1', 55201)
+[2026-02-26 20:35:47,070] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:35:47] "POST /api/auth/login HTTP/1.1" 200 1281 0.168839
+(20546) accepted ('127.0.0.1', 55204)
+[2026-02-26 20:36:01,705] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:01] "POST /api/resume/convert-ats HTTP/1.1" 401 191 0.002765
+(20546) accepted ('127.0.0.1', 55207)
+[2026-02-26 20:36:05,889] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:06] "POST /api/auth/login HTTP/1.1" 200 1281 0.166930
+(20546) accepted ('127.0.0.1', 55212)
+[2026-02-26 20:36:17,926] INFO in __init__: 🚀 Request: POST /api/feedback from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:17] "POST /api/feedback HTTP/1.1" 201 202 0.007076
+(20546) accepted ('127.0.0.1', 55215)
+[2026-02-26 20:36:26,070] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:26] "POST /api/auth/login HTTP/1.1" 200 1111 0.002477
+(20546) accepted ('127.0.0.1', 55218)
+[2026-02-26 20:36:26,091] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:26] "GET /api/admin/stats HTTP/1.1" 401 283 0.001131
+(20546) accepted ('127.0.0.1', 55221)
+[2026-02-26 20:36:26,096] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:26] "GET /api/admin/stats HTTP/1.1" 401 283 0.000901
+(20546) accepted ('127.0.0.1', 55225)
+[2026-02-26 20:36:29,357] INFO in __init__: 🚀 Request: GET /api/admin/feedback from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:29] "GET /api/admin/feedback HTTP/1.1" 401 283 0.000818
+(20546) accepted ('127.0.0.1', 55228)
+[2026-02-26 20:36:29,361] INFO in __init__: 🚀 Request: GET /api/admin/feedback from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:29] "GET /api/admin/feedback HTTP/1.1" 401 283 0.001263
+(20546) accepted ('127.0.0.1', 55231)
+[2026-02-26 20:36:32,081] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:32] "GET /api/admin/stats HTTP/1.1" 401 283 0.000909
+(20546) accepted ('127.0.0.1', 55234)
+[2026-02-26 20:36:32,086] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:36:32] "GET /api/admin/stats HTTP/1.1" 401 283 0.000956
+(20546) accepted ('127.0.0.1', 55272)
+(20546) accepted ('127.0.0.1', 55273)
+[2026-02-26 20:37:56,051] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:37:56] "GET /api/admin/stats HTTP/1.1" 401 283 0.008711
+[2026-02-26 20:37:56,057] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:37:56] "GET /api/auth/validate HTTP/1.1" 401 283 0.001044
+(20546) accepted ('127.0.0.1', 55276)
+[2026-02-26 20:37:56,059] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:37:56] "GET /api/admin/stats HTTP/1.1" 401 283 0.000827
+(20546) accepted ('127.0.0.1', 55279)
+[2026-02-26 20:37:56,061] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:37:56] "GET /api/auth/validate HTTP/1.1" 401 283 0.000659
+(20546) accepted ('127.0.0.1', 55350)
+[2026-02-26 20:41:15,597] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:41:15] "POST /api/auth/register HTTP/1.1" 400 271 0.003894
+(20546) accepted ('127.0.0.1', 55351)
+[2026-02-26 20:41:15,601] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:41:15] "POST /api/auth/register HTTP/1.1" 400 289 0.000733
+(20546) accepted ('127.0.0.1', 55352)
+[2026-02-26 20:41:15,602] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:41:15] "POST /api/auth/register HTTP/1.1" 400 267 0.000496
+(20546) accepted ('127.0.0.1', 55353)
+[2026-02-26 20:41:15,605] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:41:15] "POST /api/auth/login HTTP/1.1" 400 282 0.001920
+(20546) accepted ('127.0.0.1', 55354)
+[2026-02-26 20:41:15,608] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:41:15] "POST /api/auth/login HTTP/1.1" 200 1208 0.005678
+(20546) accepted ('127.0.0.1', 55362)
+[2026-02-26 20:41:55,475] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:41:55] "POST /api/auth/login HTTP/1.1" 200 1111 0.005022
+(20546) accepted ('127.0.0.1', 55365)
+[2026-02-26 20:41:55,501] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:41:55] "GET /api/admin/stats HTTP/1.1" 401 283 0.001019
+(20546) accepted ('127.0.0.1', 55368)
+[2026-02-26 20:41:55,507] INFO in __init__: 🚀 Request: GET /api/admin/stats from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:41:55] "GET /api/admin/stats HTTP/1.1" 401 283 0.000901
+(20546) accepted ('127.0.0.1', 55373)
+[2026-02-26 20:42:07,395] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:42:07] "POST /api/auth/login HTTP/1.1" 200 1281 0.151389
+(20546) accepted ('127.0.0.1', 55376)
+[2026-02-26 20:42:10,546] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:42:10] "GET /api/resume/latest HTTP/1.1" 401 283 0.000987
+(20546) accepted ('127.0.0.1', 55379)
+[2026-02-26 20:42:10,551] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:42:10] "GET /api/resume/latest HTTP/1.1" 401 283 0.000854
+(20546) accepted ('127.0.0.1', 55395)
+[2026-02-26 20:43:13,617] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:43:13] "POST /api/auth/login HTTP/1.1" 200 1281 0.164658
+(20546) accepted ('127.0.0.1', 55398)
+[2026-02-26 20:43:16,501] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:43:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.006980
+(20546) accepted ('127.0.0.1', 55401)
+[2026-02-26 20:43:16,512] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:43:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.000971
+(20546) accepted ('127.0.0.1', 55417)
+[2026-02-26 20:43:51,027] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:43:51] "POST /api/auth/login HTTP/1.1" 200 1281 0.166770
+(20546) accepted ('127.0.0.1', 55452)
+[2026-02-26 20:44:01,399] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:01] "GET /api/auth/validate HTTP/1.1" 401 283 0.003322
+(20546) accepted ('127.0.0.1', 55453)
+[2026-02-26 20:44:01,408] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:01] "GET /api/auth/validate HTTP/1.1" 401 283 0.001725
+(20546) accepted ('127.0.0.1', 55589)
+[2026-02-26 20:44:33,531] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:33] "POST /api/auth/login HTTP/1.1" 200 1281 0.167916
+(20546) accepted ('127.0.0.1', 55612)
+[2026-02-26 20:44:37,759] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:37] "GET /api/auth/validate HTTP/1.1" 401 283 0.005039
+(20546) accepted ('127.0.0.1', 55613)
+[2026-02-26 20:44:37,789] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:37] "GET /api/auth/validate HTTP/1.1" 401 283 0.001072
+(20546) accepted ('127.0.0.1', 55657)
+[2026-02-26 20:44:47,717] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:47] "POST /api/auth/login HTTP/1.1" 200 1281 0.165080
+(20546) accepted ('127.0.0.1', 55684)
+[2026-02-26 20:44:53,992] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:53] "GET /api/resume/latest HTTP/1.1" 401 283 0.001609
+(20546) accepted ('127.0.0.1', 55687)
+[2026-02-26 20:44:53,998] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:44:53] "GET /api/resume/latest HTTP/1.1" 401 283 0.002282
+(20546) accepted ('127.0.0.1', 55814)
+[2026-02-26 20:45:22,070] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:45:22] "POST /api/auth/login HTTP/1.1" 200 1281 0.164409
+(20546) accepted ('127.0.0.1', 56112)
+[2026-02-26 20:46:33,071] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:46:33] "GET /api/resume/latest HTTP/1.1" 401 283 0.005114
+(20546) accepted ('127.0.0.1', 56115)
+[2026-02-26 20:46:33,079] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:46:33] "GET /api/resume/latest HTTP/1.1" 401 283 0.000875
+(20546) accepted ('127.0.0.1', 56134)
+[2026-02-26 20:46:36,911] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:46:37] "POST /api/auth/login HTTP/1.1" 200 1281 0.166167
+(20546) accepted ('127.0.0.1', 56414)
+[2026-02-26 20:47:43,600] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:43] "GET /api/auth/validate HTTP/1.1" 401 283 0.003119
+(20546) accepted ('127.0.0.1', 56415)
+[2026-02-26 20:47:43,612] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:43] "GET /api/auth/validate HTTP/1.1" 401 283 0.001359
+(20546) accepted ('127.0.0.1', 56426)
+[2026-02-26 20:47:45,260] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:45] "POST /api/auth/login HTTP/1.1" 200 1281 0.189494
+(20546) accepted ('127.0.0.1', 56454)
+[2026-02-26 20:47:50,221] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:50] "GET /api/auth/validate HTTP/1.1" 401 283 0.002194
+(20546) accepted ('127.0.0.1', 56455)
+[2026-02-26 20:47:50,235] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:50] "GET /api/auth/validate HTTP/1.1" 401 283 0.001043
+(20546) accepted ('127.0.0.1', 56475)
+[2026-02-26 20:47:52,789] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:52] "POST /api/auth/login HTTP/1.1" 200 1281 0.163050
+(20546) accepted ('127.0.0.1', 56494)
+[2026-02-26 20:47:57,301] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:57] "GET /api/resume/latest HTTP/1.1" 401 283 0.002711
+(20546) accepted ('127.0.0.1', 56497)
+[2026-02-26 20:47:57,311] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:57] "GET /api/resume/latest HTTP/1.1" 401 283 0.000910
+(20546) accepted ('127.0.0.1', 56508)
+[2026-02-26 20:47:59,211] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:47:59] "POST /api/auth/login HTTP/1.1" 200 1281 0.166039
+(20546) accepted ('127.0.0.1', 56617)
+[2026-02-26 20:48:21,357] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:21] "GET /api/auth/validate HTTP/1.1" 401 283 0.007319
+(20546) accepted ('127.0.0.1', 56618)
+[2026-02-26 20:48:21,365] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:21] "GET /api/auth/validate HTTP/1.1" 401 283 0.002826
+(20546) accepted ('127.0.0.1', 56629)
+[2026-02-26 20:48:23,311] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:23] "POST /api/auth/login HTTP/1.1" 200 1281 0.164758
+(20546) accepted ('127.0.0.1', 56648)
+[2026-02-26 20:48:26,771] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:26] "GET /api/resume/latest HTTP/1.1" 401 283 0.001095
+(20546) accepted ('127.0.0.1', 56651)
+[2026-02-26 20:48:26,777] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:26] "GET /api/resume/latest HTTP/1.1" 401 283 0.000837
+(20546) accepted ('127.0.0.1', 56732)
+[2026-02-26 20:48:43,604] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:43] "POST /api/auth/login HTTP/1.1" 200 1281 0.166372
+(20546) accepted ('127.0.0.1', 56784)
+[2026-02-26 20:48:54,507] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:54] "GET /api/auth/validate HTTP/1.1" 401 283 0.010420
+(20546) accepted ('127.0.0.1', 56785)
+[2026-02-26 20:48:54,532] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:54] "GET /api/auth/validate HTTP/1.1" 401 283 0.000477
+(20546) accepted ('127.0.0.1', 56796)
+[2026-02-26 20:48:56,157] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:48:56] "POST /api/auth/login HTTP/1.1" 200 1281 0.138395
+(20546) accepted ('127.0.0.1', 56867)
+[2026-02-26 20:49:13,373] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:49:13] "GET /api/resume/latest HTTP/1.1" 401 283 0.001066
+(20546) accepted ('127.0.0.1', 56870)
+[2026-02-26 20:49:13,378] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:49:13] "GET /api/resume/latest HTTP/1.1" 401 283 0.001061
+(20546) accepted ('127.0.0.1', 57102)
+[2026-02-26 20:50:07,522] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:07] "POST /api/auth/login HTTP/1.1" 200 1281 0.168767
+(20546) accepted ('127.0.0.1', 57126)
+[2026-02-26 20:50:11,400] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:11] "GET /api/auth/validate HTTP/1.1" 401 283 0.002447
+(20546) accepted ('127.0.0.1', 57127)
+[2026-02-26 20:50:11,407] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:11] "GET /api/auth/validate HTTP/1.1" 401 283 0.001156
+(20546) accepted ('127.0.0.1', 57135)
+[2026-02-26 20:50:12,711] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:12] "POST /api/auth/login HTTP/1.1" 200 1281 0.164193
+(20546) accepted ('127.0.0.1', 57155)
+[2026-02-26 20:50:16,091] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.001636
+(20546) accepted ('127.0.0.1', 57158)
+[2026-02-26 20:50:16,102] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.001626
+(20546) accepted ('127.0.0.1', 57168)
+[2026-02-26 20:50:17,243] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:17] "POST /api/auth/login HTTP/1.1" 200 1281 0.169263
+(20546) accepted ('127.0.0.1', 57350)
+[2026-02-26 20:50:59,079] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:59] "GET /api/auth/validate HTTP/1.1" 401 283 0.004529
+(20546) accepted ('127.0.0.1', 57351)
+[2026-02-26 20:50:59,088] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:50:59] "GET /api/auth/validate HTTP/1.1" 401 283 0.001182
+(20546) accepted ('127.0.0.1', 57553)
+[2026-02-26 20:51:43,669] INFO in __init__: 🚀 Request: GET /api/health from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:51:43] "GET /api/health HTTP/1.1" 200 275 0.050569
+(20546) accepted ('127.0.0.1', 57630)
+[2026-02-26 20:52:01,539] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:52:01] "POST /api/auth/register HTTP/1.1" 400 271 0.003901
+(20546) accepted ('127.0.0.1', 57631)
+[2026-02-26 20:52:01,543] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:52:01] "POST /api/auth/register HTTP/1.1" 400 289 0.000577
+(20546) accepted ('127.0.0.1', 57632)
+[2026-02-26 20:52:01,544] INFO in __init__: 🚀 Request: POST /api/auth/register from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:52:01] "POST /api/auth/register HTTP/1.1" 400 267 0.000463
+(20546) accepted ('127.0.0.1', 57633)
+[2026-02-26 20:52:01,546] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:52:01] "POST /api/auth/login HTTP/1.1" 400 282 0.000539
+(20546) accepted ('127.0.0.1', 57634)
+[2026-02-26 20:52:01,549] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:52:01] "POST /api/auth/login HTTP/1.1" 200 1208 0.027201
+(20546) accepted ('127.0.0.1', 58052)
+[2026-02-26 20:53:35,063] INFO in __init__: 🚀 Request: GET /api/health from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:53:35] "GET /api/health HTTP/1.1" 200 275 0.040291
+(20546) accepted ('127.0.0.1', 58075)
+[2026-02-26 20:53:39,581] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:39] "POST /api/auth/login HTTP/1.1" 200 1281 0.412499
+(20546) accepted ('127.0.0.1', 58088)
+[2026-02-26 20:53:41,389] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:41] "GET /api/auth/validate HTTP/1.1" 401 283 0.002774
+(20546) accepted ('127.0.0.1', 58089)
+[2026-02-26 20:53:41,396] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:41] "GET /api/auth/validate HTTP/1.1" 401 283 0.000827
+(20546) accepted ('127.0.0.1', 58094)
+(20546) accepted ('127.0.0.1', 58095)
+[2026-02-26 20:53:41,471] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:41] "POST /api/auth/refresh HTTP/1.1" 404 170 0.003743
+[2026-02-26 20:53:41,473] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:41] "POST /api/auth/refresh HTTP/1.1" 404 170 0.000656
+(20546) accepted ('127.0.0.1', 58110)
+[2026-02-26 20:53:44,057] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:44] "POST /api/auth/login HTTP/1.1" 200 1281 0.170082
+(20546) accepted ('127.0.0.1', 58125)
+[2026-02-26 20:53:47,839] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:47] "GET /api/resume/latest HTTP/1.1" 401 283 0.001254
+(20546) accepted ('127.0.0.1', 58134)
+[2026-02-26 20:53:47,846] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:47] "GET /api/resume/latest HTTP/1.1" 401 283 0.001942
+(20546) accepted ('127.0.0.1', 58135)
+[2026-02-26 20:53:47,849] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:47] "POST /api/auth/refresh HTTP/1.1" 404 170 0.001483
+(20546) accepted ('127.0.0.1', 58138)
+[2026-02-26 20:53:47,857] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:47] "POST /api/auth/refresh HTTP/1.1" 404 170 0.000751
+(20546) accepted ('127.0.0.1', 58145)
+[2026-02-26 20:53:49,277] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:49] "POST /api/auth/login HTTP/1.1" 200 1281 0.163979
+(20546) accepted ('127.0.0.1', 58180)
+[2026-02-26 20:53:57,854] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:57] "GET /api/resume/latest HTTP/1.1" 401 283 0.001254
+(20546) accepted ('127.0.0.1', 58185)
+[2026-02-26 20:53:57,864] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:57] "GET /api/resume/latest HTTP/1.1" 401 283 0.001030
+(20546) accepted ('127.0.0.1', 58186)
+[2026-02-26 20:53:57,867] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:57] "POST /api/auth/refresh HTTP/1.1" 404 170 0.001221
+(20546) accepted ('127.0.0.1', 58189)
+
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/users from 127.0.0.1
+🚀 Request: GET /api/admin/users from 127.0.0.1
+🚀 Request: GET /api/admin/feedback from 127.0.0.1
+🚀 Request: GET /api/admin/feedback from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/resumes from 127.0.0.1
+🚀 Request: GET /api/admin/resumes from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/resumes from 127.0.0.1
+🚀 Request: GET /api/admin/resumes from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/users from 127.0.0.1
+🚀 Request: GET /api/admin/users from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /apple-touch-icon-precomposed.png from 127.0.0.1
+🚀 Request: GET /apple-touch-icon.png from 127.0.0.1
+🚀 Request: GET /favicon.ico from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: POST /api/feedback from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/feedback from 127.0.0.1
+🚀 Request: GET /api/admin/feedback from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: GET /api/admin/stats from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/health from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/register from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/health from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/auth/refresh from 127.0.0.1
+🚀 Request: POST /api/auth/refresh from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/refresh from 127.0.0.1
+🚀 Request: POST /api/auth/refresh from 127.0.0.1
+🚀 Request: POST /api/auth/login from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: GET /api/resume/latest from 127.0.0.1
+🚀 Request: POST /api/auth/refresh from 127.0.0.1
+🚀 Request: POST /api/auth/refresh from 127.0.0.1[2026-02-26 20:53:57,873] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:53:57] "POST /api/auth/refresh HTTP/1.1" 404 170 0.000834
+(20546) accepted ('127.0.0.1', 58269)
+[2026-02-26 20:54:17,026] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:54:17] "POST /api/auth/login HTTP/1.1" 200 1208 0.006704
+(20546) accepted ('127.0.0.1', 58274)
+[2026-02-26 20:54:17,033] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 20:54:17] "POST /api/auth/refresh HTTP/1.1" 404 267 0.001813
+(20546) accepted ('127.0.0.1', 58398)
+[2026-02-26 20:54:46,074] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:54:46] "POST /api/auth/login HTTP/1.1" 200 1281 0.179348
+(20546) accepted ('127.0.0.1', 58409)
+[2026-02-26 20:54:47,992] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:54:47] "GET /api/resume/latest HTTP/1.1" 401 283 0.001475
+(20546) accepted ('127.0.0.1', 58414)
+[2026-02-26 20:54:48,004] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:54:48] "GET /api/resume/latest HTTP/1.1" 401 283 0.001176
+(20546) accepted ('127.0.0.1', 58415)
+[2026-02-26 20:54:48,007] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:54:48] "POST /api/auth/refresh HTTP/1.1" 404 170 0.001044
+(20546) accepted ('127.0.0.1', 58418)
+[2026-02-26 20:54:48,013] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:54:48] "POST /api/auth/refresh HTTP/1.1" 404 170 0.001768
+(20546) accepted ('127.0.0.1', 58465)
+[2026-02-26 20:54:58,341] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:54:58] "POST /api/auth/login HTTP/1.1" 200 1281 0.163330
+(20546) accepted ('127.0.0.1', 58484)
+[2026-02-26 20:55:02,857] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:55:02] "GET /api/resume/latest HTTP/1.1" 401 283 0.001797
+(20546) accepted ('127.0.0.1', 58489)
+[2026-02-26 20:55:02,865] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:55:02] "GET /api/resume/latest HTTP/1.1" 401 283 0.001158
+(20546) accepted ('127.0.0.1', 58490)
+[2026-02-26 20:55:02,867] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:55:02] "POST /api/auth/refresh HTTP/1.1" 404 170 0.001011
+(20546) accepted ('127.0.0.1', 58493)
+[2026-02-26 20:55:02,875] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:55:02] "POST /api/auth/refresh HTTP/1.1" 404 170 0.000870
+(20546) accepted ('127.0.0.1', 58504)
+[2026-02-26 20:55:04,678] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:55:04] "POST /api/auth/login HTTP/1.1" 200 1281 0.163913
+(20546) accepted ('127.0.0.1', 58813)
+[2026-02-26 20:56:16,712] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.004633
+(20546) accepted ('127.0.0.1', 58818)
+[2026-02-26 20:56:16,737] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:16] "GET /api/resume/latest HTTP/1.1" 401 283 0.001215
+(20546) accepted ('127.0.0.1', 58819)
+[2026-02-26 20:56:16,740] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:16] "POST /api/auth/refresh HTTP/1.1" 404 170 0.002738
+(20546) accepted ('127.0.0.1', 58822)
+[2026-02-26 20:56:16,746] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:16] "POST /api/auth/refresh HTTP/1.1" 404 170 0.000899
+(20546) accepted ('127.0.0.1', 58835)
+[2026-02-26 20:56:19,057] INFO in __init__: 🚀 Request: POST /api/auth/login from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:19] "POST /api/auth/login HTTP/1.1" 200 1281 0.167067
+(20546) accepted ('127.0.0.1', 58851)
+[2026-02-26 20:56:22,320] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:22] "GET /api/resume/latest HTTP/1.1" 401 283 0.000992
+(20546) accepted ('127.0.0.1', 58856)
+[2026-02-26 20:56:22,327] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:22] "GET /api/resume/latest HTTP/1.1" 401 283 0.000883
+(20546) accepted ('127.0.0.1', 58857)
+[2026-02-26 20:56:22,330] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:22] "POST /api/auth/refresh HTTP/1.1" 404 170 0.002605
+(20546) accepted ('127.0.0.1', 58860)
+[2026-02-26 20:56:22,343] INFO in __init__: 🚀 Request: POST /api/auth/refresh from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 20:56:22] "POST /api/auth/refresh HTTP/1.1" 404 170 0.002979
+/opt/homebrew/Cellar/python@3.11/3.11.14_3/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

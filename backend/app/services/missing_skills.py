@@ -146,11 +146,41 @@ class MissingSkillsAnalyzer:
             'plus', 'advantage', 'ideally', 'optional', 'desired',
             'good to have', 'beneficial'
         ]
+
+        # Category-specific default skills for fallback analysis
+        self.category_skills = {
+            'Developer': {
+                'critical': ['Docker', 'Kubernetes', 'CI/CD', 'AWS', 'Unit Testing', 'Git', 'REST API', 'SQL', 'System Architecture', 'Microservices'],
+                'recommended': ['GraphQL', 'Redis', 'Terraform', 'TypeScript', 'Serverless', 'Message Queues', 'Elasticsearch', 'Monitoring'],
+                'soft': ['Agile', 'Code Review', 'Problem Solving', 'Team Collaboration', 'Technical Documentation']
+            },
+            'Data Scientist/Analyst': {
+                'critical': ['Pandas', 'NumPy', 'Scikit-learn', 'SQL', 'Data Visualization', 'Statistics', 'Python', 'Feature Engineering'],
+                'recommended': ['Machine Learning', 'Deep Learning', 'PyTorch', 'TensorFlow', 'Apache Spark', 'MLOps', 'Tableau', 'Power BI'],
+                'soft': ['Critical Thinking', 'Communication', 'Presentation', 'Business Intelligence', 'Data Storytelling']
+            },
+            'Designer': {
+                'critical': ['Figma', 'Adobe XD', 'Sketch', 'UI/UX Design', 'Prototyping', 'User Research', 'Design Systems'],
+                'recommended': ['Motion Design', 'Typography', 'Illustrator', 'Photoshop', 'Brand Identity', 'Interaction Design'],
+                'soft': ['Creativity', 'Empathy', 'Adaptability', 'Communication', 'Design Thinking']
+            },
+            'Management': {
+                'critical': ['Project Management', 'Agile', 'Scrum', 'Budgeting', 'Stakeholder Management', 'Strategic Planning', 'Risk Management'],
+                'recommended': ['Change Management', 'KPI Tracking', 'Product Strategy', 'Roadmapping', 'Resource Allocation'],
+                'soft': ['Leadership', 'Negotiation', 'Conflict Resolution', 'Decision Making', 'Coaching']
+            },
+            'Professional': {
+                'critical': ['Microsoft Office', 'Project Coordination', 'Communication', 'Time Management', 'Problem Solving', 'Digital Literacy'],
+                'recommended': ['Customer Focus', 'Strategic Thinking', 'Public Speaking', 'Innovation', 'Business Writing'],
+                'soft': ['Leadership', 'Collaboration', 'Adaptability', 'Emotional Intelligence', 'Active Listening']
+            }
+        }
     
     def analyze(
         self,
         resume_skills: List[str],
-        job_description: str
+        job_description: str,
+        category: str = "Professional"
     ) -> Dict:
         """
         Analyze missing skills between resume and job description.
@@ -178,7 +208,7 @@ class MissingSkillsAnalyzer:
         """
         # Handle empty job description
         if not job_description or len(job_description.strip()) < 20:
-            return self._get_default_suggestions(resume_skills)
+            return self._get_default_suggestions(resume_skills, category)
         
         # Normalize resume skills to lowercase for comparison
         resume_skills_lower = set(skill.lower() for skill in resume_skills)
@@ -352,33 +382,25 @@ class MissingSkillsAnalyzer:
             'soft': soft
         }
     
-    def _get_default_suggestions(self, resume_skills: List[str]) -> Dict:
+    def _get_default_suggestions(self, resume_skills: List[str], category: str = "Professional") -> Dict:
         """
         Get default skill suggestions when no job description provided.
         
         Args:
             resume_skills: Current resume skills
+            category: Profile category (e.g., 'Developer', 'Designer')
         
         Returns:
             Dict with general skill suggestions
         """
         resume_skills_lower = set(skill.lower() for skill in resume_skills)
         
-        # Suggest commonly required skills not in resume
-        common_critical = [
-            'Docker', 'Kubernetes', 'CI/CD', 'AWS', 'Git',
-            'REST API', 'SQL', 'Agile', 'Unit Testing'
-        ]
+        # Get category-specific skills or default to Professional
+        cat_data = self.category_skills.get(category, self.category_skills['Professional'])
         
-        common_recommended = [
-            'GraphQL', 'Microservices', 'TypeScript', 'Redis',
-            'Terraform', 'Monitoring', 'Security'
-        ]
-        
-        common_soft = [
-            'Leadership', 'Communication', 'Problem Solving',
-            'Team Collaboration', 'Project Management'
-        ]
+        common_critical = cat_data['critical']
+        common_recommended = cat_data['recommended']
+        common_soft = cat_data['soft']
         
         # Filter out skills already in resume
         missing_critical = [

@@ -15,7 +15,7 @@ import os
 from datetime import timedelta
 
 # Flask core imports
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS  # Cross-Origin Resource Sharing
 from flask_pymongo import PyMongo  # MongoDB integration
 from flask_jwt_extended import JWTManager  # JWT authentication
@@ -69,6 +69,10 @@ def create_app(config_class=Config):
     # This sets up database URI, secret keys, etc.
     app.config.from_object(config_class)
     
+    # Configure logging
+    import logging
+    app.logger.setLevel(logging.INFO)
+    
     # ==============================================
     # Initialize Flask Extensions with App
     # ==============================================
@@ -85,6 +89,7 @@ def create_app(config_class=Config):
     # Initialize JWT Manager
     # Sets up token creation and verification
     jwt.init_app(app)
+    print(f"DEBUG: JWT_TOKEN_LOCATION = {app.config.get('JWT_TOKEN_LOCATION')}")
     
     # Initialize SocketIO for real-time features
     # cors_allowed_origins: which domains can connect via WebSocket
@@ -122,6 +127,14 @@ def create_app(config_class=Config):
     from .routes.ai import ai_bp
     app.register_blueprint(ai_bp, url_prefix='/api/ai')
 
+    # Admin routes (stats, users, feedback)
+    from .routes.admin import admin_bp
+    app.register_blueprint(admin_bp, url_prefix='/api/admin')
+
+    # Feedback routes (submit)
+    from .routes.feedback import feedback_bp
+    app.register_blueprint(feedback_bp, url_prefix='/api/feedback')
+
     
     # ==============================================
     # Register SocketIO Event Handlers
@@ -143,6 +156,12 @@ def create_app(config_class=Config):
     def internal_error(error):
         """Handle 500 Internal Server errors"""
         return {'error': 'Internal server error'}, 500
+    
+    @app.before_request
+    def log_request_info():
+        """Log request details before processing"""
+        print(f"🚀 Request: {request.method} {request.path} from {request.remote_addr}")
+        app.logger.info(f"🚀 Request: {request.method} {request.path} from {request.remote_addr}")
     
     # ==============================================
     # Health Check Endpoint

@@ -20,13 +20,15 @@ app = create_app()
 if __name__ == '__main__':
     # Run the Flask development server with SocketIO
     # - debug=True: show detailed errors
-    # - use_reloader=False: prevents port conflicts
+    # - use_reloader=True: automatically restart on code changes
     # - host='0.0.0.0': accessible from any IP
     # - port=8000: default port
+    print("🚀 Flask Backend is starting on http://localhost:8000")
     socketio.run(
         app,
         debug=True,
-        use_reloader=False,  # <-- FIX: prevents "Address already in use"
+        use_reloader=True, 
         host='0.0.0.0',
-        port=8000
+        port=8000,
+        allow_unsafe_werkzeug=True # Needed for some dev environments with SocketIO
     )

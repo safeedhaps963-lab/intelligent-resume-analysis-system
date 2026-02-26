@@ -228,45 +228,24 @@ class NLPResumeAnalyzer:
             }
         
         return result
-    
     def extract_experience(self, text: str) -> List[Dict]:
         """
         Extract work experience entries from resume text.
-        
-        Args:
-            text: Resume text content
-        
-        Returns:
-            List of experience dictionaries with company, title, dates
-        
-        Uses NER to identify organizations and dates, combined with
-        pattern matching for job titles.
         """
         doc = self.nlp(text)
-        
         experiences = []
-        
-        # Extract organization entities
         organizations = [ent.text for ent in doc.ents if ent.label_ == 'ORG']
-        
-        # Extract date entities
         dates = [ent.text for ent in doc.ents if ent.label_ == 'DATE']
-        
-        # Common job title patterns
         job_title_patterns = [
             r'(Senior|Junior|Lead|Principal|Staff)?\s*(Software|Frontend|Backend|Full Stack|DevOps|Data|ML|AI|Cloud|Systems?|Solutions?)?\s*(Engineer|Developer|Architect|Scientist|Analyst|Manager|Director|Consultant)',
             r'(CTO|CEO|CFO|VP|Director|Manager|Lead)\s*(of)?\s*\w+',
         ]
-        
-        # Find job titles using patterns
         job_titles = []
         for pattern in job_title_patterns:
             matches = re.findall(pattern, text, re.IGNORECASE)
             job_titles.extend([' '.join(m).strip() for m in matches if m])
-        
-        # Combine extracted information
-        # In production, use more sophisticated parsing
-        for i, org in enumerate(organizations[:5]):  # Limit to 5 experiences
+
+        for i, org in enumerate(organizations[:5]):
             exp = {
                 'company': org,
                 'title': job_titles[i] if i < len(job_titles) else 'Position',
@@ -274,57 +253,90 @@ class NLPResumeAnalyzer:
                 'description': ''
             }
             experiences.append(exp)
-        
         return experiences
-    
+
+    def extract_total_years_experience(self, text: str) -> float:
+        """
+        Estimate total years of experience from resume text.
+        """
+        patterns = [
+            r'(\d+)\+?\s*years?\s+(of\s+)?experience',
+            r'experience\s*(of\s*)?(\d+)\+?\s*years?',
+            r'(\d+)\s*years?\s+in\s+',
+        ]
+        years = []
+        for pattern in patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for m in matches:
+                if isinstance(m, tuple):
+                    for item in m:
+                        if item.isdigit():
+                            years.append(int(item))
+                elif m.isdigit():
+                    years.append(int(m))
+        if years:
+            return float(max(years))
+        doc = self.nlp(text)
+        dates = [ent.text for ent in doc.ents if ent.label_ == 'DATE']
+        year_pattern = r'(19|20)\d{2}'
+        extracted_years = []
+        for d in dates:
+            found = re.findall(year_pattern, d)
+            extracted_years.extend([int(y) for y in found])
+        if len(extracted_years) >= 2:
+            span = max(extracted_years) - min(extracted_years)
+            return float(min(max(span, 0), 40))
+        return 0.0
+
     def extract_education(self, text: str) -> List[Dict]:
         """
         Extract education information from resume text.
-        
-        Args:
-            text: Resume text content
-        
-        Returns:
-            List of education dictionaries with degree, institution, year
         """
         doc = self.nlp(text)
-        
         education = []
-        
-        # Degree patterns
         degree_patterns = [
             r"(Bachelor'?s?|Master'?s?|Ph\.?D\.?|MBA|B\.?S\.?|M\.?S\.?|B\.?A\.?|M\.?A\.?)\s*(of|in)?\s*(Science|Arts|Engineering|Business|Computer Science|Information Technology)?",
             r"(BSc|MSc|BEng|MEng|BTech|MTech)\s*(in)?\s*\w+",
         ]
-        
-        # Find degrees
         degrees = []
         for pattern in degree_patterns:
             matches = re.findall(pattern, text, re.IGNORECASE)
             degrees.extend([' '.join(m).strip() for m in matches if m])
-        
-        # Find educational institutions (ORG entities that look like universities)
         edu_keywords = ['university', 'college', 'institute', 'school', 'academy']
         institutions = [
             ent.text for ent in doc.ents 
             if ent.label_ == 'ORG' and 
             any(kw in ent.text.lower() for kw in edu_keywords)
         ]
-        
-        # Extract years
         year_pattern = r'(19|20)\d{2}'
         years = re.findall(year_pattern, text)
-        
-        # Combine into education entries
-        for i, degree in enumerate(degrees[:3]):  # Limit to 3 entries
+        for i, degree in enumerate(degrees[:3]):
             edu = {
                 'degree': degree,
                 'institution': institutions[i] if i < len(institutions) else '',
                 'year': years[i] if i < len(years) else ''
             }
             education.append(edu)
-        
         return education
+
+    def get_education_level_score(self, education_list: List[Dict]) -> int:
+        """
+        Convert education entries to a numerical level score.
+        """
+        score = 0
+        for edu in education_list:
+            degree = edu.get('degree', '').lower()
+            if any(kw in degree for kw in ['phd', 'doctorate', 'ph.d']):
+                score = max(score, 5)
+            elif any(kw in degree for kw in ['master', 'ms', 'ma', 'mtech', 'mba', 'm.s']):
+                score = max(score, 4)
+            elif any(kw in degree for kw in ['bachelor', 'bs', 'ba', 'btech', 'be', 'b.s']):
+                score = max(score, 3)
+            elif any(kw in degree for kw in ['associate']):
+                score = max(score, 2)
+            elif any(kw in degree for kw in ['high school', 'diploma']):
+                score = max(score, 1)
+        return score
     
     def get_keyword_density(self, text: str, keywords: List[str]) -> float:
         """
@@ -352,22 +364,100 @@ class NLPResumeAnalyzer:
         
         return keyword_count / len(words)
     
+    def get_similarity(self, text1: str, text2: str) -> float:
+        """
+        Calculate semantic similarity between two texts using word vectors.
+        Cleans text by removing stopwords and punctuation for better accuracy.
+        
+        Args:
+            text1: First text
+            text2: Second text
+            
+        Returns:
+            Similarity score between 0.0 and 1.0
+        """
+        if not text1 or not text2:
+            return 0.0
+            
+        # Clean text
+        def clean_text(text):
+            tokens = word_tokenize(text.lower())
+            return " ".join([t for t in tokens if t not in self.stopwords and t.isalnum()])
+            
+        cleaned1 = clean_text(text1)
+        cleaned2 = clean_text(text2)
+        
+        if not cleaned1 or not cleaned2:
+            return 0.0
+            
+        doc1 = self.nlp(cleaned1)
+        doc2 = self.nlp(cleaned2)
+        
+        if not doc1.vector_norm or not doc2.vector_norm:
+            return 0.0
+            
+        return doc1.similarity(doc2)
+    
+    def categorize_profile(self, skills: Dict, experience: List[Dict]) -> str:
+        """
+        Categorize the candidate profile based on skills and experience.
+        
+        Args:
+            skills: Extracted skills dict
+            experience: Extracted experience list
+            
+        Returns:
+            String representing the category
+        """
+        # Count skills in broad areas
+        counts = Counter()
+        
+        # Developer Indicator
+        dev_skills = ['programming_languages', 'web_frameworks', 'databases', 'cloud_devops']
+        for cat in dev_skills:
+            if cat in skills:
+                counts['Developer'] += skills[cat].get('count', 0)
+        
+        # Data Analyst / Scientist Indicator
+        if 'data_science' in skills:
+            counts['Data Scientist/Analyst'] += skills['data_science'].get('count', 0)
+            
+        # Designer Indicator
+        designer_keywords = ['figma', 'adobe xd', 'ui/ux', 'design', 'photoshop', 'illustrator']
+        for cat_data in skills.values():
+            for s in cat_data.get('skills', []):
+                if s.lower() in designer_keywords:
+                    counts['Designer'] += 1
+        
+        # Check experience titles for indicators
+        for exp in experience:
+            title = exp.get('title', '').lower()
+            if any(k in title for k in ['manager', 'director', 'lead', 'head']):
+                counts['Management'] += 2
+            if any(k in title for k in ['developer', 'engineer', 'architect']):
+                counts['Developer'] += 2
+            if any(k in title for k in ['analyst', 'data', 'science']):
+                counts['Data Scientist/Analyst'] += 2
+            if any(k in title for k in ['designer', 'ux', 'ui']):
+                counts['Designer'] += 2
+                
+        if not counts:
+            return "Professional" # Default
+            
+        return counts.most_common(1)[0][0]
+
     def analyze_resume(self, text: str, job_description: str = "") -> Dict:
         """
         Perform complete resume analysis.
-        
-        Args:
-            text: Resume text content
-            job_description: Optional job description for matching
-        
-        Returns:
-            Complete analysis results including skills, experience, 
-            education, and recommendations
         """
         # Extract all components
         skills = self.extract_skills(text)
         experience = self.extract_experience(text)
         education = self.extract_education(text)
+        
+        # New metrics
+        total_years_exp = self.extract_total_years_experience(text)
+        edu_score = self.get_education_level_score(education)
         
         # Calculate match score if job description provided
         match_score = 0
@@ -390,13 +480,19 @@ class NLPResumeAnalyzer:
                 match_score = int(len(matched) / len(job_skills_flat) * 100)
                 missing_skills = list(job_skills_flat - resume_skills_flat)
         
+        # Categorize profile
+        category = self.categorize_profile(skills, experience)
+        
         return {
             'skills': skills,
             'experience': experience,
             'education': education,
+            'total_years_experience': total_years_exp,
+            'education_level_score': edu_score,
             'match_score': match_score,
-            'missing_skills': missing_skills[:10],  # Top 10 missing
-            'total_skills_found': sum(d['count'] for d in skills.values())
+            'missing_skills': missing_skills[:10],
+            'total_skills_found': sum(d['count'] for d in skills.values()),
+            'category': category
         }
 
 

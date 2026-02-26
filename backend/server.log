@@ -1,0 +1,308 @@
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(43490) wsgi starting up on http://0.0.0.0:8000
+(43490) accepted ('127.0.0.1', 52687)
+[2026-02-26 21:49:19,771] INFO in __init__: 🚀 Request: GET /api/health from 127.0.0.1
+127.0.0.1 - - [26/Feb/2026 21:49:19] "GET /api/health HTTP/1.1" 200 275 0.031777
+(43490) accepted ('127.0.0.1', 52703)
+[2026-02-26 21:49:22,111] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 21:49:22,252] INFO in resume: DEBUG: Extracted text length for white_simple_student_cv_resume.pdf: 0
+[2026-02-26 21:49:22,252] ERROR in resume: DEBUG: Extraction failed for white_simple_student_cv_resume.pdf
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:49:22] "POST /api/resume/convert-ats HTTP/1.1" 400 316 0.142766
+(43490) accepted ('127.0.0.1', 52706)
+[2026-02-26 21:49:22,833] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:49:22] "GET /api/auth/validate HTTP/1.1" 200 534 0.026920
+(43490) accepted ('127.0.0.1', 52709)
+[2026-02-26 21:49:22,861] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:49:22] "GET /api/auth/validate HTTP/1.1" 200 534 0.001286
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/routes/resume.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+🚀 Request: GET /api/health from 127.0.0.1
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: All PDF extraction engines failed for uploads/temp_699fdde2276e5bb36f4bcb03_white_simple_student_cv_resume.pdf
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(43565) wsgi starting up on http://0.0.0.0:8000
+(43565) accepted ('127.0.0.1', 52720)
+[2026-02-26 21:49:36,200] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 21:49:36,299] INFO in resume: DEBUG: Extracted text length for white_simple_student_cv_resume.pdf: 0
+[2026-02-26 21:49:36,299] ERROR in resume: DEBUG: Extraction failed for white_simple_student_cv_resume.pdf
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:49:36] "POST /api/resume/convert-ats HTTP/1.1" 400 316 0.102013
+(43565) accepted ('127.0.0.1', 52739)
+[2026-02-26 21:49:52,749] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 21:49:52,772] INFO in resume: DEBUG: Extracted text length for white_simple_student_cv_resume.pdf: 0
+[2026-02-26 21:49:52,773] ERROR in resume: DEBUG: Extraction failed for white_simple_student_cv_resume.pdf
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:49:52] "POST /api/resume/convert-ats HTTP/1.1" 400 316 0.030056
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/utils/pdf_parser.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: All PDF extraction engines failed for uploads/temp_699fdde2276e5bb36f4bcb03_white_simple_student_cv_resume.pdf
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: All PDF extraction engines failed for uploads/temp_699fdde2276e5bb36f4bcb03_white_simple_student_cv_resume.pdf
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(44193) wsgi starting up on http://0.0.0.0:8000
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/utils/pdf_parser.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45304) wsgi starting up on http://0.0.0.0:8000
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/routes/resume.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45319) wsgi starting up on http://0.0.0.0:8000
+(45319) accepted ('127.0.0.1', 54346)
+[2026-02-26 21:56:04,042] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 21:56:04,158] INFO in resume: DEBUG: Extracted text length for white_simple_student_cv_resume.pdf: 18
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:56:04] "POST /api/resume/convert-ats HTTP/1.1" 400 370 0.118229
+(45319) accepted ('127.0.0.1', 54377)
+[2026-02-26 21:56:09,597] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:56:10] "GET /api/auth/validate HTTP/1.1" 200 534 0.547445
+(45319) accepted ('127.0.0.1', 54381)
+[2026-02-26 21:56:10,126] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:56:10] "GET /api/auth/validate HTTP/1.1" 200 534 0.004752
+(45319) accepted ('127.0.0.1', 54409)
+[2026-02-26 21:56:16,355] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 21:56:16,365] INFO in resume: DEBUG: Extracted text length for white_simple_student_cv_resume.pdf: 18
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:56:16] "POST /api/resume/convert-ats HTTP/1.1" 400 370 0.011820
+(45319) accepted ('127.0.0.1', 54864)
+[2026-02-26 21:58:05,395] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 21:58:05,425] INFO in resume: DEBUG: Extracted text length for Brown_and_Beige_Modern_Content_Creator_Resume_20260220_135500_0000.pdf: 2429
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 21:58:05] "POST /api/resume/convert-ats HTTP/1.1" 200 3855 0.066835
+(45319) accepted ('127.0.0.1', 55643)
+[2026-02-26 22:01:04,267] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:04] "GET /api/auth/validate HTTP/1.1" 200 534 0.025276
+(45319) accepted ('127.0.0.1', 55646)
+[2026-02-26 22:01:04,301] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:04] "GET /api/auth/validate HTTP/1.1" 200 534 0.015065
+(45319) accepted ('127.0.0.1', 55659)
+[2026-02-26 22:01:06,539] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:06] "GET /api/auth/validate HTTP/1.1" 200 534 0.009568
+(45319) accepted ('127.0.0.1', 55660)
+[2026-02-26 22:01:06,554] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:06] "GET /api/auth/validate HTTP/1.1" 200 534 0.001172
+(45319) accepted ('127.0.0.1', 55671)
+[2026-02-26 22:01:07,343] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:07] "GET /api/auth/validate HTTP/1.1" 200 534 0.002758
+(45319) accepted ('127.0.0.1', 55672)
+[2026-02-26 22:01:07,349] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:07] "GET /api/auth/validate HTTP/1.1" 200 534 0.002256
+(45319) accepted ('127.0.0.1', 55683)
+[2026-02-26 22:01:08,148] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:08] "GET /api/auth/validate HTTP/1.1" 200 534 0.004596
+(45319) accepted ('127.0.0.1', 55684)
+[2026-02-26 22:01:08,165] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:08] "GET /api/auth/validate HTTP/1.1" 200 534 0.005363
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/services/ats_converter.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Detected image-only PDF: uploads/temp_699fdde2276e5bb36f4bcb03_white_simple_student_cv_resume.pdf
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Detected image-only PDF: uploads/temp_699fdde2276e5bb36f4bcb03_white_simple_student_cv_resume.pdf
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Success extracting with PyMuPDF (2455 chars)
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45462) wsgi starting up on http://0.0.0.0:8000
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/services/ats_converter.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45475) wsgi starting up on http://0.0.0.0:8000
+(45475) accepted ('127.0.0.1', 55905)
+[2026-02-26 22:01:57,696] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:57] "GET /api/auth/validate HTTP/1.1" 200 534 0.083404
+(45475) accepted ('127.0.0.1', 55909)
+[2026-02-26 22:01:57,795] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:57] "GET /api/auth/validate HTTP/1.1" 200 534 0.008258
+(45475) accepted ('127.0.0.1', 55920)
+[2026-02-26 22:01:58,325] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:58] "GET /api/auth/validate HTTP/1.1" 200 534 0.002103
+(45475) accepted ('127.0.0.1', 55921)
+[2026-02-26 22:01:58,337] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:58] "GET /api/auth/validate HTTP/1.1" 200 534 0.001251
+(45475) accepted ('127.0.0.1', 55928)
+[2026-02-26 22:01:58,898] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:58] "GET /api/auth/validate HTTP/1.1" 200 534 0.002804
+(45475) accepted ('127.0.0.1', 55929)
+[2026-02-26 22:01:58,904] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:01:58] "GET /api/auth/validate HTTP/1.1" 200 534 0.001699
+(45475) accepted ('127.0.0.1', 56651)
+[2026-02-26 22:04:28,366] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:04:28] "GET /api/auth/validate HTTP/1.1" 200 534 0.012212
+(45475) accepted ('127.0.0.1', 56654)
+[2026-02-26 22:04:28,383] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:04:28] "GET /api/auth/validate HTTP/1.1" 200 534 0.005187
+(45475) accepted ('127.0.0.1', 56699)
+[2026-02-26 22:04:38,473] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:04:38,629] INFO in resume: DEBUG: Extracted text length for Brown_and_Beige_Modern_Content_Creator_Resume_20260220_135500_0000.pdf: 2429
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:04:38] "POST /api/resume/convert-ats HTTP/1.1" 200 3855 0.173259
+(45475) accepted ('127.0.0.1', 56771)
+[2026-02-26 22:05:16,316] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:05:16,331] INFO in resume: DEBUG: Extracted text length for ATHUL-KMats-friendly-resume_Professional.pdf: 18
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:05:16] "POST /api/resume/convert-ats HTTP/1.1" 400 370 0.017183
+(45475) accepted ('127.0.0.1', 56780)
+[2026-02-26 22:05:28,794] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:05:28,800] INFO in resume: DEBUG: Extracted text length for ATHUL-KMats-friendly-resume_Professional.pdf: 18
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:05:28] "POST /api/resume/convert-ats HTTP/1.1" 400 370 0.006877
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/services/ats_converter.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Success extracting with PyMuPDF (2455 chars)
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Detected image-only PDF: uploads/temp_699fdde2276e5bb36f4bcb03_ATHUL-KMats-friendly-resume_Professional.pdf
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Detected image-only PDF: uploads/temp_699fdde2276e5bb36f4bcb03_ATHUL-KMats-friendly-resume_Professional.pdf
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45606) wsgi starting up on http://0.0.0.0:8000
+(45606) accepted ('127.0.0.1', 56792)
+[2026-02-26 22:05:46,797] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:05:46,860] INFO in resume: DEBUG: Extracted text length for ATHUL-KMats-friendly-resume_Professional.pdf: 18
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:05:46] "POST /api/resume/convert-ats HTTP/1.1" 400 370 0.064735
+(45606) accepted ('127.0.0.1', 56800)
+[2026-02-26 22:05:49,655] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:05:49] "GET /api/auth/validate HTTP/1.1" 200 534 0.015596
+(45606) accepted ('127.0.0.1', 56804)
+[2026-02-26 22:05:49,673] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:05:49] "GET /api/auth/validate HTTP/1.1" 200 534 0.000960
+(45606) accepted ('127.0.0.1', 56813)
+[2026-02-26 22:06:13,397] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:06:13,412] INFO in resume: DEBUG: Extracted text length for Brown_and_Beige_Modern_Content_Creator_Resume_20260220_135500_0000.pdf: 2429
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:06:13] "POST /api/resume/convert-ats HTTP/1.1" 200 3855 0.029440
+(45606) accepted ('127.0.0.1', 56818)
+[2026-02-26 22:06:20,191] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:06:20,216] INFO in resume: DEBUG: Extracted text length for Brown_and_Beige_Modern_Content_Creator_Resume_20260220_135500_0000.pdf: 2429
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:06:20] "POST /api/resume/convert-ats HTTP/1.1" 200 3855 0.034284
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/utils/pdf_parser.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Detected image-only PDF: uploads/temp_699fdde2276e5bb36f4bcb03_ATHUL-KMats-friendly-resume_Professional.pdf
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: GET /api/auth/validate from 127.0.0.1
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Success extracting with PyMuPDF (2455 chars)
+🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+DEBUG: Success extracting with PyMuPDF (2455 chars)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45659) wsgi starting up on http://0.0.0.0:8000
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/services/ats_converter.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45674) wsgi starting up on http://0.0.0.0:8000
+ * Detected change in '/Users/safeedaps/Desktop/intelligent-resume-analysis-system/backend/app/services/ats_converter.py', reloading
+DEBUG: JWT_TOKEN_LOCATION = ['headers']
+🚀 Flask Backend is starting on http://localhost:8000
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 102-818-424
+(45691) wsgi starting up on http://0.0.0.0:8000
+(45691) accepted ('127.0.0.1', 56927)
+[2026-02-26 22:11:55,494] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:11:55] "GET /api/auth/validate HTTP/1.1" 200 534 0.025212
+(45691) accepted ('127.0.0.1', 56931)
+[2026-02-26 22:11:55,517] INFO in __init__: 🚀 Request: GET /api/auth/validate from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:11:55] "GET /api/auth/validate HTTP/1.1" 200 534 0.001494
+(45691) accepted ('127.0.0.1', 56946)
+[2026-02-26 22:12:19,358] INFO in __init__: 🚀 Request: POST /api/resume/convert-ats from 127.0.0.1
+[2026-02-26 22:12:19,495] INFO in resume: DEBUG: Extracted text length for Brown_and_Beige_Modern_Content_Creator_Resume_20260220_135500_0000.pdf: 2485
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:12:19] "POST /api/resume/convert-ats HTTP/1.1" 200 5408 0.149912
+(45691) accepted ('127.0.0.1', 56950)
+[2026-02-26 22:12:59,712] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:12:59] "GET /api/resume/latest HTTP/1.1" 404 301 0.015898
+(45691) accepted ('127.0.0.1', 56953)
+[2026-02-26 22:12:59,730] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:12:59] "GET /api/resume/latest HTTP/1.1" 404 301 0.002621
+(45691) accepted ('127.0.0.1', 56956)
+[2026-02-26 22:13:01,534] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:01] "GET /api/resume/latest HTTP/1.1" 404 301 0.003365
+(45691) accepted ('127.0.0.1', 56959)
+[2026-02-26 22:13:01,542] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:01] "GET /api/resume/latest HTTP/1.1" 404 301 0.003134
+(45691) accepted ('127.0.0.1', 56962)
+[2026-02-26 22:13:10,167] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:10] "GET /api/resume/latest HTTP/1.1" 404 301 0.004165
+(45691) accepted ('127.0.0.1', 56965)
+[2026-02-26 22:13:10,176] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:10] "GET /api/resume/latest HTTP/1.1" 404 301 0.002877
+(45691) accepted ('127.0.0.1', 56976)
+[2026-02-26 22:13:19,645] INFO in __init__: 🚀 Request: POST /api/resume/upload from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:19] "POST /api/resume/upload HTTP/1.1" 200 378 0.022360
+(45691) accepted ('127.0.0.1', 56979)
+[2026-02-26 22:13:19,673] INFO in __init__: 🚀 Request: POST /api/resume/ats-score from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:19] "POST /api/resume/ats-score HTTP/1.1" 200 2278 0.035674
+(45691) accepted ('127.0.0.1', 56983)
+[2026-02-26 22:13:27,924] INFO in __init__: 🚀 Request: POST /api/resume/upload from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:27] "POST /api/resume/upload HTTP/1.1" 200 879 0.013764
+(45691) accepted ('127.0.0.1', 56986)
+[2026-02-26 22:13:27,940] INFO in __init__: 🚀 Request: POST /api/resume/ats-score from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:28] "POST /api/resume/ats-score HTTP/1.1" 200 1431 0.119905
+(45691) accepted ('127.0.0.1', 56989)
+[2026-02-26 22:13:32,200] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:32] "GET /api/resume/latest HTTP/1.1" 200 1624 0.003233
+(45691) accepted ('127.0.0.1', 56992)
+[2026-02-26 22:13:32,209] INFO in __init__: 🚀 Request: GET /api/resume/latest from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:32] "GET /api/resume/latest HTTP/1.1" 200 1624 0.002610
+(45691) accepted ('127.0.0.1', 56995)
+[2026-02-26 22:13:34,844] INFO in __init__: 🚀 Request: POST /api/resume/skill-analysis from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:13:35] "POST /api/resume/skill-analysis HTTP/1.1" 200 1643 0.380383
+(45691) accepted ('127.0.0.1', 57034)
+[2026-02-26 22:17:41,029] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:17:43] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 200 399 2.920131
+(45691) accepted ('127.0.0.1', 57038)
+[2026-02-26 22:17:43,945] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:17:45] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 200 399 1.909647
+(45691) accepted ('127.0.0.1', 57042)
+[2026-02-26 22:18:15,770] INFO in __init__: 🚀 Request: POST /api/resume/upload from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:18:15] "POST /api/resume/upload HTTP/1.1" 200 378 0.059963
+(45691) accepted ('127.0.0.1', 57045)
+[2026-02-26 22:18:15,830] INFO in __init__: 🚀 Request: POST /api/resume/analyze from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:18:15] "POST /api/resume/analyze HTTP/1.1" 200 1025 0.030716
+(45691) accepted ('127.0.0.1', 57048)
+[2026-02-26 22:18:15,865] INFO in __init__: 🚀 Request: GET /api/jobs/recommendations from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:18:18] "GET /api/jobs/recommendations?limit=15&min_match=40 HTTP/1.1" 200 6209 2.173724
+(45691) accepted ('127.0.0.1', 57058)
+[2026-02-26 22:18:32,115] INFO in __init__: 🚀 Request: POST /api/feedback from 127.0.0.1
+127.0.0.1,127.0.0.1 - - [26/Feb/2026 22:18:32] "POST /api/feedback HTTP/1.1" 201 202 0.004295

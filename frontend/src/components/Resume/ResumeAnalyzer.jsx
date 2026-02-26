@@ -16,14 +16,14 @@ import React, { useState, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
-import { 
-  FaUpload, FaFilePdf, FaTimes, FaBrain, FaChartPie, 
+import {
+  FaUpload, FaFilePdf, FaTimes, FaBrain, FaChartPie,
   FaCogs, FaLightbulb, FaPuzzlePiece, FaArrowLeft,
   FaPlus, FaExclamationCircle, FaStar, FaUserTie,
-  FaMagic, FaBriefcase
+  FaMagic, FaBriefcase, FaBuilding, FaMapMarkerAlt, FaExternalLinkAlt
 } from 'react-icons/fa';
 import { AppContext } from '../../App';
-import { resumeAPI } from '../../services/api';
+import { resumeAPI, jobsAPI } from '../../services/api';
 
 /**
  * ATSScoreCircle - Animated circular progress for ATS score
@@ -34,24 +34,24 @@ const ATSScoreCircle = ({ score }) => {
   // Calculate stroke offset for circular progress
   const circumference = 2 * Math.PI * 70;
   const offset = circumference - (score / 100) * circumference;
-  
+
   return (
     <div className="flex items-center justify-center">
       <div className="relative">
         {/* SVG Circle */}
         <svg className="w-40 h-40 transform -rotate-90">
           {/* Background circle */}
-          <circle 
-            cx="80" cy="80" r="70" 
-            stroke="#e5e7eb" 
-            strokeWidth="10" 
+          <circle
+            cx="80" cy="80" r="70"
+            stroke="#e5e7eb"
+            strokeWidth="10"
             fill="none"
           />
           {/* Progress circle with gradient */}
-          <circle 
-            cx="80" cy="80" r="70" 
-            stroke="url(#gradient)" 
-            strokeWidth="10" 
+          <circle
+            cx="80" cy="80" r="70"
+            stroke="url(#gradient)"
+            strokeWidth="10"
             fill="none"
             strokeLinecap="round"
             style={{
@@ -68,7 +68,7 @@ const ATSScoreCircle = ({ score }) => {
             </linearGradient>
           </defs>
         </svg>
-        
+
         {/* Score text in center */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
@@ -103,11 +103,11 @@ const SkillCategory = ({ category, data }) => {
         <span className="font-medium text-gray-700">{formatCategoryName(category)}</span>
         <span className="text-sm text-purple-600 font-medium">{data.score}%</span>
       </div>
-      
+
       {/* Skill tags */}
       <div className="flex flex-wrap gap-2 mb-2">
         {data.skills.map((skill, index) => (
-          <span 
+          <span
             key={index}
             className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm"
           >
@@ -115,10 +115,10 @@ const SkillCategory = ({ category, data }) => {
           </span>
         ))}
       </div>
-      
+
       {/* Progress bar */}
       <div className="w-full bg-gray-200 rounded-full h-2">
-        <div 
+        <div
           className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 transition-all duration-1000"
           style={{ width: `${data.score}%` }}
         />
@@ -150,7 +150,7 @@ const MissingSkillsSection = ({ missingSkills, onAddSkill, onAddAll }) => {
             </div>
           </div>
         </div>
-        
+
         {/* Default suggestions */}
         <div className="mt-4">
           <p className="font-medium text-gray-700 mb-3">💡 Generally Recommended Skills:</p>
@@ -173,8 +173,8 @@ const MissingSkillsSection = ({ missingSkills, onAddSkill, onAddAll }) => {
   }
 
   // Calculate color based on match percentage
-  const matchColor = missingSkills.matchPercentage >= 70 ? 'green' : 
-                     missingSkills.matchPercentage >= 50 ? 'yellow' : 'red';
+  const matchColor = missingSkills.matchPercentage >= 70 ? 'green' :
+    missingSkills.matchPercentage >= 50 ? 'yellow' : 'red';
 
   return (
     <div>
@@ -192,7 +192,7 @@ const MissingSkillsSection = ({ missingSkills, onAddSkill, onAddAll }) => {
               {missingSkills.matchedSkills} of {missingSkills.totalJobSkills} skills matched
             </p>
             <div className={`w-32 bg-${matchColor}-200 rounded-full h-2 mt-2`}>
-              <div 
+              <div
                 className={`bg-${matchColor}-500 h-2 rounded-full transition-all duration-1000`}
                 style={{ width: `${missingSkills.matchPercentage}%` }}
               />
@@ -327,7 +327,7 @@ const ResumeAnalyzer = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
-  
+
   // Context and navigation
   const { setAnalysisResults, addNotification } = useContext(AppContext);
   const navigate = useNavigate();
@@ -336,17 +336,23 @@ const ResumeAnalyzer = () => {
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length > 0) {
       const selectedFile = acceptedFiles[0];
-      
-      // Validate file type
-      const validTypes = ['application/pdf', 'application/msword', 
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'text/plain'];
-      
+
+      // Validate file type (Strictly PDF and DOCX only)
+      const validTypes = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+
       if (!validTypes.includes(selectedFile.type)) {
-        toast.error('Invalid file type. Please upload PDF, DOC, DOCX, or TXT');
+        toast.error('Invalid file type. Please upload PDF or DOCX only.');
         return;
       }
-      
+
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        toast.error('File size too large. Limit is 5MB.');
+        return;
+      }
+
       setFile(selectedFile);
       toast.success(`${selectedFile.name} uploaded successfully`);
     }
@@ -357,9 +363,7 @@ const ResumeAnalyzer = () => {
     onDrop,
     accept: {
       'application/pdf': ['.pdf'],
-      'application/msword': ['.doc'],
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-      'text/plain': ['.txt']
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
     },
     maxFiles: 1
   });
@@ -382,33 +386,37 @@ const ResumeAnalyzer = () => {
     try {
       // Upload file
       const uploadResponse = await resumeAPI.upload(file);
-      
+
       // Analyze
       const analysisResponse = await resumeAPI.analyze(
         uploadResponse.data.resume_id,
         jobDescription
       );
-      
+
       // Get ATS score
       const atsResponse = await resumeAPI.getATSScore(
         uploadResponse.data.resume_id,
         jobDescription
       );
 
-      // Handle missing skills format (backend returns array, frontend expects object)
+      // Handle missing skills format
       let missingSkillsData;
-      if (Array.isArray(analysisResponse.data.missing_skills)) {
-        // Backend format: array of missing skills
+      if (analysisResponse.data.missing_skills_detailed) {
+        // New detailed format from backend
+        missingSkillsData = analysisResponse.data.missing_skills_detailed;
+      } else if (Array.isArray(analysisResponse.data.missing_skills)) {
+        // Legacy format fallback
         missingSkillsData = {
           critical: analysisResponse.data.missing_skills.slice(0, 3),
           recommended: analysisResponse.data.missing_skills.slice(3, 6),
           soft: analysisResponse.data.missing_skills.slice(6),
           hasJobDescription: !!jobDescription,
-          matchPercentage: analysisResponse.data.match_score || 0
+          matchPercentage: analysisResponse.data.match_score || 0,
+          totalJobSkills: 0,
+          matchedSkills: 0
         };
       } else {
-        // Frontend expected format
-        missingSkillsData = analysisResponse.data.missing_skills || {
+        missingSkillsData = {
           critical: [],
           recommended: [],
           soft: [],
@@ -426,9 +434,26 @@ const ResumeAnalyzer = () => {
         missingSkills: missingSkillsData
       };
 
-      setResults(combinedResults);
-      setAnalysisResults(combinedResults);
-      
+      // Fetch job recommendations after analysis
+      let recommendedJobs = [];
+      try {
+        const jobsResponse = await jobsAPI.getRecommendations(5, 40);
+        if (jobsResponse.success) {
+          recommendedJobs = jobsResponse.data;
+        }
+      } catch (err) {
+        console.error('Failed to fetch recommendations:', err);
+      }
+
+      setResults({
+        ...combinedResults,
+        recommendedJobs
+      });
+      setAnalysisResults({
+        ...combinedResults,
+        recommendedJobs
+      });
+
       addNotification({
         type: 'success',
         title: 'Analysis Complete',
@@ -437,10 +462,11 @@ const ResumeAnalyzer = () => {
 
     } catch (error) {
       console.error('Analysis error:', error);
-      toast.error('Failed to analyze resume. Please try again.');
-      
-      // For demo, show simulated results
-      simulateAnalysis();
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Analysis failed';
+      toast.error(`Error: ${errorMsg}`);
+
+      // Do NOT simulate on error in production setup to avoid confusion
+      // simulateAnalysis();
     } finally {
       setIsAnalyzing(false);
     }
@@ -492,12 +518,12 @@ const ResumeAnalyzer = () => {
   // Add all missing skills
   const handleAddAllSkills = () => {
     if (!results?.missingSkills) return;
-    
-    const total = 
-      results.missingSkills.critical.length + 
-      results.missingSkills.recommended.length + 
+
+    const total =
+      results.missingSkills.critical.length +
+      results.missingSkills.recommended.length +
       results.missingSkills.soft.length;
-    
+
     toast.success(`Added ${total} skills to resume builder`);
     navigate('/builder');
   };
@@ -510,13 +536,23 @@ const ResumeAnalyzer = () => {
           <h2 className="text-3xl font-bold text-gray-800">Resume Analyzer</h2>
           <p className="text-gray-600">Upload your resume for AI-powered analysis</p>
         </div>
-        <button 
+        <button
           onClick={() => navigate('/')}
           className="text-purple-600 hover:text-purple-800 flex items-center"
         >
           <FaArrowLeft className="mr-2" />
           Back to Dashboard
         </button>
+      </div>
+
+      {/* Demo Note */}
+      <div className="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r-lg">
+        <div className="flex items-center">
+          <FaExclamationCircle className="text-indigo-500 mr-3" />
+          <p className="text-indigo-700 text-sm font-medium">
+            <span className="font-bold">Project Demo:</span> AI-based skill extraction and job matching is simulated for demonstration purposes.
+          </p>
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -526,14 +562,14 @@ const ResumeAnalyzer = () => {
             <FaUpload className="mr-2 text-purple-600" />
             Upload Resume
           </h3>
-          
+
           {/* Dropzone */}
           <div
             {...getRootProps()}
             className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer 
-                       transition-all ${isDragActive 
-                         ? 'border-purple-500 bg-purple-50' 
-                         : 'border-gray-300 hover:border-purple-500'}`}
+                       transition-all ${isDragActive
+                ? 'border-purple-500 bg-purple-50'
+                : 'border-gray-300 hover:border-purple-500'}`}
           >
             <input {...getInputProps()} />
             <FaUpload className="text-5xl text-gray-400 mx-auto mb-4" />
@@ -612,11 +648,24 @@ const ResumeAnalyzer = () => {
               <FaChartPie className="mr-2 text-blue-600" />
               ATS Score Prediction
             </h3>
-            
+
+            {/* AI Profile Category */}
+            {results?.category && (
+              <div className="mb-6 p-4 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white shadow-md">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-purple-100 text-xs font-bold uppercase tracking-wider">AI Categorized Profile</p>
+                    <h4 className="text-2xl font-black">{results.category}</h4>
+                  </div>
+                  <FaUserTie className="text-4xl opacity-50" />
+                </div>
+              </div>
+            )}
+
             {results ? (
               <>
                 <ATSScoreCircle score={results.atsScore} />
-                
+
                 {/* Breakdown */}
                 <div className="mt-6 space-y-3">
                   {Object.values(results.atsBreakdown).map((item, index) => (
@@ -626,7 +675,7 @@ const ResumeAnalyzer = () => {
                         <span className="font-medium">{item.score}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
+                        <div
                           className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600"
                           style={{ width: `${item.score}%` }}
                         />
@@ -648,7 +697,7 @@ const ResumeAnalyzer = () => {
               <FaCogs className="mr-2 text-green-600" />
               Detected Skills
             </h3>
-            
+
             {results?.skills ? (
               Object.entries(results.skills).map(([category, data]) => (
                 <SkillCategory key={category} category={category} data={data} />
@@ -666,9 +715,9 @@ const ResumeAnalyzer = () => {
               <FaPuzzlePiece className="mr-2 text-red-500" />
               Missing Skills Analysis
             </h3>
-            
+
             {results?.missingSkills ? (
-              <MissingSkillsSection 
+              <MissingSkillsSection
                 missingSkills={results.missingSkills}
                 onAddSkill={handleAddSkill}
                 onAddAll={handleAddAllSkills}
@@ -686,14 +735,13 @@ const ResumeAnalyzer = () => {
               <FaLightbulb className="mr-2 text-orange-600" />
               AI Recommendations
             </h3>
-            
+
             {results?.recommendations ? (
               <div className="space-y-3">
                 {results.recommendations.map((rec, index) => (
                   <div key={index} className="flex items-start p-3 bg-gray-50 rounded-lg">
-                    <span className={`mr-3 ${
-                      rec.type === 'success' ? 'text-green-500' : 'text-orange-500'
-                    }`}>
+                    <span className={`mr-3 ${rec.type === 'success' ? 'text-green-500' : 'text-orange-500'
+                      }`}>
                       {rec.type === 'success' ? '✓' : '⚠'}
                     </span>
                     <div>
@@ -709,6 +757,47 @@ const ResumeAnalyzer = () => {
               </p>
             )}
           </div>
+
+          {/* Job Recommendations */}
+          {results?.recommendedJobs && results.recommendedJobs.length > 0 && (
+            <div className="bg-white rounded-xl p-6 shadow-lg">
+              <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <FaBriefcase className="mr-2 text-purple-600" />
+                Intelligent Job Matches
+              </h3>
+              <div className="space-y-4">
+                {results.recommendedJobs.map((job, index) => (
+                  <div key={index} className="p-4 border border-gray-100 rounded-xl hover:border-purple-200 hover:bg-purple-50/30 transition-all group">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-bold text-gray-800 group-hover:text-purple-700 transition-colors capitalize">
+                        {job.title}
+                      </h4>
+                      <div className="flex items-center bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[10px] font-bold">
+                        {job.match_score}% Match
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-y-1 gap-x-4 text-xs text-gray-500 mb-3">
+                      <span className="flex items-center"><FaBuilding className="mr-1" /> {job.company}</span>
+                      <span className="flex items-center"><FaMapMarkerAlt className="mr-1" /> {job.location}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-green-600">{job.salary}</span>
+                      <a
+                        href={job.apply_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Apply Now <FaExternalLinkAlt className="ml-1.5 text-[10px]" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

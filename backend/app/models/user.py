@@ -56,6 +56,9 @@ class User:
         self.password_hash = None
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
+        self.role = 'user'  # Default role: 'user' or 'admin'
+        self.status = 'active'  # Account status: 'active', 'inactive', 'deleted'
+        self.last_login = None  # Last login timestamp
         self.resumes = []  # List of resume IDs
         self.saved_jobs = []  # List of saved job IDs
         self.skills = []  # Aggregated skills from resumes
@@ -117,6 +120,9 @@ class User:
             'updated_at': self.updated_at,
             'resumes': self.resumes,
             'saved_jobs': self.saved_jobs,
+            'role': self.role,
+            'status': self.status,
+            'last_login': self.last_login,
             'skills': self.skills,
             'preferences': self.preferences
         }
@@ -139,6 +145,9 @@ class User:
             'id': str(self._id),
             'email': self.email,
             'name': self.name,
+            'role': self.role,
+            'status': self.status,
+            'last_login': self.last_login.isoformat() if self.last_login and hasattr(self.last_login, 'isoformat') else self.last_login,
             'created_at': self.created_at.isoformat(),
             'skills_count': len(self.skills),
             'resumes_count': len(self.resumes)
@@ -165,6 +174,9 @@ class User:
         user.updated_at = data.get('updated_at', datetime.utcnow())
         user.resumes = data.get('resumes', [])
         user.saved_jobs = data.get('saved_jobs', [])
+        user.role = data.get('role', 'user')
+        user.status = data.get('status', 'active')
+        user.last_login = data.get('last_login')
         user.skills = data.get('skills', [])
         user.preferences = data.get('preferences', {})
         

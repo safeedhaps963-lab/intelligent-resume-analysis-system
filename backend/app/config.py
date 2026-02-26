@@ -75,7 +75,7 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     
     # Where to look for JWT token
-    JWT_TOKEN_LOCATION = ['headers', 'cookies']
+    JWT_TOKEN_LOCATION = ['headers']
     
     # ==============================================
     # CORS (Cross-Origin Resource Sharing) Settings
@@ -92,15 +92,15 @@ class Config:
     # File Upload Configuration
     # ==============================================
     
-    # Maximum file size for uploads (16MB)
-    MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH', 16 * 1024 * 1024))
+    # Maximum file size for uploads (5MB)
+    MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH', 5 * 1024 * 1024))
     
     # Directory for storing uploaded files
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'uploads')
     
-    # Allowed file extensions for resume uploads
+    # Allowed file extensions for resume uploads (PDF and DOCX only)
     ALLOWED_EXTENSIONS = set(
-        os.environ.get('ALLOWED_EXTENSIONS', 'pdf,doc,docx,txt').split(',')
+        os.environ.get('ALLOWED_EXTENSIONS', 'pdf,docx,txt').split(',')
     )
     
     # ==============================================
@@ -119,6 +119,8 @@ class Config:
     
     # Maximum requests per minute per IP
     RATE_LIMIT = os.environ.get('RATE_LIMIT', '60/minute')
+
+
 
 
 class DevelopmentConfig(Config):

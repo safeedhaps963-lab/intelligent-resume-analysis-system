@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,50 +50,95 @@
     <style>
         /* Custom animations and styles */
         @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(1.3); opacity: 0; }
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
         }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
+
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
+
         @keyframes progressFill {
-            from { width: 0%; }
+            from {
+                width: 0%;
+            }
         }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        .animate-slide-in { animation: slideIn 0.5s ease-out; }
-        .notification-enter { animation: slideIn 0.3s ease-out; }
-        .skill-bar { animation: progressFill 1s ease-out; }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .notification-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .skill-bar {
+            animation: progressFill 1s ease-out;
+        }
+
         .glass-effect {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+
         .gradient-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .card-hover:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
+
         .ats-circle {
             stroke-dasharray: 283;
             stroke-dashoffset: 283;
             transition: stroke-dashoffset 1.5s ease-out;
         }
+
         .tab-active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         #notification-container {
             position: fixed;
             top: 80px;
@@ -100,15 +146,18 @@
             z-index: 1000;
             max-width: 350px;
         }
+
         .notification-item {
             animation: slideIn 0.3s ease-out;
         }
+
         /* Resume Preview Styles */
         .resume-preview {
             font-family: 'Georgia', serif;
             background: white;
             color: #333;
         }
+
         /* Drag and drop */
         .drop-zone.dragover {
             border-color: #667eea;
@@ -116,6 +165,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-50 min-h-screen">
     <!-- Notification Container -->
     <div id="notification-container"></div>
@@ -146,7 +196,8 @@
                     <div class="relative">
                         <button onclick="toggleNotifications()" class="relative hover:text-purple-200 transition">
                             <i class="fas fa-bell text-xl"></i>
-                            <span id="notification-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            <span id="notification-badge"
+                                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
                         </button>
                     </div>
                 </div>
@@ -237,7 +288,8 @@
 
             <!-- Feature Cards -->
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div onclick="showSection('analyzer')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-purple-500">
+                <div onclick="showSection('analyzer')"
+                    class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-purple-500">
                     <div class="w-16 h-16 gradient-bg rounded-xl flex items-center justify-center mb-4 animate-float">
                         <i class="fas fa-microscope text-white text-2xl"></i>
                     </div>
@@ -245,24 +297,31 @@
                     <p class="text-gray-600 text-sm">Extract and analyze skills from your resume using advanced NLP</p>
                 </div>
 
-                <div onclick="showSection('analyzer')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-blue-500">
-                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 animate-float" style="animation-delay: 0.5s;">
+                <div onclick="showSection('analyzer')"
+                    class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-blue-500">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-4 animate-float"
+                        style="animation-delay: 0.5s;">
                         <i class="fas fa-robot text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">ATS Score Prediction</h3>
-                    <p class="text-gray-600 text-sm">Get your resume's ATS compatibility score with detailed insights</p>
+                    <p class="text-gray-600 text-sm">Get your resume's ATS compatibility score with detailed insights
+                    </p>
                 </div>
 
-                <div onclick="showSection('builder')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-green-500">
-                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 animate-float" style="animation-delay: 1s;">
+                <div onclick="showSection('builder')"
+                    class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-green-500">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mb-4 animate-float"
+                        style="animation-delay: 1s;">
                         <i class="fas fa-magic text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">Smart Resume Builder</h3>
                     <p class="text-gray-600 text-sm">Build ATS-friendly resumes with AI-powered suggestions</p>
                 </div>
 
-                <div onclick="showSection('jobs')" class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-orange-500">
-                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-4 animate-float" style="animation-delay: 1.5s;">
+                <div onclick="showSection('jobs')"
+                    class="bg-white rounded-xl p-6 shadow-lg cursor-pointer card-hover transition-all duration-300 border-2 border-transparent hover:border-orange-500">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-4 animate-float"
+                        style="animation-delay: 1.5s;">
                         <i class="fas fa-search-dollar text-white text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">Job Recommendations</h3>
@@ -289,10 +348,13 @@
                     <h3 class="text-xl font-bold text-gray-800 mb-4">
                         <i class="fas fa-upload mr-2 text-purple-600"></i>Upload Resume
                     </h3>
-                    
-                    <div id="drop-zone" class="drop-zone border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500 transition-all"
-                         ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('file-input').click()">
-                        <input type="file" id="file-input" class="hidden" accept=".pdf,.doc,.docx,.txt" onchange="handleFileSelect(event)">
+
+                    <div id="drop-zone"
+                        class="drop-zone border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500 transition-all"
+                        ondrop="handleDrop(event)" ondragover="handleDragOver(event)"
+                        ondragleave="handleDragLeave(event)" onclick="document.getElementById('file-input').click()">
+                        <input type="file" id="file-input" class="hidden" accept=".pdf,.doc,.docx,.txt"
+                            onchange="handleFileSelect(event)">
                         <div class="text-gray-400 mb-4">
                             <i class="fas fa-cloud-upload-alt text-5xl"></i>
                         </div>
@@ -320,10 +382,15 @@
                         <label class="block text-gray-700 font-medium mb-2">
                             <i class="fas fa-briefcase mr-2 text-blue-600"></i>Target Job Description (Optional)
                         </label>
-                        <textarea id="job-description" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" rows="4" placeholder="Paste the job description here for better matching analysis..."></textarea>
+                        <textarea id="job-description"
+                            class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            rows="4"
+                            placeholder="Paste the job description here for better matching analysis..."></textarea>
                     </div>
 
-                    <button onclick="analyzeResume()" class="w-full mt-6 gradient-bg text-white py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center" id="analyze-btn">
+                    <button onclick="analyzeResume()"
+                        class="w-full mt-6 gradient-bg text-white py-4 rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center"
+                        id="analyze-btn">
                         <i class="fas fa-brain mr-2"></i>Analyze Resume
                     </button>
                 </div>
@@ -338,12 +405,13 @@
                         <div class="flex items-center justify-center">
                             <div class="relative">
                                 <svg class="w-40 h-40 transform -rotate-90">
-                                    <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="10" fill="none"/>
-                                    <circle id="ats-progress" class="ats-circle" cx="80" cy="80" r="70" stroke="url(#gradient)" stroke-width="10" fill="none" stroke-linecap="round"/>
+                                    <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="10" fill="none" />
+                                    <circle id="ats-progress" class="ats-circle" cx="80" cy="80" r="70"
+                                        stroke="url(#gradient)" stroke-width="10" fill="none" stroke-linecap="round" />
                                     <defs>
                                         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" style="stop-color:#667eea"/>
-                                            <stop offset="100%" style="stop-color:#764ba2"/>
+                                            <stop offset="0%" style="stop-color:#667eea" />
+                                            <stop offset="100%" style="stop-color:#764ba2" />
                                         </linearGradient>
                                     </defs>
                                 </svg>
@@ -376,7 +444,8 @@
                             <i class="fas fa-puzzle-piece mr-2 text-red-500"></i>Missing Skills Analysis
                         </h3>
                         <div id="missing-skills-container">
-                            <p class="text-gray-500 text-center py-8">Add a job description above to see missing skills</p>
+                            <p class="text-gray-500 text-center py-8">Add a job description above to see missing skills
+                            </p>
                         </div>
                     </div>
 
@@ -407,19 +476,29 @@
 
             <!-- Builder Tabs -->
             <div class="flex flex-wrap gap-2 mb-6">
-                <button onclick="switchBuilderTab('personal')" class="builder-tab tab-active px-6 py-3 rounded-full font-medium transition-all" data-tab="personal">
+                <button onclick="switchBuilderTab('personal')"
+                    class="builder-tab tab-active px-6 py-3 rounded-full font-medium transition-all"
+                    data-tab="personal">
                     <i class="fas fa-user mr-2"></i>Personal Info
                 </button>
-                <button onclick="switchBuilderTab('experience')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="experience">
+                <button onclick="switchBuilderTab('experience')"
+                    class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all"
+                    data-tab="experience">
                     <i class="fas fa-briefcase mr-2"></i>Experience
                 </button>
-                <button onclick="switchBuilderTab('education')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="education">
+                <button onclick="switchBuilderTab('education')"
+                    class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all"
+                    data-tab="education">
                     <i class="fas fa-graduation-cap mr-2"></i>Education
                 </button>
-                <button onclick="switchBuilderTab('skills')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="skills">
+                <button onclick="switchBuilderTab('skills')"
+                    class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all"
+                    data-tab="skills">
                     <i class="fas fa-tools mr-2"></i>Skills
                 </button>
-                <button onclick="switchBuilderTab('preview')" class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all" data-tab="preview">
+                <button onclick="switchBuilderTab('preview')"
+                    class="builder-tab px-6 py-3 rounded-full font-medium bg-gray-200 hover:bg-gray-300 transition-all"
+                    data-tab="preview">
                     <i class="fas fa-eye mr-2"></i>Preview
                 </button>
             </div>
@@ -434,37 +513,53 @@
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Full Name *</label>
-                                    <input type="text" id="resume-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="John Doe" oninput="updatePreview()">
+                                    <input type="text" id="resume-name"
+                                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="John Doe" oninput="updatePreview()">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Professional Title *</label>
-                                    <input type="text" id="resume-title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Senior Software Engineer" oninput="updatePreview()">
+                                    <input type="text" id="resume-title"
+                                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Senior Software Engineer" oninput="updatePreview()">
                                 </div>
                             </div>
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Email *</label>
-                                    <input type="email" id="resume-email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="john@example.com" oninput="updatePreview()">
+                                    <input type="email" id="resume-email"
+                                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="john@example.com" oninput="updatePreview()">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Phone *</label>
-                                    <input type="tel" id="resume-phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="+1 234 567 8900" oninput="updatePreview()">
+                                    <input type="tel" id="resume-phone"
+                                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="+1 234 567 8900" oninput="updatePreview()">
                                 </div>
                             </div>
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Location</label>
-                                    <input type="text" id="resume-location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="New York, NY" oninput="updatePreview()">
+                                    <input type="text" id="resume-location"
+                                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="New York, NY" oninput="updatePreview()">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">LinkedIn</label>
-                                    <input type="url" id="resume-linkedin" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="linkedin.com/in/johndoe" oninput="updatePreview()">
+                                    <input type="url" id="resume-linkedin"
+                                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="linkedin.com/in/johndoe" oninput="updatePreview()">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-gray-700 font-medium mb-2">Professional Summary</label>
-                                <textarea id="resume-summary" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" rows="4" placeholder="Experienced software engineer with 5+ years..." oninput="updatePreview()"></textarea>
-                                <button onclick="generateSummary()" class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium">
+                                <textarea id="resume-summary"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                    rows="4" placeholder="Experienced software engineer with 5+ years..."
+                                    oninput="updatePreview()"></textarea>
+                                <button onclick="generateSummary()"
+                                    class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium">
                                     <i class="fas fa-magic mr-1"></i>Generate AI Summary
                                 </button>
                             </div>
@@ -475,7 +570,8 @@
                     <div id="experience-tab" class="builder-tab-content hidden">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-xl font-bold text-gray-800">Work Experience</h3>
-                            <button onclick="addExperience()" class="gradient-bg text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
+                            <button onclick="addExperience()"
+                                class="gradient-bg text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
                                 <i class="fas fa-plus mr-2"></i>Add Experience
                             </button>
                         </div>
@@ -488,7 +584,8 @@
                     <div id="education-tab" class="builder-tab-content hidden">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-xl font-bold text-gray-800">Education</h3>
-                            <button onclick="addEducation()" class="gradient-bg text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
+                            <button onclick="addEducation()"
+                                class="gradient-bg text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90">
                                 <i class="fas fa-plus mr-2"></i>Add Education
                             </button>
                         </div>
@@ -507,12 +604,17 @@
                                     <!-- Skills tags will be added here -->
                                 </div>
                                 <div class="flex gap-2">
-                                    <input type="text" id="new-tech-skill" class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Add a skill (e.g., Python, React, AWS)" onkeypress="if(event.key==='Enter')addSkill('technical')">
-                                    <button onclick="addSkill('technical')" class="gradient-bg text-white px-4 rounded-lg">
+                                    <input type="text" id="new-tech-skill"
+                                        class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Add a skill (e.g., Python, React, AWS)"
+                                        onkeypress="if(event.key==='Enter')addSkill('technical')">
+                                    <button onclick="addSkill('technical')"
+                                        class="gradient-bg text-white px-4 rounded-lg">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
-                                <button onclick="suggestSkills()" class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium">
+                                <button onclick="suggestSkills()"
+                                    class="mt-2 text-purple-600 hover:text-purple-800 text-sm font-medium">
                                     <i class="fas fa-lightbulb mr-1"></i>AI Skill Suggestions
                                 </button>
                             </div>
@@ -522,7 +624,10 @@
                                     <!-- Soft skills tags will be added here -->
                                 </div>
                                 <div class="flex gap-2">
-                                    <input type="text" id="new-soft-skill" class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="Add a skill (e.g., Leadership, Communication)" onkeypress="if(event.key==='Enter')addSkill('soft')">
+                                    <input type="text" id="new-soft-skill"
+                                        class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Add a skill (e.g., Leadership, Communication)"
+                                        onkeypress="if(event.key==='Enter')addSkill('soft')">
                                     <button onclick="addSkill('soft')" class="gradient-bg text-white px-4 rounded-lg">
                                         <i class="fas fa-plus"></i>
                                     </button>
@@ -546,15 +651,18 @@
                         <div class="gradient-bg text-white p-4 flex items-center justify-between">
                             <span class="font-medium"><i class="fas fa-eye mr-2"></i>Live Preview</span>
                             <div class="flex gap-2">
-                                <button onclick="downloadResume('pdf')" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm">
+                                <button onclick="downloadResume('pdf')"
+                                    class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm">
                                     <i class="fas fa-download mr-1"></i>PDF
                                 </button>
-                                <button onclick="downloadResume('docx')" class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm">
+                                <button onclick="downloadResume('docx')"
+                                    class="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm">
                                     <i class="fas fa-file-word mr-1"></i>DOCX
                                 </button>
                             </div>
                         </div>
-                        <div id="resume-preview" class="resume-preview p-8 min-h-[600px] text-sm overflow-y-auto max-h-[800px]">
+                        <div id="resume-preview"
+                            class="resume-preview p-8 min-h-[600px] text-sm overflow-y-auto max-h-[800px]">
                             <div class="text-center text-gray-400 py-20">
                                 <i class="fas fa-file-alt text-5xl mb-4"></i>
                                 <p>Start filling the form to see your resume preview</p>
@@ -582,11 +690,15 @@
                 <div class="grid md:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Job Title</label>
-                        <input type="text" id="job-search" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="e.g., Software Engineer" oninput="filterJobs()">
+                        <input type="text" id="job-search"
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            placeholder="e.g., Software Engineer" oninput="filterJobs()">
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Location</label>
-                        <select id="job-location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterJobs()">
+                        <select id="job-location"
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            onchange="filterJobs()">
                             <option value="">All Locations</option>
                             <option value="remote">Remote</option>
                             <option value="new-york">New York</option>
@@ -597,7 +709,9 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Experience Level</label>
-                        <select id="job-experience" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterJobs()">
+                        <select id="job-experience"
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            onchange="filterJobs()">
                             <option value="">All Levels</option>
                             <option value="entry">Entry Level</option>
                             <option value="mid">Mid Level</option>
@@ -607,7 +721,9 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Match Score</label>
-                        <select id="job-match" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterJobs()">
+                        <select id="job-match"
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                            onchange="filterJobs()">
                             <option value="">All Matches</option>
                             <option value="90">90%+ Match</option>
                             <option value="80">80%+ Match</option>
@@ -618,7 +734,8 @@
             </div>
 
             <!-- Real-time Updates Toggle -->
-            <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-4 mb-8 text-white flex items-center justify-between">
+            <div
+                class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-4 mb-8 text-white flex items-center justify-between">
                 <div class="flex items-center">
                     <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-4">
                         <i class="fas fa-bell"></i>
@@ -629,8 +746,11 @@
                     </div>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="realtime-toggle" class="sr-only peer" onchange="toggleRealtimeNotifications()">
-                    <div class="w-14 h-7 bg-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500"></div>
+                    <input type="checkbox" id="realtime-toggle" class="sr-only peer"
+                        onchange="toggleRealtimeNotifications()">
+                    <div
+                        class="w-14 h-7 bg-white/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-500">
+                    </div>
                 </label>
             </div>
 
@@ -767,7 +887,7 @@
         // ==========================================
         // NAVIGATION FUNCTIONS
         // ==========================================
-        
+
         /**
          * showSection - Switches between main sections of the application
          * @param {string} sectionName - The section to display (dashboard, analyzer, builder, jobs)
@@ -781,12 +901,12 @@
             // Show the selected section
             document.getElementById(`${sectionName}-section`).classList.remove('hidden');
             appState.currentSection = sectionName;
-            
+
             // Load section-specific content
             if (sectionName === 'jobs') {
                 loadJobs();
             }
-            
+
             // Close mobile menu if open
             document.getElementById('mobile-menu').classList.add('hidden');
         }
@@ -803,7 +923,7 @@
         // ==========================================
         // FILE HANDLING (Resume Upload)
         // ==========================================
-        
+
         /**
          * handleDragOver - Handles drag over event for file drop zone
          * @param {Event} e - The drag event
@@ -835,7 +955,7 @@
             e.preventDefault();
             e.stopPropagation();
             document.getElementById('drop-zone').classList.remove('dragover');
-            
+
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 processFile(files[0]);
@@ -860,10 +980,10 @@
          */
         function processFile(file) {
             // Validate file type
-            const validTypes = ['application/pdf', 'application/msword', 
-                              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                              'text/plain'];
-            
+            const validTypes = ['application/pdf', 'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain'];
+
             if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|doc|docx|txt)$/i)) {
                 showNotification('error', 'Invalid File', 'Please upload a PDF, DOC, DOCX, or TXT file');
                 return;
@@ -881,7 +1001,7 @@
             document.getElementById('file-info').classList.remove('hidden');
             document.getElementById('file-name').textContent = file.name;
             document.getElementById('file-size').textContent = formatFileSize(file.size);
-            
+
             showNotification('success', 'File Uploaded', `${file.name} is ready for analysis`);
         }
 
@@ -910,7 +1030,7 @@
         // ==========================================
         // RESUME ANALYSIS (Simulates Flask Backend)
         // ==========================================
-        
+
         /**
          * analyzeResume - Main function to analyze the uploaded resume
          * In production, this would make an API call to Flask backend
@@ -980,13 +1100,13 @@
             };
 
             const overallATS = Math.round(
-                Object.values(atsBreakdown).reduce((acc, item) => acc + item.score, 0) / 
+                Object.values(atsBreakdown).reduce((acc, item) => acc + item.score, 0) /
                 Object.keys(atsBreakdown).length
             );
 
             // Get job description for missing skills analysis
             const jobDescription = document.getElementById('job-description').value;
-            
+
             // Extract skills from job description to find missing ones
             const missingSkills = analyzeMissingSkills(extractedSkills, jobDescription);
 
@@ -1068,14 +1188,14 @@
                     data: ['Machine Learning', 'TensorFlow', 'PyTorch', 'Pandas', 'NumPy', 'Spark', 'Hadoop', 'Data Analysis', 'SQL'],
                     web: ['HTML', 'CSS', 'REST API', 'GraphQL', 'WebSocket', 'OAuth', 'JWT', 'Microservices']
                 },
-                soft: ['Leadership', 'Communication', 'Problem Solving', 'Team Collaboration', 'Time Management', 
-                       'Critical Thinking', 'Adaptability', 'Project Management', 'Mentoring', 'Public Speaking']
+                soft: ['Leadership', 'Communication', 'Problem Solving', 'Team Collaboration', 'Time Management',
+                    'Critical Thinking', 'Adaptability', 'Project Management', 'Mentoring', 'Public Speaking']
             };
 
             // Parse job description for skill keywords (simulated NLP)
             const jobDescLower = jobDescription.toLowerCase();
             const detectedJobSkills = [];
-            
+
             // Check technical skills in job description
             Object.values(allJobSkills.technical).forEach(skillList => {
                 skillList.forEach(skill => {
@@ -1182,9 +1302,9 @@
             }
 
             // Show match percentage
-            const matchColor = missingSkills.matchPercentage >= 70 ? 'green' : 
-                              missingSkills.matchPercentage >= 50 ? 'yellow' : 'red';
-            
+            const matchColor = missingSkills.matchPercentage >= 70 ? 'green' :
+                missingSkills.matchPercentage >= 50 ? 'yellow' : 'red';
+
             container.innerHTML = `
                 <!-- Match Score Header -->
                 <div class="bg-gradient-to-r from-${matchColor}-50 to-${matchColor}-100 rounded-lg p-4 mb-6">
@@ -1298,11 +1418,11 @@
          */
         function addMissingSkillToBuilder(skill, type = 'technical') {
             const container = document.getElementById(`${type}-skills-container`);
-            
+
             // Check if skill already exists
             const existingSkills = Array.from(container.children)
                 .map(el => el.textContent.trim().toLowerCase());
-            
+
             if (existingSkills.includes(skill.toLowerCase())) {
                 showNotification('warning', 'Skill Exists', `${skill} is already in your skills list`);
                 return;
@@ -1350,7 +1470,7 @@
                 const container = document.getElementById('technical-skills-container');
                 const existingSkills = Array.from(container.children)
                     .map(el => el.textContent.trim().toLowerCase());
-                
+
                 if (!existingSkills.includes(skill.toLowerCase())) {
                     const span = document.createElement('span');
                     span.className = 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex items-center gap-2';
@@ -1371,7 +1491,7 @@
                 const container = document.getElementById('soft-skills-container');
                 const existingSkills = Array.from(container.children)
                     .map(el => el.textContent.trim().toLowerCase());
-                
+
                 if (!existingSkills.includes(skill.toLowerCase())) {
                     const span = document.createElement('span');
                     span.className = 'px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm flex items-center gap-2';
@@ -1389,7 +1509,7 @@
 
             updatePreview();
             showNotification('success', 'Skills Added', `Added ${addedCount} missing skills to your resume builder`);
-            
+
             // Navigate to builder
             setTimeout(() => {
                 showSection('builder');
@@ -1404,11 +1524,11 @@
         function displayATSScore(score) {
             const circle = document.getElementById('ats-progress');
             const scoreDisplay = document.getElementById('ats-score');
-            
+
             // Animate the circular progress
             const circumference = 2 * Math.PI * 70;
             const offset = circumference - (score / 100) * circumference;
-            
+
             setTimeout(() => {
                 circle.style.strokeDashoffset = offset;
             }, 100);
@@ -1512,13 +1632,13 @@
          */
         function updateDashboardStats(results) {
             document.getElementById('dashboard-ats').textContent = results.atsScore + '%';
-            document.getElementById('dashboard-skills').textContent = 
+            document.getElementById('dashboard-skills').textContent =
                 Object.values(results.skills.technical).reduce((acc, cat) => acc + cat.skills.length, 0);
             document.getElementById('dashboard-jobs').textContent = results.matchingJobs;
-            
+
             // Calculate total improvements including missing skills
-            const missingSkillsCount = results.missingSkills.critical.length + 
-                                       results.missingSkills.recommended.length;
+            const missingSkillsCount = results.missingSkills.critical.length +
+                results.missingSkills.recommended.length;
             const recommendationsCount = results.recommendations.filter(r => r.type === 'improvement').length;
             document.getElementById('dashboard-improvements').textContent = missingSkillsCount + recommendationsCount;
         }
@@ -1526,7 +1646,7 @@
         // ==========================================
         // RESUME BUILDER FUNCTIONS
         // ==========================================
-        
+
         /**
          * switchBuilderTab - Switches between resume builder tabs
          * @param {string} tabName - The tab to switch to
@@ -1554,7 +1674,7 @@
         function addExperience() {
             const container = document.getElementById('experience-list');
             const id = Date.now();
-            
+
             const div = document.createElement('div');
             div.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
             div.id = `exp-${id}`;
@@ -1590,7 +1710,7 @@
         function addEducation() {
             const container = document.getElementById('education-list');
             const id = Date.now();
-            
+
             const div = document.createElement('div');
             div.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
             div.id = `edu-${id}`;
@@ -1632,7 +1752,7 @@
         function addSkill(type) {
             const input = document.getElementById(`new-${type === 'technical' ? 'tech' : 'soft'}-skill`);
             const skill = input.value.trim();
-            
+
             if (!skill) return;
 
             const container = document.getElementById(`${type}-skills-container`);
@@ -1645,16 +1765,16 @@
                 </button>
             `;
             container.appendChild(span);
-            
+
             input.value = '';
-            
+
             // Update state
             if (type === 'technical') {
                 appState.builderData.technicalSkills.push(skill);
             } else {
                 appState.builderData.softSkills.push(skill);
             }
-            
+
             updatePreview();
         }
 
@@ -1707,9 +1827,9 @@
         function generateSummary() {
             const title = document.getElementById('resume-title').value || 'Professional';
             const skills = appState.builderData.technicalSkills.slice(0, 4).join(', ') || 'relevant technologies';
-            
+
             const summary = `Results-driven ${title} with proven expertise in ${skills}. Passionate about delivering high-quality solutions and driving business value through innovative technology. Strong communicator with a track record of collaborating effectively with cross-functional teams to achieve project goals.`;
-            
+
             document.getElementById('resume-summary').value = summary;
             showNotification('success', 'Summary Generated', 'AI-powered summary added');
             updatePreview();
@@ -1722,17 +1842,17 @@
         function enhanceDescription(button) {
             const textarea = button.previousElementSibling;
             const original = textarea.value || "Worked on various projects";
-            
+
             // Simple enhancement (in production, use LLM)
             const enhanced = original
                 .replace(/worked on/gi, 'Spearheaded')
                 .replace(/helped/gi, 'Contributed to')
                 .replace(/made/gi, 'Developed')
                 .replace(/did/gi, 'Executed');
-            
+
             const actionVerbs = ['Implemented', 'Optimized', 'Architected', 'Led', 'Delivered'];
             const randomVerb = actionVerbs[Math.floor(Math.random() * actionVerbs.length)];
-            
+
             textarea.value = enhanced || `${randomVerb} key initiatives resulting in measurable improvements to team productivity and project delivery.`;
             updatePreview();
             showNotification('success', 'Enhanced', 'Description enhanced with action verbs');
@@ -1744,7 +1864,7 @@
          */
         function updatePreview() {
             const preview = document.getElementById('resume-preview');
-            
+
             // Collect personal info
             const name = document.getElementById('resume-name').value || 'Your Name';
             const title = document.getElementById('resume-title').value || 'Professional Title';
@@ -1762,7 +1882,7 @@
                 const start = exp.querySelector('.exp-start')?.value || '';
                 const end = exp.querySelector('.exp-end')?.value || '';
                 const desc = exp.querySelector('.exp-desc')?.value || '';
-                
+
                 if (expTitle || company) {
                     experienceHTML += `
                         <div class="mb-4">
@@ -1784,7 +1904,7 @@
                 const field = edu.querySelector('.edu-field')?.value || '';
                 const school = edu.querySelector('.edu-school')?.value || '';
                 const year = edu.querySelector('.edu-year')?.value || '';
-                
+
                 if (degree || school) {
                     educationHTML += `
                         <div class="mb-3">
@@ -1856,7 +1976,7 @@
          */
         function downloadResume(format) {
             showNotification('info', 'Download Started', `Generating ${format.toUpperCase()} file...`);
-            
+
             // Simulate download delay
             setTimeout(() => {
                 showNotification('success', 'Download Ready', `Your resume.${format} is ready!`);
@@ -1867,7 +1987,7 @@
         // ==========================================
         // JOB RECOMMENDATIONS
         // ==========================================
-        
+
         /**
          * loadJobs - Loads and displays job recommendations
          * In production, this fetches from Flask API connected to MongoDB
@@ -1900,11 +2020,10 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="inline-flex items-center px-3 py-1 rounded-full ${
-                                job.matchScore >= 90 ? 'bg-green-100 text-green-700' :
-                                job.matchScore >= 80 ? 'bg-blue-100 text-blue-700' :
-                                'bg-orange-100 text-orange-700'
-                            }">
+                            <div class="inline-flex items-center px-3 py-1 rounded-full ${job.matchScore >= 90 ? 'bg-green-100 text-green-700' :
+                        job.matchScore >= 80 ? 'bg-blue-100 text-blue-700' :
+                            'bg-orange-100 text-orange-700'
+                    }">
                                 <i class="fas fa-chart-line mr-1"></i>
                                 ${job.matchScore}% Match
                             </div>
@@ -1950,8 +2069,8 @@
             const matchScore = parseInt(document.getElementById('job-match').value) || 0;
 
             const filtered = sampleJobs.filter(job => {
-                const matchesSearch = job.title.toLowerCase().includes(searchTerm) || 
-                                     job.company.toLowerCase().includes(searchTerm);
+                const matchesSearch = job.title.toLowerCase().includes(searchTerm) ||
+                    job.company.toLowerCase().includes(searchTerm);
                 const matchesLocation = !location || job.type === location;
                 const matchesExperience = !experience || job.level === experience;
                 const matchesScore = job.matchScore >= matchScore;
@@ -1983,14 +2102,14 @@
         // ==========================================
         // REAL-TIME NOTIFICATIONS
         // ==========================================
-        
+
         /**
          * toggleRealtimeNotifications - Toggles real-time job notifications
          * In production, this connects to WebSocket/Flask-SocketIO
          */
         function toggleRealtimeNotifications() {
             appState.realtimeEnabled = document.getElementById('realtime-toggle').checked;
-            
+
             if (appState.realtimeEnabled) {
                 showNotification('success', 'Notifications Enabled', 'You will receive real-time job alerts');
                 // Start simulated notifications
@@ -2021,7 +2140,7 @@
                 }
 
                 const job = newJobs[index];
-                showNotification('job', 'New Job Match!', 
+                showNotification('job', 'New Job Match!',
                     `${job.title} at ${job.company} (${job.match}% match)`, true);
                 index++;
             }, 5000);
@@ -2037,7 +2156,7 @@
         function showNotification(type, title, message, isJobAlert = false) {
             const container = document.getElementById('notification-container');
             const id = Date.now();
-            
+
             const colors = {
                 success: 'bg-green-500',
                 error: 'bg-red-500',
@@ -2104,17 +2223,17 @@
         // ==========================================
         // INITIALIZATION
         // ==========================================
-        
+
         /**
          * Initialize the application when DOM is loaded
          */
         document.addEventListener('DOMContentLoaded', () => {
             console.log('ResumeAI Pro initialized');
-            
+
             // Add default experience and education entries
             addExperience();
             addEducation();
-            
+
             // Initialize jobs
             loadJobs();
         });
@@ -2269,4 +2388,5 @@
         */
     </script>
 </body>
+
 </html>

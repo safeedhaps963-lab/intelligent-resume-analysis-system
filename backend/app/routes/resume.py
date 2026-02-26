@@ -14,6 +14,8 @@ All endpoints require authentication except where noted.
 """
 
 import os
+import uuid
+import json
 from datetime import datetime
 from typing import Optional
 
@@ -26,6 +28,7 @@ from bson import ObjectId
 from app import mongo  # MongoDB instance
 from app.services.nlp_analyzer import nlp_analyzer  # NLP service
 from app.services.ats_scorer import ats_scorer  # ATS scoring service
+from app.services.missing_skills import missing_skills_analyzer  # Skill gap analyzer
 from app.services.ats_converter import ats_converter  # ATS converter service
 from app.utils.pdf_parser import parse_resume_file  # File parser utility
 
@@ -51,7 +54,7 @@ def allowed_file(filename: str) -> bool:
     # Get allowed extensions from config
     allowed_extensions = current_app.config.get(
         'ALLOWED_EXTENSIONS', 
-        {'pdf', 'doc', 'docx', 'txt'}
+        {'pdf', 'docx', 'doc', 'txt'}
     )
     
     # Check if filename has extension and it's in allowed list
@@ -107,7 +110,7 @@ def upload_resume():
     if not allowed_file(file.filename):
         return jsonify({
             'error': 'Invalid file type',
-            'message': 'Allowed types: PDF, DOC, DOCX, TXT'
+            'message': 'Allowed types: PDF and DOCX only (Limit: 5MB)'
         }), 400
     
     # ==========================================
@@ -152,6 +155,15 @@ def upload_resume():
     # Store in MongoDB
     # ==========================================
     
+    # Optional: Mark previous resumes as inactive (archived)
+    try:
+        mongo.db.resumes.update_many(
+            {'user_id': user_id, 'is_active': True},
+            {'$set': {'is_active': False}}
+        )
+    except Exception as e:
+        print(f"WARNING: Failed to archive old resumes: {str(e)}")
+
     # Create resume document
     resume_doc = {
         'user_id': user_id,                    # Owner of the resume
@@ -161,7 +173,8 @@ def upload_resume():
         'file_size': os.path.getsize(file_path),
         'upload_date': datetime.utcnow(),       # Upload timestamp
         'analyzed': False,                       # Analysis status
-        'analysis_results': None                 # Will store analysis
+        'analysis_results': None,                # Will store analysis
+        'is_active': True                        # Newest is active
     }
     
     # Insert into MongoDB and get the generated ID
@@ -182,6 +195,48 @@ def upload_resume():
             'word_count': len(resume_text.split())
         }
     }), 200
+@resume_bp.route('/latest', methods=['GET'])
+@jwt_required()
+def get_latest_resume():
+    """
+    Get the user's most recently uploaded active resume.
+    """
+    user_id = get_jwt_identity()
+    
+    try:
+        resume = mongo.db.resumes.find_one(
+            {'user_id': user_id, 'is_active': True},
+            {'content': 0}  # Exclude content
+        )
+        
+        if not resume:
+            # Fallback to the latest uploaded by date
+            resume = mongo.db.resumes.find_one(
+                {'user_id': user_id},
+                {'content': 0},
+                sort=[('upload_date', -1)]
+            )
+            
+        if not resume:
+            return jsonify({
+                'success': False, 
+                'message': 'No resume found. Please upload one.'
+            }), 404
+            
+        resume['id'] = str(resume['_id'])
+        del resume['_id']
+        
+        # Ensure upload_date is stringified
+        if 'upload_date' in resume and hasattr(resume['upload_date'], 'isoformat'):
+            resume['upload_date'] = resume['upload_date'].isoformat()
+            
+        return jsonify({
+            'success': True,
+            'data': resume
+        }), 200
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 @resume_bp.route('/analyze', methods=['POST'])
@@ -235,27 +290,69 @@ def analyze_resume():
     # Perform NLP Analysis
     # ==========================================
     
-    resume_text = resume['content']
-    
-    # Use NLP analyzer to extract information
-    analysis_results = nlp_analyzer.analyze_resume(
-        resume_text, 
-        job_description
-    )
+    try:
+        # Get resume content
+        resume_text = resume.get('content')
+        if not resume_text:
+            return jsonify({
+                'success': False,
+                'error': 'Missing content',
+                'message': 'This resume has no text content to analyze.'
+            }), 400
+
+        # Use NLP analyzer to extract information
+        analysis_results = nlp_analyzer.analyze_resume(
+            resume_text, 
+            job_description
+        )
+        
+        # Extract flattened resume skills for missing skills analyzer
+        resume_skills_flat = []
+        for cat_data in analysis_results.get('skills', {}).values():
+            resume_skills_flat.extend(cat_data.get('skills', []))
+        
+        # Perform detailed missing skills analysis
+        missing_analysis = missing_skills_analyzer.analyze(
+            resume_skills_flat,
+            job_description
+        )
+        
+        # Merge results
+        analysis_results['missing_skills_detailed'] = missing_analysis
+        
+    except Exception as e:
+        import traceback
+        current_app.logger.error(f"Analysis failed: {str(e)}")
+        current_app.logger.error(traceback.format_exc())
+        return jsonify({
+            'success': False,
+            'error': 'Analysis engine failure',
+            'message': str(e)
+        }), 500
     
     # ==========================================
     # Update MongoDB Document
     # ==========================================
     
+    # Get user details for metadata
+    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    user_name = user_data.get('name', 'Unknown') if user_data else 'Unknown'
+    user_email = user_data.get('email', 'Unknown') if user_data else 'Unknown'
+
     # Store analysis results in the resume document
     mongo.db.resumes.update_one(
         {'_id': ObjectId(resume_id)},
         {
             '$set': {
+                'user_id': user_id,
+                'user_name': user_name,
+                'user_email': user_email,
                 'analyzed': True,
                 'analysis_results': analysis_results,
                 'analysis_date': datetime.utcnow(),
-                'job_description': job_description
+                'job_description': job_description,
+                'status': 'Analyzed',
+                'created_at': resume.get('created_at', datetime.utcnow())
             }
         }
     )
@@ -272,10 +369,85 @@ def analyze_resume():
             'experience': analysis_results['experience'],
             'education': analysis_results['education'],
             'match_score': analysis_results['match_score'],
-            'missing_skills': analysis_results['missing_skills'],
+            'missing_skills': analysis_results['missing_skills'],  # Keep for backward compatibility
+            'missing_skills_detailed': analysis_results.get('missing_skills_detailed'),
             'total_skills': analysis_results['total_skills_found']
         }
     }), 200
+
+
+@resume_bp.route('/skill-analysis', methods=['POST'])
+@jwt_required()
+def skill_analysis():
+    """
+    Perform dedicated skill analysis and store results separately.
+    """
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    
+    resume_id = data.get('resume_id')
+    job_description = data.get('job_description', '')
+    
+    if not resume_id:
+        return jsonify({'error': 'resume_id is required'}), 400
+    
+    try:
+        resume = mongo.db.resumes.find_one({
+            '_id': ObjectId(resume_id),
+            'user_id': user_id
+        })
+    except Exception:
+        return jsonify({'error': 'Invalid resume ID'}), 400
+    
+    if not resume:
+        return jsonify({'error': 'Resume not found'}), 404
+    
+    try:
+        # Perform NLP Analysis
+        resume_text = resume.get('content')
+        analysis_results = nlp_analyzer.analyze_resume(resume_text, job_description)
+        
+        # Skill analysis
+        resume_skills_flat = []
+        for cat_data in analysis_results.get('skills', {}).values():
+            resume_skills_flat.extend(cat_data.get('skills', []))
+            
+        missing_analysis = missing_skills_analyzer.analyze(
+            resume_skills_flat,
+            job_description,
+            category=analysis_results.get('category', 'Professional')
+        )
+        
+        skill_data = {
+            'user_id': user_id,
+            'resume_id': str(resume_id),
+            'skills': analysis_results['skills'],
+            'missing_skills': missing_analysis,
+            'match_score': analysis_results['match_score'],
+            'analyzed_at': datetime.utcnow()
+        }
+        
+        # Store separately
+        mongo.db.skill_analysis.update_one(
+            {'resume_id': str(resume_id), 'user_id': user_id},
+            {'$set': skill_data},
+            upsert=True
+        )
+        
+        return jsonify({
+            'success': True,
+            'data': skill_data
+        }), 200
+        
+    except Exception as e:
+        import traceback
+        current_app.logger.error(f"Skill analysis failed: {str(e)}")
+        current_app.logger.error(traceback.format_exc())
+        return jsonify({
+            'success': False, 
+            'error': 'Analysis engine failure',
+            'message': str(e)
+        }), 500
 
 
 @resume_bp.route('/ats-score', methods=['POST'])
@@ -322,31 +494,102 @@ def calculate_ats_score():
     # Calculate ATS Score
     # ==========================================
     
-    # Use ATS scorer service
-    ats_results = ats_scorer.calculate_ats_score(
-        resume['content'],
-        job_description
-    )
+    try:
+        # Use ATS scorer service
+        ats_results = ats_scorer.calculate_ats_score(
+            resume['content'],
+            job_description
+        )
+    except Exception as e:
+        import traceback
+        current_app.logger.error(f"ATS scoring failed: {str(e)}")
+        current_app.logger.error(traceback.format_exc())
+        return jsonify({
+            'success': False,
+            'error': 'ATS scoring failure',
+            'message': str(e)
+        }), 500
     
     # ==========================================
     # Store Results
     # ==========================================
     
-    # Update resume with ATS results
+    # Get user details for metadata
+    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    user_name = user_data.get('name', 'Unknown') if user_data else 'Unknown'
+    user_email = user_data.get('email', 'Unknown') if user_data else 'Unknown'
+
+    # Update resume with ATS results (legacy support)
     mongo.db.resumes.update_one(
         {'_id': ObjectId(resume_id)},
         {
             '$set': {
                 'ats_score': ats_results['overall_score'],
                 'ats_breakdown': ats_results['breakdown'],
-                'ats_date': datetime.utcnow()
+                'ats_date': datetime.utcnow(),
+                'status': 'Scored'
             }
         }
+    )
+
+    # Store ATS results separately
+    ats_data = {
+        'user_id': user_id,
+        'resume_id': str(resume_id),
+        'overall_score': ats_results['overall_score'],
+        'breakdown': ats_results['breakdown'],
+        'recommendations': ats_results['recommendations'],
+        'scored_at': datetime.utcnow()
+    }
+    
+    mongo.db.ats_results.update_one(
+        {'resume_id': str(resume_id), 'user_id': user_id},
+        {'$set': ats_data},
+        upsert=True
     )
     
     return jsonify({
         'success': True,
         'data': ats_results
+    }), 200
+
+@resume_bp.route('/save', methods=['POST'])
+@jwt_required()
+def save_resume_metadata():
+    """
+    Manually save or update resume metadata.
+    """
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    resume_id = data.get('resume_id')
+    
+    if not resume_id:
+        return jsonify({'error': 'resume_id is required'}), 400
+        
+    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    if not user_data:
+        return jsonify({'error': 'User not found'}), 404
+        
+    update_fields = {
+        'user_id': user_id,
+        'user_name': user_data.get('name'),
+        'user_email': user_data.get('email'),
+        'updated_at': datetime.utcnow()
+    }
+    
+    if 'ats_score' in data:
+        update_fields['ats_score'] = data['ats_score']
+    if 'status' in data:
+        update_fields['status'] = data['status']
+        
+    mongo.db.resumes.update_one(
+        {'_id': ObjectId(resume_id), 'user_id': user_id},
+        {'$set': update_fields}
+    )
+    
+    return jsonify({
+        'success': True,
+        'message': 'Resume metadata saved successfully'
     }), 200
 
 
@@ -541,28 +784,70 @@ def convert_ats():
         
         # Parse resume text
         resume_text = parse_resume_file(temp_path)
+        current_app.logger.info(f"DEBUG: Extracted text length for {filename}: {len(resume_text) if resume_text else 0}")
         
-        if not resume_text or len(resume_text) < 10:
+        if not resume_text:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
+            current_app.logger.error(f"DEBUG: Extraction failed for {filename}")
             return jsonify({
-                'error': 'Invalid resume',
-                'message': 'Could not extract text from resume file'
+                'error': 'Extraction Failed',
+                'message': 'Could not extract any text from this file. This appears to be a scanned image or "flattened" PDF. Please upload a standard digital PDF or DOCX file.'
             }), 400
+            
+        if resume_text == "__IMAGE_ONLY_PDF__":
+             if os.path.exists(temp_path):
+                os.remove(temp_path)
+             return jsonify({
+                'error': 'Scanned Document Detected',
+                'message': 'This PDF contains only images and no selectable text. For accurate analysis, please provide a digital version exported from Word, Canva (without flattening), or Google Docs.'
+            }), 400
+
+        if len(resume_text) < 20:
+            # Still proceed but warn or logs? Let's just allow it if it's not empty, 
+            # but maybe 10 was too strict for some very minimalist templates.
+            # Actually, let's keep it but make the error better.
+            pass
+        # Use ATS Converter
+        result = ats_converter.convert_resume(resume_text, job_keywords)
         
-        # Convert to ATS-friendly format
-        ats_resume = ats_converter.convert_resume(resume_text, job_keywords)
-        
+        # Get user details for metadata
+        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        user_name = user_data.get('name', 'Unknown') if user_data else 'Unknown'
+        user_email = user_data.get('email', 'Unknown') if user_data else 'Unknown'
+
+        # Ensure contact section has at least the name if extraction failed
+        if not result.get('sections'):
+            result['sections'] = {}
+            
+        if not result['sections'].get('contact') or len(result['sections']['contact'].strip()) < 2:
+            # Fallback to user profile name
+            result['sections']['contact'] = user_name
+
+        # Save to database
+        resume_id = str(uuid.uuid4())
+        mongo.db.ats_resumes.insert_one({
+            'resume_id': resume_id,
+            'user_id': user_id,
+            'user_name': user_name,
+            'user_email': user_email,
+            'ats_resume': result['ats_resume'],
+            'sections': result['sections'],
+            'created_at': datetime.utcnow()
+        })
+
         # Clean up temp file
         if os.path.exists(temp_path):
             os.remove(temp_path)
-        
+
         return jsonify({
             'success': True,
             'data': {
+                'resume_id': resume_id,
+                'ats_resume': result['ats_resume'],
+                'sections': result['sections'],
                 'original_length': len(resume_text),
-                'converted_length': len(ats_resume),
-                'ats_resume': ats_resume
+                'converted_length': len(result['ats_resume'])
             }
         }), 200
         
@@ -579,3 +864,31 @@ def convert_ats():
             'error': 'Conversion failed',
             'message': str(e)
         }), 500
+@resume_bp.route('/download-ats-docx', methods=['POST'])
+@jwt_required()
+def download_ats_docx():
+    """Download the converted ATS resume as a DOCX file."""
+    try:
+        data = request.get_json()
+        sections = data.get('sections')
+        
+        if not sections:
+            # Fallback to parsing text if sections not provided
+            ats_text = data.get('ats_resume')
+            if not ats_text:
+                return jsonify({'error': 'No resume data provided'}), 400
+            sections = ats_converter._extract_sections(ats_text)
+            
+        docx_bytes = ats_converter.generate_docx(sections)
+        
+        from flask import send_file
+        import io
+        
+        return send_file(
+            io.BytesIO(docx_bytes),
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            as_attachment=True,
+            download_name='ats_friendly_resume.docx'
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

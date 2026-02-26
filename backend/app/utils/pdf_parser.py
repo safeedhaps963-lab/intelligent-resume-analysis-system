@@ -77,58 +77,106 @@ def parse_pdf(file_path: str) -> str:
         text = parse_pdf('/uploads/resume.pdf')
     """
     try:
-        # Import PyPDF2 - installed via requirements.txt
-        from PyPDF2 import PdfReader
-        
-        # Open and read PDF
-        reader = PdfReader(file_path)
-        
-        # Extract text from all pages
-        text_parts = []
-        
-        for page_num, page in enumerate(reader.pages):
-            # Extract text from page
-            page_text = page.extract_text()
+        # 1. New Primary Engine: PyMuPDF (fitz) - Extremely robust and fast
+        try:
+            import fitz
+            doc = fitz.open(file_path)
+            text_parts = []
+            has_images = False
             
-            if page_text:
-                # Clean up the text
-                page_text = _clean_extracted_text(page_text)
-                text_parts.append(page_text)
-        
-        # Join all pages with double newline
-        full_text = '\n\n'.join(text_parts)
-        
-        return full_text.strip()
+            for page in doc:
+                # Get text blocks and sort by y coordinate (top to bottom), then x (left to right)
+                blocks = page.get_text("blocks")
+                # block structure: (x0, y0, x1, y1, "text", block_no, block_type)
+                blocks.sort(key=lambda b: (b[1], b[0]))
+                
+                page_text = ""
+                for b in blocks:
+                    if b[4].strip():
+                        page_text += b[4] + "\n"
+                
+                if page_text:
+                    # Basic normalization
+                    page_text = page_text.replace('\u0000', '') # Remove null bytes
+                    page_text = re.sub(r'[\u200b-\u200d\ufeff]', '', page_text) # Remove zero-width spaces
+                    text_parts.append(page_text)
+                
+                if len(page.get_images()) > 0:
+                    has_images = True
+            doc.close()
+            
+            full_text = '\n\n'.join(text_parts)
+            if full_text and len(full_text.strip()) > 30:
+                print(f"DEBUG: Success extracting with PyMuPDF (Visual Sort) ({len(full_text)} chars)")
+                return _clean_extracted_text(full_text)
+            
+            # If no text but has images, it's a scanned PDF
+            if not full_text.strip() and has_images:
+                print(f"DEBUG: Detected image-only PDF: {file_path}")
+                return "__IMAGE_ONLY_PDF__"
+                
+        except Exception as fitz_err:
+            print(f"DEBUG: PyMuPDF failed: {str(fitz_err)}")
+
+        # ... (rest of fallbacks)
+        # 2. Secondary Engine: pdfminer.six
+        try:
+            from pdfminer.high_level import extract_text as miner_extract
+            full_text = miner_extract(file_path)
+            if full_text and len(full_text.strip()) > 50:
+                print(f"DEBUG: Success extracting with pdfminer.six ({len(full_text)} chars)")
+                return _clean_extracted_text(full_text)
+        except Exception as miner_err:
+            print(f"DEBUG: pdfminer.six failed: {str(miner_err)}")
+
+        # 3. Third Engine: pdfplumber
+        try:
+            import pdfplumber
+            with pdfplumber.open(file_path) as pdf:
+                text_parts = []
+                for page in pdf.pages:
+                    t = page.extract_text()
+                    if t: text_parts.append(t)
+                
+                full_text = '\n\n'.join(text_parts)
+                if full_text and len(full_text.strip()) > 50:
+                    print(f"DEBUG: Success extracting with pdfplumber ({len(full_text)} chars)")
+                    return _clean_extracted_text(full_text)
+        except Exception as plumber_err:
+            print(f"DEBUG: pdfplumber failed: {str(plumber_err)}")
+
+        # 4. Fourth Engine: pypdf
+        try:
+            from pypdf import PdfReader
+            reader = PdfReader(file_path)
+            text_parts = []
+            for page in reader.pages:
+                t = page.extract_text(extraction_mode="layout")
+                if not t: t = page.extract_text()
+                if t: text_parts.append(t)
+            
+            full_text = '\n\n'.join(text_parts)
+            if full_text and len(full_text.strip()) > 20:
+                print(f"DEBUG: Success extracting with pypdf ({len(full_text)} chars)")
+                return _clean_extracted_text(full_text)
+        except Exception as pypdf_err:
+            print(f"DEBUG: pypdf failed: {str(pypdf_err)}")
+
+        print(f"DEBUG: All PDF extraction engines failed for {file_path}")
+        return ""
     
-    except ImportError:
-        raise ImportError("PyPDF2 is required. Install with: pip install PyPDF2")
     except Exception as e:
+        print(f"DEBUG: Critical error in parse_pdf {file_path}: {str(e)}")
         raise ValueError(f"Failed to parse PDF: {str(e)}")
 
 
 def parse_docx(file_path: str) -> str:
     """
     Parse DOCX file and extract text.
-    
-    Uses python-docx library to read Word documents.
-    Extracts text from paragraphs and tables.
-    
-    Args:
-        file_path: Path to DOCX file
-    
-    Returns:
-        str: Extracted text content
-    
-    Example:
-        text = parse_docx('/uploads/resume.docx')
     """
     try:
-        # Import python-docx - installed via requirements.txt
         from docx import Document
-        
-        # Open document
         doc = Document(file_path)
-        
         text_parts = []
         
         # Extract paragraphs
@@ -148,83 +196,42 @@ def parse_docx(file_path: str) -> str:
                 if row_text:
                     text_parts.append(' | '.join(row_text))
         
-        # Join all parts
         full_text = '\n'.join(text_parts)
-        
         return _clean_extracted_text(full_text)
-    
-    except ImportError:
-        raise ImportError("python-docx is required. Install with: pip install python-docx")
     except Exception as e:
+        print(f"DEBUG: Failed to parse DOCX {file_path}: {str(e)}")
         raise ValueError(f"Failed to parse DOCX: {str(e)}")
 
 
 def parse_doc(file_path: str) -> str:
     """
-    Parse legacy DOC file and extract text.
-    
-    Legacy .doc files are more difficult to parse.
-    This function attempts to extract text using antiword
-    or returns a message to convert the file.
-    
-    Args:
-        file_path: Path to DOC file
-    
-    Returns:
-        str: Extracted text content
+    Parse legacy DOC file.
     """
     try:
-        # Try using antiword (must be installed on system)
         import subprocess
-        
-        result = subprocess.run(
-            ['antiword', file_path],
-            capture_output=True,
-            text=True
-        )
-        
+        result = subprocess.run(['antiword', file_path], capture_output=True, text=True)
         if result.returncode == 0:
             return _clean_extracted_text(result.stdout)
         else:
-            raise ValueError("antiword failed to parse file")
-    
-    except FileNotFoundError:
-        # antiword not installed
-        raise ValueError(
-            "Cannot parse .doc files. Please convert to .docx or .pdf, "
-            "or install antiword on the system."
-        )
+            raise ValueError("antiword failed")
     except Exception as e:
-        raise ValueError(f"Failed to parse DOC: {str(e)}")
+        raise ValueError(f"Legcy DOC parsing failed. Please convert to DOCX or PDF. Detail: {str(e)}")
 
 
 def parse_txt(file_path: str) -> str:
     """
-    Parse plain text file.
-    
-    Simply reads the file content with proper encoding handling.
-    
-    Args:
-        file_path: Path to TXT file
-    
-    Returns:
-        str: File content
-    
-    Example:
-        text = parse_txt('/uploads/resume.txt')
+    Parse plain text file with multiple encoding attempts.
     """
-    # Try different encodings
-    encodings = ['utf-8', 'utf-16', 'latin-1', 'cp1252']
-    
-    for encoding in encodings:
+    encodings = ['utf-8', 'latin-1', 'cp1252', 'utf-16']
+    for enc in encodings:
         try:
-            with open(file_path, 'r', encoding=encoding) as f:
+            with open(file_path, 'r', encoding=enc) as f:
                 content = f.read()
-            return _clean_extracted_text(content)
-        except UnicodeDecodeError:
+                if content:
+                    return _clean_extracted_text(content)
+        except Exception:
             continue
-    
-    raise ValueError("Could not decode text file with supported encodings")
+    raise ValueError("Could not read text file with any standard encoding")
 
 
 def _clean_extracted_text(text: str) -> str:
@@ -245,6 +252,8 @@ def _clean_extracted_text(text: str) -> str:
     """
     if not text:
         return ""
+    # Replace non-breaking spaces with standard spaces
+    text = text.replace('\xa0', ' ')
     
     # Replace multiple spaces with single space
     text = re.sub(r'[ \t]+', ' ', text)
@@ -256,11 +265,10 @@ def _clean_extracted_text(text: str) -> str:
     lines = [line.strip() for line in text.split('\n')]
     text = '\n'.join(lines)
     
-    # Remove non-printable characters (except newlines)
-    text = re.sub(r'[^\x20-\x7E\n]', '', text)
-    
-    # Remove excessive newlines
-    text = re.sub(r'\n{3,}', '\n\n', text)
+    # Remove only problematic control characters (like null bytes) but keep others
+    # and all unicode. This is safer than a whitelist.
+    bad_chars = '\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f'
+    text = "".join(ch for ch in text if ch not in bad_chars)
     
     return text.strip()
 

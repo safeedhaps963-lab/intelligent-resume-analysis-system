@@ -12,32 +12,31 @@ const Feedback = () => {
     setIsSending(true);
 
     const payload = { type, subject, message };
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
 
     try {
-      // Try to post to backend feedback endpoint if available
       const res = await fetch('/api/feedback', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        },
         body: JSON.stringify(payload),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        toast.success('Thanks — your message was sent.');
+        toast.success(data.message || 'Thanks — your message was sent.');
         setSubject('');
         setMessage('');
+        setType('feedback');
       } else {
-        // If backend not present, still show success locally
-        console.warn('Feedback endpoint returned non-ok response');
-        toast.success('Thanks — your message was recorded locally.');
-        setSubject('');
-        setMessage('');
+        toast.error(data.error || 'Failed to send feedback');
       }
     } catch (err) {
       console.error('Feedback submit error:', err);
-      // If network error, still give local confirmation
-      toast.success('Thanks — your message was recorded locally.');
-      setSubject('');
-      setMessage('');
+      toast.error('Network error. Please try again later.');
     } finally {
       setIsSending(false);
     }

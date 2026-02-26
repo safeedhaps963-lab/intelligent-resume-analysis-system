@@ -18,15 +18,22 @@ from flask_jwt_extended import (
     create_refresh_token,
     jwt_required,
     get_jwt_identity,
-    get_jwt
+    get_jwt,
+    set_access_cookies,
+    set_refresh_cookies,
+    unset_jwt_cookies
 )
+import hashlib
 from bson import ObjectId
 
 from app import mongo
 from app.models.user import User
+from app.config import Config
 
 # Create Blueprint for auth routes
 auth_bp = Blueprint('auth', __name__)
+
+
 
 
 @auth_bp.route('/register', methods=['POST'])
@@ -70,8 +77,9 @@ def register():
     if not name:
         return jsonify({'error': 'Name is required'}), 400
     
-    # Check email format (basic validation)
-    if '@' not in email or '.' not in email:
+    import re
+    email_regex = r'^[a-zA-Z0-9._%+-]+@ [a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'.replace(' ', '')
+    if not re.match(email_regex, email):
         return jsonify({'error': 'Invalid email format'}), 400
     
     # Check if email already exists
@@ -86,7 +94,10 @@ def register():
     mongo.db.users.insert_one(user.to_dict(include_password=True))
     
     # Create JWT tokens
-    access_token = create_access_token(identity=str(user._id))
+    access_token = create_access_token(
+        identity=str(user._id),
+        additional_claims={'role': user.role}
+    )
     refresh_token = create_refresh_token(identity=str(user._id))
     
     return jsonify({
@@ -94,6 +105,7 @@ def register():
         'message': 'User registered successfully',
         'data': {
             'user': user.to_public_dict(),
+            'role': user.role,
             'access_token': access_token,
             'refresh_token': refresh_token
         }
@@ -125,30 +137,54 @@ def login():
     email = data.get('email', '').strip().lower()
     password = data.get('password', '')
     
+    # Basic validation
+    if not email or not password:
+        return jsonify({'error': 'Email and password are required'}), 400
+    
+    # Valid ObjectId for demo user
+    DEMO_USER_ID = '507f191e810c19729de860ea'
+    
     # Check for demo login
     if email == 'demo@example.com' and password == 'demo123':
-        # Create demo user data
-        demo_user = {
-            '_id': 'demo_user_id',
-            'name': 'Demo User',
-            'email': 'demo@example.com',
-            'created_at': datetime.utcnow(),
-            'last_login': datetime.utcnow()
-        }
+        # Ensure demo user exists in DB
+        user_in_db = mongo.db.users.find_one({'email': 'demo@example.com'})
+        if not user_in_db:
+            # Create demo user if not exists
+            demo_user_obj = User(
+                email='demo@example.com',
+                name='Demo User',
+                password='demo123' # Not used directly but for consistency
+            )
+            demo_user_obj.role = 'admin'
+            user_data = demo_user_obj.to_dict(include_password=True)
+            user_data['_id'] = ObjectId(DEMO_USER_ID)
+            mongo.db.users.insert_one(user_data)
+        else:
+            # Ensure role is admin
+            if user_in_db.get('role') != 'admin':
+                mongo.db.users.update_one(
+                    {'_id': user_in_db['_id']},
+                    {'$set': {'role': 'admin'}}
+                )
         
         # Create JWT tokens for demo
-        access_token = create_access_token(identity='demo_user_id')
-        refresh_token = create_refresh_token(identity='demo_user_id')
+        access_token = create_access_token(
+            identity=DEMO_USER_ID,
+            additional_claims={'role': 'admin'}
+        )
+        refresh_token = create_refresh_token(identity=DEMO_USER_ID)
         
         return jsonify({
             'success': True,
             'message': 'Demo login successful',
             'data': {
                 'user': {
-                    'id': 'demo_user_id',
+                    'id': DEMO_USER_ID,
                     'name': 'Demo User',
-                    'email': 'demo@example.com'
+                    'email': 'demo@example.com',
+                    'role': 'admin'
                 },
+                'role': 'admin',
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }
@@ -173,7 +209,10 @@ def login():
     )
     
     # Create JWT tokens
-    access_token = create_access_token(identity=str(user._id))
+    access_token = create_access_token(
+        identity=str(user._id),
+        additional_claims={'role': user.role}
+    )
     refresh_token = create_refresh_token(identity=str(user._id))
     
     return jsonify({
@@ -181,10 +220,14 @@ def login():
         'message': 'Login successful',
         'data': {
             'user': user.to_public_dict(),
+            'role': user.role,
             'access_token': access_token,
             'refresh_token': refresh_token
         }
     }), 200
+
+
+
 
 
 @auth_bp.route('/logout', methods=['POST'])
@@ -204,9 +247,43 @@ def logout():
     # In production, add token to blacklist
     # For now, just return success (client should delete token)
     
-    return jsonify({
+    response = jsonify({
         'success': True,
         'message': 'Logged out successfully'
+    })
+    unset_jwt_cookies(response)
+    return response, 200
+
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    """
+    Refresh the access token using a valid refresh token.
+    
+    Response:
+        - 200: New access token created
+        - 401: Invalid refresh token
+    """
+    user_id = get_jwt_identity()
+    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    
+    if not user_data:
+        return jsonify({'error': 'User not found'}), 401
+    
+    user = User.from_dict(user_data)
+    
+    # Create new access token
+    access_token = create_access_token(
+        identity=str(user._id),
+        additional_claims={'role': user.role}
+    )
+    
+    return jsonify({
+        'success': True,
+        'access_token': access_token,
+        'user': user.to_public_dict(),
+        'role': user.role
     }), 200
 
 
@@ -224,11 +301,19 @@ def validate_token():
     """
     user_id = get_jwt_identity()
     
-    # Find user in database
-    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
-    
-    if not user_data:
-        return jsonify({'valid': False}), 401
+    try:
+        if not ObjectId.is_valid(user_id):
+            return jsonify({'valid': False, 'error': 'Invalid user ID format'}), 401
+            
+        # Find user in database
+        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        
+        if not user_data:
+            return jsonify({'valid': False, 'error': 'User not found'}), 401
+            
+    except Exception as e:
+        # Return 500 for server/db errors, NOT 401, to prevent frontend logout
+        return jsonify({'valid': False, 'error': str(e)}), 500
     
     user = User.from_dict(user_data)
     
@@ -250,6 +335,9 @@ def get_current_user():
     """
     user_id = get_jwt_identity()
     
+    if not ObjectId.is_valid(user_id):
+        return jsonify({'error': 'Invalid user ID format'}), 400
+        
     user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
     
     if not user_data:

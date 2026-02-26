@@ -20,15 +20,9 @@ import axios from 'axios';
 // Axios Instance Configuration
 // ==========================================
 
-/**
- * Create axios instance with base configuration
- * 
- * baseURL: Points to Flask backend (proxied in development)
- * timeout: Maximum wait time for requests (30 seconds)
- * headers: Default content type for JSON APIs
- */
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api', // Hardcoded for testing
+  // Use environment variable if available, otherwise fallback to local dev URL
+  baseURL: process.env.REACT_APP_API_URL || '/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -47,19 +41,19 @@ const api = axios.create({
  */
 api.interceptors.request.use(
   (config) => {
-    // Get token from localStorage
-    const token = localStorage.getItem('authToken');
-    
+    // Get access token from localStorage
+    const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
+
     // If token exists, add to Authorization header
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     // Log request in development
     if (process.env.NODE_ENV === 'development') {
       console.log(`📤 API Request: ${config.method?.toUpperCase()} ${config.url}`);
     }
-    
+
     return config;
   },
   (error) => {
@@ -87,49 +81,50 @@ api.interceptors.response.use(
     if (process.env.NODE_ENV === 'development') {
       console.log(`📥 API Response: ${response.status} ${response.config.url}`);
     }
-    
+
     return response;
   },
-  (error) => {
-    // Extract error information
+  async (error) => {
+    const originalRequest = error.config;
     const { response } = error;
-    
-    if (response) {
-      switch (response.status) {
-        case 401:
-          // Unauthorized - token expired or invalid
-          console.warn('Unauthorized - clearing token');
-          localStorage.removeItem('authToken');
-          // Optionally redirect to login
-          window.dispatchEvent(new CustomEvent('auth:logout'));
-          break;
-          
-        case 403:
-          // Forbidden - access denied
-          console.warn('Access forbidden');
-          break;
-          
-        case 404:
-          // Not found
-          console.warn('Resource not found:', response.config.url);
-          break;
-          
-        case 500:
-          // Server error
-          console.error('Server error:', response.data);
-          break;
-          
-        default:
-          console.error('API error:', response.status, response.data);
+
+    // Skip refresh logic for login/register/refresh itself
+    const skipRefresh = ['/auth/login', '/auth/register', '/auth/refresh'].some(
+      path => originalRequest.url?.includes(path)
+    );
+
+    if (response && response.status === 401 && !originalRequest._retry && !skipRefresh) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem('refresh_token');
+
+      if (refreshToken) {
+        try {
+          console.log('🔄 Attempting to refresh access token...');
+          const res = await axios.post(`${api.defaults.baseURL}/auth/refresh`, {}, {
+            headers: { Authorization: `Bearer ${refreshToken}` }
+          });
+
+          if (res.data.success && res.data.access_token) {
+            const newToken = res.data.access_token;
+            localStorage.setItem('access_token', newToken);
+            originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          console.error('❌ Token refresh failed:', refreshError);
+        }
       }
-    } else if (error.request) {
-      // Request made but no response received
-      console.error('No response received:', error.message);
-    } else {
-      // Error setting up request
-      console.error('Request setup error:', error.message);
+
+      // If no refresh token or refresh failed, logout
+      console.warn('Unauthorized - clearing tokens and logging out');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
+      window.dispatchEvent(new CustomEvent('auth:logout'));
     }
-    
+
     return Promise.reject(error);
   }
 );
@@ -164,7 +159,7 @@ export const authAPI = {
     const response = await api.post('/auth/register', userData);
     return response.data;
   },
-  
+
   /**
    * Login existing user
    * 
@@ -176,7 +171,7 @@ export const authAPI = {
     const response = await api.post('/auth/login', { email, password });
     return response.data;
   },
-  
+
   /**
    * Logout current user
    * 
@@ -186,7 +181,7 @@ export const authAPI = {
     const response = await api.post('/auth/logout');
     return response.data;
   },
-  
+
   /**
    * Validate JWT token
    * 
@@ -199,9 +194,27 @@ export const authAPI = {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
-    } catch {
-      return { valid: false };
+    } catch (error) {
+      // Only return invalid if it's explicitly a 401
+      if (error.response && error.response.status === 401) {
+        return { valid: false };
+      }
+      // For other errors (500, network), throw
+      throw error;
     }
+  },
+
+  /**
+   * Refresh access token
+   * 
+   * @param {string} refreshToken - Refresh token
+   * @returns {Promise} Refresh response
+   */
+  refresh: async (refreshToken) => {
+    const response = await api.post('/auth/refresh', {}, {
+      headers: { Authorization: `Bearer ${refreshToken}` }
+    });
+    return response.data;
   }
 };
 
@@ -215,6 +228,31 @@ export const authAPI = {
  * Handles resume upload, analysis, and skill extraction.
  */
 export const resumeAPI = {
+  /**
+   * Get the most recently uploaded resume
+   * 
+   * @returns {Promise} Latest resume metadata
+   */
+  getLatest: async () => {
+    const response = await api.get('/resume/latest');
+    return response.data;
+  },
+
+  /**
+   * Perform skill analysis on a resume
+   * 
+   * @param {string} resumeId - ID of the resume to analyze
+   * @param {string} jobDescription - Optional job description
+   * @returns {Promise} Skill analysis results
+   */
+  skillAnalysis: async (resumeId, jobDescription) => {
+    const response = await api.post('/resume/skill-analysis', {
+      resume_id: resumeId,
+      job_description: jobDescription
+    });
+    return response.data;
+  },
+
   /**
    * Upload a resume file
    * 
@@ -231,7 +269,7 @@ export const resumeAPI = {
     // Create FormData for file upload
     const formData = new FormData();
     formData.append('file', file);
-    
+
     const response = await api.post('/resume/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -244,10 +282,10 @@ export const resumeAPI = {
         if (onProgress) onProgress(percentCompleted);
       },
     });
-    
+
     return response.data;
   },
-  
+
   /**
    * Analyze an uploaded resume
    * 
@@ -265,7 +303,7 @@ export const resumeAPI = {
     });
     return response.data;
   },
-  
+
   /**
    * Get ATS score for a resume
    * 
@@ -280,7 +318,7 @@ export const resumeAPI = {
     });
     return response.data;
   },
-  
+
   /**
    * Get extracted skills for a resume
    * 
@@ -291,7 +329,7 @@ export const resumeAPI = {
     const response = await api.get(`/resume/skills/${resumeId}`);
     return response.data;
   },
-  
+
   /**
    * Get user's resume analysis history
    * 
@@ -305,7 +343,7 @@ export const resumeAPI = {
     });
     return response.data;
   },
-  
+
   /**
    * Analyze resume text directly without upload
    * 
@@ -319,6 +357,29 @@ export const resumeAPI = {
       job_description: jobDescription
     });
     return response.data;
+  },
+
+  /**
+   * Convert resume to ATS-friendly format
+   * @param {FormData} formData - Contains 'file' and optional 'job_keywords'
+   */
+  convertATS: async (formData) => {
+    const response = await api.post('/resume/convert-ats', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  /**
+   * Download ATS-friendly resume as DOCX
+   * @param {string} resumeText - Converted ATS text
+   */
+  downloadATSDocx: async (resumeText) => {
+    return api.post('/resume/download-ats-docx', { ats_resume: resumeText }, {
+      responseType: 'blob'
+    });
   }
 };
 
@@ -342,7 +403,7 @@ export const builderAPI = {
     const response = await api.post('/builder/save', resumeData);
     return response.data;
   },
-  
+
   /**
    * Generate PDF from resume data
    * 
@@ -351,13 +412,13 @@ export const builderAPI = {
    * @returns {Promise} Blob of generated PDF
    */
   generatePDF: async (resumeId, template = 'professional') => {
-    const response = await api.post('/builder/generate', 
+    const response = await api.post('/builder/generate',
       { resume_id: resumeId, template },
       { responseType: 'blob' }
     );
     return response.data;
   },
-  
+
   /**
    * Get AI suggestions for resume content
    * 
@@ -400,7 +461,7 @@ export const jobsAPI = {
     });
     return response.data;
   },
-  
+
   /**
    * Search jobs with filters
    * 
@@ -422,7 +483,7 @@ export const jobsAPI = {
     });
     return response.data;
   },
-  
+
   /**
    * Apply to a job
    * 
@@ -438,7 +499,7 @@ export const jobsAPI = {
     });
     return response.data;
   },
-  
+
   /**
    * Save/unsave a job
    * 
@@ -449,7 +510,7 @@ export const jobsAPI = {
     const response = await api.post(`/jobs/save/${jobId}`);
     return response.data;
   },
-  
+
   /**
    * Get saved jobs
    * 

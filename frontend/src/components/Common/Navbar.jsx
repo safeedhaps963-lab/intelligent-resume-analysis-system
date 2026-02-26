@@ -6,7 +6,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   FaBrain, FaHome, FaSearchPlus, FaFileAlt,
-  FaBriefcase, FaBell, FaBars, FaTimes, FaMagic, FaSignOutAlt, FaCommentAlt, FaSignInAlt
+  FaBriefcase, FaBars, FaTimes, FaMagic, FaSignOutAlt, FaCommentAlt, FaSignInAlt, FaUserShield
 } from 'react-icons/fa';
 import { AppContext } from '../../App';
 
@@ -15,19 +15,23 @@ const Navbar = () => {
   const location = useLocation();
 
   // Context
-  const { notifications = [], isAuthenticated, handleLogout } = useContext(AppContext);
+  const { isAuthenticated, handleLogout, userRole } = useContext(AppContext);
 
-  // Calculate unread notifications count
-  const unreadCount = notifications.length;
-
-  const navItems = [
-    { path: '/', icon: <FaHome />, label: 'Dashboard' },
-    { path: '/analyzer', icon: <FaSearchPlus />, label: 'Analyze' },
-    { path: '/converter', icon: <FaMagic />, label: 'ATS Converter' },
-    { path: '/builder', icon: <FaFileAlt />, label: 'Builder' },
-    { path: '/jobs', icon: <FaBriefcase />, label: 'Jobs' },
-    { path: '/feedback', icon: <FaCommentAlt />, label: 'Feedback' },
-  ];
+  const navItems = userRole === 'admin'
+    ? [
+      { path: '/admin', icon: <FaUserShield />, label: 'Admin Panel' },
+      { path: '/admin/users', icon: <FaFileAlt />, label: 'Users' },
+      { path: '/admin/feedback', icon: <FaCommentAlt />, label: 'Feedback' },
+    ]
+    : [
+      { path: '/dashboard', icon: <FaHome />, label: 'Dashboard' },
+      { path: '/ats-score', icon: <FaSearchPlus />, label: 'ATS Score' },
+      { path: '/skill-analysis', icon: <FaBrain />, label: 'Skill Analysis' },
+      { path: '/converter', icon: <FaMagic />, label: 'ATS Converter' },
+      { path: '/builder', icon: <FaFileAlt />, label: 'Builder' },
+      { path: '/jobs', icon: <FaBriefcase />, label: 'Jobs' },
+      { path: '/feedback', icon: <FaCommentAlt />, label: 'Feedback' },
+    ];
 
   const isActive = (path) => location.pathname === path;
 
@@ -37,11 +41,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to={userRole === 'admin' ? "/admin" : "/dashboard"} className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <FaBrain className="text-purple-600 text-xl" />
             </div>
-            <span className="text-xl font-bold">ResumeAI Pro</span>
+            <span className="text-xl font-bold">RAS & JR</span>
           </Link>
 
           {/* Desktop Menu */}
@@ -60,18 +64,6 @@ const Navbar = () => {
               </Link>
             ))}
 
-            {/* Notification Bell - only show when authenticated */}
-            {isAuthenticated && (
-              <div className="relative p-2">
-                <FaBell className="text-xl" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs 
-                    rounded-full w-5 h-5 flex items-center justify-center">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </div>
-            )}
 
             {isAuthenticated ? (
               <button
