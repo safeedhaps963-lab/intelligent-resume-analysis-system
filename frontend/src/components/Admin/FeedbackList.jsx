@@ -14,9 +14,10 @@ const FeedbackList = () => {
 
     const fetchFeedback = async () => {
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch('/api/admin/feedback', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();
@@ -34,10 +35,11 @@ const FeedbackList = () => {
 
     const handleResolve = async (id) => {
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/feedback/${id}/resolve`, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();
@@ -56,10 +58,11 @@ const FeedbackList = () => {
         if (!window.confirm('Are you sure you want to delete this feedback?')) return;
 
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/feedback/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();

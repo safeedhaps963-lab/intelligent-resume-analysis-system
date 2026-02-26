@@ -28,9 +28,10 @@ const ResumeList = () => {
                 limit: pagination.limit
             });
 
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/resumes?${queryParams.toString()}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();
@@ -52,10 +53,11 @@ const ResumeList = () => {
         if (!window.confirm('Are you sure you want to delete this resume?')) return;
 
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/resumes/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();

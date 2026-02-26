@@ -26,9 +26,10 @@ const UserList = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch('/api/admin/users', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();
@@ -46,11 +47,12 @@ const UserList = () => {
 
     const handleUpdateUser = async (userId, updateData) => {
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/users/${userId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 },
                 body: JSON.stringify(updateData),
             });
@@ -72,10 +74,11 @@ const UserList = () => {
         }
 
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/users/${userId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();
@@ -100,10 +103,11 @@ const UserList = () => {
         let successCount = 0;
         for (const userId of selectedUsers) {
             try {
+                const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
                 const res = await fetch(`/api/admin/users/${userId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                        'Authorization': token ? `Bearer ${token}` : ''
                     }
                 });
                 if (res.ok) successCount++;

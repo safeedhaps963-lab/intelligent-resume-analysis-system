@@ -28,9 +28,10 @@ const RecommendationList = () => {
                 search: searchTerm
             });
 
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/recommendations?${queryParams.toString()}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();

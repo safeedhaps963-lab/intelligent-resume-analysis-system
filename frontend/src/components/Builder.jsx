@@ -21,7 +21,18 @@ const resumeSchema = z.object({
   name: z.string().min(2, "Name is required (min 2 characters)"),
   email: z.email("Invalid email address"),
   phone: z.string().min(10, "Phone number is required"),
-  linkedin: z.url("Invalid URL").optional().or(z.literal("")),
+  linkedin: z.string().refine((val) => {
+    if (!val) return true;
+    try {
+      // If it starts with www. or just linkedin.com, we'll consider it valid for now
+      // as we can prepend https:// later or just validate the structure
+      const urlPattern = /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/;
+      const generalUrlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+      return urlPattern.test(val) || generalUrlPattern.test(val);
+    } catch {
+      return false;
+    }
+  }, "Invalid LinkedIn or Website URL").optional().or(z.literal("")),
   summary: z.string().min(20, "Summary should be at least 20 characters"),
   technicalSkills: z.string().min(5, "Skills are required"),
   softSkills: z.string().optional(),
@@ -64,7 +75,7 @@ function Builder() {
   const generateSummary = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("access_token") || localStorage.getItem("authToken") || localStorage.getItem("token");
 
       const payload = {
         jobTitle: formData.name || '',
@@ -204,7 +215,8 @@ function Builder() {
 
                       <div>
                         <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">LinkedIn URL</label>
-                        <input {...register("linkedin")} placeholder="https://linkedin.com/in/..." className="input-v2" />
+                        <input {...register("linkedin")} placeholder="https://linkedin.com/in/..." className={`input-v2 ${errors.linkedin ? 'border-red-400 focus:ring-red-100' : ''}`} />
+                        {errors.linkedin && <p className="text-red-500 text-[10px] mt-1 italic">{errors.linkedin.message}</p>}
                       </div>
                     </motion.div>
                   )}

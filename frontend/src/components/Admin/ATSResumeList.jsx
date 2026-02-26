@@ -28,9 +28,10 @@ const ATSResumeList = () => {
                 search
             });
 
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/ats-resumes?${queryParams.toString()}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();
@@ -52,10 +53,11 @@ const ATSResumeList = () => {
         if (!window.confirm('Are you sure you want to delete this ATS conversion record?')) return;
 
         try {
+            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
             const res = await fetch(`/api/admin/ats-resumes/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken') || localStorage.getItem('token')}`
+                    'Authorization': token ? `Bearer ${token}` : ''
                 }
             });
             const data = await res.json();

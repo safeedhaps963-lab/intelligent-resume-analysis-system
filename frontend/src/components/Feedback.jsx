@@ -12,7 +12,7 @@ const Feedback = () => {
     setIsSending(true);
 
     const payload = { type, subject, message };
-    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
 
     try {
       const res = await fetch('/api/feedback', {
