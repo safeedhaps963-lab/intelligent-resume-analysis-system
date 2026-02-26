@@ -5,14 +5,14 @@ from typing import Dict, List, Optional
 class ATSConverter:
     def __init__(self):
         self.section_keywords = {
-            'contact': ['contact', 'personal information', 'contact info', 'personal profile'],
-            'summary': ['summary', 'objective', 'profile', 'professional summary', 'background', 'about me'],
-            'experience': ['experience', 'work experience', 'employment', 'work history', 'professional experience', 'career history', 'professional background'],
-            'education': ['education', 'academic background', 'qualifications', 'academic history', 'studies'],
-            'skills': ['skills', 'technical skills', 'competencies', 'abilities', 'expertise', 'specializations', 'technologies', 'tools'],
-            'certifications': ['certifications', 'certificates', 'licenses', 'credentials', 'courses'],
-            'projects': ['projects', 'personal projects', 'portfolio', 'recent projects', 'selected projects'],
-            'awards': ['awards', 'honors', 'achievements', 'recognition', 'accomplishments']
+            'contact': ['contact', 'personal information', 'contact info', 'personal profile', 'contact details'],
+            'summary': ['summary', 'objective', 'profile', 'professional summary', 'background', 'about me', 'executive summary', 'career objective'],
+            'experience': ['experience', 'work experience', 'employment', 'work history', 'professional experience', 'career history', 'professional background', 'employment history', 'work record'],
+            'education': ['education', 'academic background', 'qualifications', 'academic history', 'studies', 'educational background', 'academic profile'],
+            'skills': ['skills', 'technical skills', 'competencies', 'abilities', 'expertise', 'specializations', 'technologies', 'tools', 'core competencies', 'professional skills'],
+            'certifications': ['certifications', 'certificates', 'licenses', 'credentials', 'courses', 'professional certifications'],
+            'projects': ['projects', 'personal projects', 'portfolio', 'recent projects', 'selected projects', 'academic projects'],
+            'awards': ['awards', 'honors', 'achievements', 'recognition', 'accomplishments', 'honors & awards']
         }
 
     def convert_resume(self, resume_text: str, job_keywords: Optional[List[str]] = None) -> Dict:
@@ -36,6 +36,7 @@ class ATSConverter:
 
     def _clean_text(self, text: str) -> str:
         # Remove excessive whitespace
+        text = re.sub(r'[ \t]+', ' ', text)
         text = re.sub(r'\n\s*\n\s*\n+', '\n\n', text)
         # Remove special characters that might confuse ATS
         text = re.sub(r'[•●○■□▪▫]', '-', text)
@@ -44,58 +45,171 @@ class ATSConverter:
         return text.strip()
 
     def _extract_sections(self, text: str) -> Dict[str, str]:
+        """
+        Extract sections from resume text with high accuracy.
+        1. Pre-extract contact info using regex to prevent it from leaking into other sections.
+        2. Identify section boundaries using semantic keywords.
+        3. Assign text between boundaries to corresponding sections.
+        """
         sections = {}
-        lines = text.split('\n')
         
-        current_section = 'contact'  # Assume first lines are contact info
+        # 1. Proactively extract contact info
+        contact_info = self._extract_contact_info(text)
+        sections['contact'] = contact_info['raw']
+        
+        # 2. Identify sections
+        lines = text.split('\n')
+        current_section = None
         current_content = []
         
-        non_empty_count = 0
+        # We'll skip lines that were already identified as specific contact info 
+        # to avoid duplication, but we'll include the first few lines as "Name/Profile" 
+        # if no header is found.
+        
+        # Heuristic: The very first few lines (usually top of resume) are "Contact/Header"
+        # unless we hit a different header.
+        current_section = 'contact'
+        
+        non_empty_line_count = 0
         for line in lines:
-            line = line.strip()
-            if not line or self._is_garbage_line(line):
+            line_strip = line.strip()
+            if not line_strip or self._is_garbage_line(line_strip):
                 continue
             
-            non_empty_count += 1
-            is_protected_zone = non_empty_count <= 10
-            section_type = self._identify_section(line.lower(), is_protected=is_protected_zone)
+            non_empty_line_count += 1
             
-            # Additional safety: The very first real line is ALWAYS assumed to be contact (Name)
-            if section_type and non_empty_count == 1:
+            # Check if this line is a section header
+            # We are stricter in the "protected zone" (first 5 lines) 
+            # to avoid misidentifying the Name or Contact info as a section.
+            section_type = self._identify_section(line_strip, is_protected=(non_empty_line_count < 5))
+            
+            # Additional safety: If we identified a name, don't let it be a section header
+            if section_type and non_empty_line_count == 1:
                 section_type = None
 
             if section_type:
+                # Save previous section
                 if current_content:
-                    sections[current_section] = '\n'.join(current_content).strip()
+                    # Clean up the content before saving
+                    content_text = '\n'.join(current_content).strip()
+                    if current_section == 'contact':
+                        # If we're moving from contact to something else, 
+                        # ensure we don't overwrite if it's already robust
+                        sections[current_section] = sections.get(current_section, '') + '\n' + content_text
+                    else:
+                        sections[current_section] = content_text
                 
+                # Start new section
                 current_section = section_type
                 current_content = []
+                # Don't add the header itself to the content
             else:
-                current_content.append(line)
+                current_content.append(line_strip)
         
+        # Save last section
         if current_content:
             sections[current_section] = '\n'.join(current_content).strip()
-        
+            
+        # 3. Post-process sections
+        # Ensure contact info is formatted well
+        if 'contact' in sections:
+            # Re-verify contact info to make sure it's clean
+            sections['contact'] = self._format_contact_section(sections['contact'], contact_info)
+            
         return sections
+
+    def _extract_contact_info(self, text: str) -> Dict:
+        """Extract specific contact entities using regex."""
+        email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        phone_pattern = r'(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4,}'
+        linkedin_pattern = r'linkedin\.com/in/[a-zA-Z0-9-]+'
+        github_pattern = r'github\.com/[a-zA-Z0-9-]+'
+        website_pattern = r'(https?://)?(www\.)?([a-zA-Z0-9-]+)\.([a-z]{2,})(/[a-zA-Z0-9#-]+)?'
+        
+        emails = re.findall(email_pattern, text)
+        phones = re.findall(phone_pattern, text)
+        linkedin = re.findall(linkedin_pattern, text)
+        github = re.findall(github_pattern, text)
+        
+        # Simple address detection (often multi-line, looking for Zip code or state)
+        address_pattern = r'\b[A-Z]{2}\s\d{5}|\d{5}\b|Kerala|California|London|New York'
+        
+        # Name is usually one of the first lines
+        lines = [l.strip() for l in text.split('\n') if l.strip()][:10]
+        name = ""
+        address_lines = []
+        
+        # Potential names are usually short, first few lines, and not keywords
+        for line in lines[:3]:
+            if len(line.split()) <= 4 and not self._identify_section(line) and not re.search(email_pattern, line):
+                name = line
+                break
+        
+        return {
+            'name': name,
+            'emails': list(set(emails)),
+            'phones': list(set(phones)),
+            'linkedin': list(set(linkedin)),
+            'github': list(set(github)),
+            'raw': '\n'.join([name] + emails + phones + linkedin + github)
+        }
+
+    def _format_contact_section(self, raw_content: str, extracted: Dict) -> str:
+        """Combine raw header text with extracted entities for a clean contact section."""
+        lines = raw_content.split('\n')
+        # Keep only lines that look like name or contact info, filter out section leaks
+        clean_lines = []
+        seen = set()
+        
+        # Critical keywords that shouldn't be in contact header
+        blocked_keywords = ['experience', 'education', 'skills', 'summary', 'university', 'college', 'professor']
+        
+        for line in lines:
+            l = line.strip()
+            if not l or l.lower() in seen: continue
+            
+            # If it's a very long line, it's probably a leaked summary or experience
+            if len(l) > 120: continue
+            
+            # If it looks like a header for another section, skip it
+            if self._identify_section(l, is_protected=False): continue
+            
+            # Skip if it contains blocked keywords unless it's very short
+            if any(bk in l.lower() for bk in blocked_keywords) and len(l) > 20: continue
+            
+            clean_lines.append(l)
+            seen.add(l.lower())
+            
+        # Ensure name is first
+        if extracted['name'] and clean_lines and clean_lines[0] != extracted['name']:
+            if extracted['name'] in clean_lines:
+                clean_lines.remove(extracted['name'])
+            clean_lines.insert(0, extracted['name'])
+            
+        return '\n'.join(clean_lines).strip()
 
     def _identify_section(self, line: str, is_protected: bool = False) -> Optional[str]:
         """Identify if a line is a section header with high strictness."""
         line = line.strip()
-        if not line or len(line) > 40:
+        # Headers usually aren't super long, but let's allow up to 60 chars
+        if not line or len(line) > 60:
             return None
             
-        # Headers usually don't have many words
+        # Headers usually don't have many words. Increased to 6.
         words = line.split()
-        if len(words) > 3:
+        if len(words) > 6:
             return None
 
         # Headers are usually ALL CAPS or Title Case
-        is_title_like = line.isupper() or line.istitle()
+        is_title_like = line.isupper() or line.istitle() or line.replace('&', '').istitle()
+        
+        # Special check for common symbols like & and /
+        normalized_line = line.lower().replace('&', 'and').replace('/', ' ')
         
         for section, keywords in self.section_keywords.items():
             for keyword in keywords:
                 # 1. Exact match (strongest)
-                if keyword.lower() == line.lower():
+                if keyword.lower() == normalized_line.strip():
                     return section
                 
                 # 2. Key word with symbols around it (e.g., === EXPERIENCE ===)
@@ -106,7 +220,7 @@ class ATSConverter:
                     return section
                     
                 # 3. Keyword inside a short title-like line
-                if is_title_like and keyword.lower() in line.lower() and len(words) <= 2:
+                if is_title_like and keyword.lower() in normalized_line and len(words) <= 4:
                     if is_protected and not line.isupper():
                         continue
                     return section

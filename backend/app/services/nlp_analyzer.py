@@ -128,21 +128,43 @@ class NLPResumeAnalyzer:
                 'Machine Learning', 'Deep Learning', 'TensorFlow', 'PyTorch',
                 'Keras', 'Scikit-learn', 'Pandas', 'NumPy', 'Matplotlib',
                 'Seaborn', 'Jupyter', 'Apache Spark', 'Hadoop', 'NLP',
-                'Computer Vision', 'Neural Networks', 'Data Mining'
+                'Computer Vision', 'Neural Networks', 'Data Mining', 'OpenCV'
             ],
             
             # Tools & Platforms
             'tools': [
                 'Git', 'GitHub', 'GitLab', 'Bitbucket', 'JIRA', 'Confluence',
                 'Trello', 'Slack', 'VS Code', 'IntelliJ', 'Postman', 'Figma',
-                'Adobe XD', 'Linux', 'Unix', 'Bash', 'PowerShell'
+                'Adobe XD', 'Linux', 'Unix', 'Bash', 'PowerShell', 'Docker'
+            ],
+
+            # Marketing & Sales
+            'marketing_sales': [
+                'Digital Marketing', 'SEO', 'SEM', 'Content Strategy', 'Social Media',
+                'Google Analytics', 'HubSpot', 'Salesforce', 'CRM', 'Email Marketing',
+                'Market Research', 'Lead Generation', 'Sales Pitch', 'Account Management'
+            ],
+
+            # Finance & Accounting
+            'finance_accounting': [
+                'Financial Analysis', 'Accounting', 'Bookkeeping', 'Auditing',
+                'Taxation', 'Budgeting', 'Excel', 'Financial Modeling', 'Risk Management',
+                'QuickBooks', 'SAP', 'Payroll', 'Investment Banking'
+            ],
+
+            # HR & Operations
+            'hr_ops': [
+                'Recruiting', 'Talent Acquisition', 'Employee Relations', 'Onboarding',
+                'HRIS', 'People Operations', 'Conflict Resolution', 'Supply Chain',
+                'Logistics', 'Procurement', 'Project Coordination', 'Strategic Planning'
             ],
             
             # Soft Skills
             'soft_skills': [
                 'Leadership', 'Communication', 'Problem Solving', 'Teamwork',
                 'Project Management', 'Agile', 'Scrum', 'Critical Thinking',
-                'Time Management', 'Collaboration', 'Mentoring', 'Presentation'
+                'Time Management', 'Collaboration', 'Mentoring', 'Presentation',
+                'Adaptability', 'Creativity', 'Emotional Intelligence'
             ]
         }
     
@@ -422,6 +444,18 @@ class NLPResumeAnalyzer:
         if 'data_science' in skills:
             counts['Data Scientist/Analyst'] += skills['data_science'].get('count', 0)
             
+        # Marketing Indicator
+        if 'marketing_sales' in skills:
+            counts['Marketing Specialist'] += skills['marketing_sales'].get('count', 0)
+
+        # Finance Indicator
+        if 'finance_accounting' in skills:
+            counts['Finance Professional'] += skills['finance_accounting'].get('count', 0)
+
+        # HR Indicator
+        if 'hr_ops' in skills:
+            counts['HR/Operations'] += skills['hr_ops'].get('count', 0)
+
         # Designer Indicator
         designer_keywords = ['figma', 'adobe xd', 'ui/ux', 'design', 'photoshop', 'illustrator']
         for cat_data in skills.values():
@@ -432,14 +466,20 @@ class NLPResumeAnalyzer:
         # Check experience titles for indicators
         for exp in experience:
             title = exp.get('title', '').lower()
-            if any(k in title for k in ['manager', 'director', 'lead', 'head']):
+            if any(k in title for k in ['manager', 'director', 'lead', 'head', 'strategic']):
                 counts['Management'] += 2
-            if any(k in title for k in ['developer', 'engineer', 'architect']):
+            if any(k in title for k in ['developer', 'engineer', 'architect', 'programming']):
                 counts['Developer'] += 2
-            if any(k in title for k in ['analyst', 'data', 'science']):
+            if any(k in title for k in ['analyst', 'data', 'science', 'statistics']):
                 counts['Data Scientist/Analyst'] += 2
-            if any(k in title for k in ['designer', 'ux', 'ui']):
+            if any(k in title for k in ['designer', 'ux', 'ui', 'creative']):
                 counts['Designer'] += 2
+            if any(k in title for k in ['marketing', 'sales', 'seo', 'growth']):
+                counts['Marketing Specialist'] += 2
+            if any(k in title for k in ['financial', 'accountant', 'auditor', 'budget']):
+                counts['Finance Professional'] += 2
+            if any(k in title for k in ['hr', 'human resources', 'recruitment', 'ops']):
+                counts['HR/Operations'] += 2
                 
         if not counts:
             return "Professional" # Default

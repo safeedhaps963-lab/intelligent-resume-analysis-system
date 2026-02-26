@@ -85,15 +85,29 @@ def parse_pdf(file_path: str) -> str:
             has_images = False
             
             for page in doc:
-                # Get text blocks and sort by y coordinate (top to bottom), then x (left to right)
+                # Get text blocks
                 blocks = page.get_text("blocks")
                 # block structure: (x0, y0, x1, y1, "text", block_no, block_type)
-                blocks.sort(key=lambda b: (b[1], b[0]))
                 
-                page_text = ""
-                for b in blocks:
-                    if b[4].strip():
-                        page_text += b[4] + "\n"
+                if not blocks:
+                    continue
+
+                # Sort blocks by x coordinate first to help identify columns, 
+                # then by y coordinate.
+                # However, a better way for resumes is to group by column or use a heuristic.
+                # Let's use a "Column-Aware Sort"
+                # We sort primarily by y, but allows for a "tolerance" in y 
+                # to keep things in the same line, then sort by x.
+                # BUT for multi-column, we want to read all of column 1 then all of column 2.
+                
+                # Heuristic: If there's a large gap in X and the vertical ranges overlap significantly, 
+                # it's likely multi-column.
+                
+                # Use PyMuPDF's default "text" extraction which is actually quite good at 
+                # following the reading order layout. "blocks" with manual sort (y, x) 
+                # is what causes interleaving.
+                
+                page_text = page.get_text("text", sort=True)
                 
                 if page_text:
                     # Basic normalization
@@ -107,7 +121,7 @@ def parse_pdf(file_path: str) -> str:
             
             full_text = '\n\n'.join(text_parts)
             if full_text and len(full_text.strip()) > 30:
-                print(f"DEBUG: Success extracting with PyMuPDF (Visual Sort) ({len(full_text)} chars)")
+                print(f"DEBUG: Success extracting with PyMuPDF (Default Sort) ({len(full_text)} chars)")
                 return _clean_extracted_text(full_text)
             
             # If no text but has images, it's a scanned PDF

@@ -96,17 +96,18 @@ const ATSConverter = () => {
 
     const element = previewRef.current;
     const opt = {
-      margin: [0.3, 0.3],
+      margin: 0,
       filename: `${selectedFile.name.split('.')[0]}_Professional.pdf`,
       image: { type: 'jpeg', quality: 1.0 },
       html2canvas: {
-        scale: 4,
+        scale: 2, // Scale 2 is usually enough for high quality without huge file size
         useCORS: true,
         letterRendering: true,
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        windowWidth: 794, // Force window width to match element width for consistent rendering
       },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait', compress: true },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
@@ -167,18 +168,22 @@ const ATSConverter = () => {
       else if (isLink) Icon = (line.toLowerCase().includes('linkedin')) ? FaLinkedin : FaGlobe;
 
       return (
-        <span className="flex items-center gap-1.5 whitespace-nowrap">
-          <Icon className="text-indigo-400 text-[10px]" />
-          {line.trim()}
+        <span className="flex items-center gap-1.5 min-w-0">
+          <Icon className="text-gray-600 text-[10px] flex-shrink-0" />
+          <span className="truncate hover:whitespace-normal transition-all">{line.trim()}</span>
         </span>
       );
     };
 
     return (
-      <div id="professional-resume" className="bg-white text-slate-800 font-sans shadow-2xl min-h-[1100px] w-full max-w-[850px] mx-auto p-20 border border-gray-100 flex flex-col gap-8 ring-1 ring-black/5 rounded-sm">
-        {/* Contact Info Header - Premium Centered */}
-        <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight drop-shadow-sm uppercase">
+      <div
+        id="professional-resume"
+        className="bg-white text-slate-800 font-sans shadow-none w-[794px] mx-auto p-[0.75in] flex flex-col gap-6 break-words"
+        style={{ minHeight: '1123px' }} // A4 height at 96 DPI
+      >
+        {/* Contact Info Header */}
+        <div className="text-center border-b-2 border-slate-900 pb-6">
+          <h2 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight uppercase">
             {(() => {
               const contactLines = sections.contact ? sections.contact.split('\n').filter(line => line.trim()) : [];
               const genericTerms = ['RESUME', 'CURRICULUM VITAE', 'CV', 'PROFILE', 'CONTACT', 'PERSONAL DETAILS'];
@@ -187,7 +192,7 @@ const ATSConverter = () => {
             })()}
           </h2>
           {sections.contact && (
-            <div className="text-[12px] text-slate-500 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 font-medium">
+            <div className="text-[11px] text-slate-600 flex flex-wrap justify-center items-center gap-x-4 gap-y-1 font-medium">
               {sections.contact.split('\n').filter(line => {
                 const l = line.trim();
                 const genericTerms = ['RESUME', 'CURRICULUM VITAE', 'CV', 'PROFILE', 'CONTACT', 'PERSONAL DETAILS'];
@@ -195,40 +200,39 @@ const ATSConverter = () => {
               }).slice(1).map((line, i) => (
                 <div key={i} className="flex items-center">
                   {renderContactLine(line)}
+                  {i < sections.contact.split('\n').filter(l => l.trim()).slice(1).length - 1 && (
+                    <span className="ml-4 text-slate-300">|</span>
+                  )}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="w-16 h-1 bg-indigo-600 mx-auto rounded-full opacity-60" />
-
         {/* Dynamic Sections (Single Column) */}
-        {['summary', 'experience', 'education', 'skills', 'projects', 'certifications', 'awards'].map(key => {
-          const content = sections[key];
-          if (!content || content.trim().length < 3) return null;
+        {Object.entries(sections).map(([key, content]) => {
+          if (key === 'contact' || !content || content.trim().length < 3) return null;
 
           const title = key === 'summary' ? 'PROFESSIONAL SUMMARY' : key.toUpperCase();
 
           return (
-            <div key={key} className="group transition-all duration-300 break-inside-avoid">
-              <div className="flex items-center gap-4 mb-3">
-                <h3 className="text-[14px] font-black text-indigo-900 tracking-[0.15em] whitespace-nowrap">
+            <div key={key} className="break-inside-avoid">
+              <div className="flex items-center mb-2 border-b border-slate-200">
+                <h3 className="text-[13px] font-bold text-slate-900 tracking-wider">
                   {title}
                 </h3>
-                <div className="h-[1px] w-full bg-slate-100 group-hover:bg-indigo-100 transition-colors" />
               </div>
 
-              <div className="text-[14px] leading-relaxed text-slate-700 whitespace-pre-wrap pl-1">
-                {key === 'skills' ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-6">
-                    {content.split('\n').map((skill, i) => {
+              <div className="text-[12px] leading-normal text-slate-700 whitespace-pre-wrap">
+                {key.toLowerCase().includes('skills') ? (
+                  <div className="grid grid-cols-2 gap-y-1 gap-x-8">
+                    {content.split(/[,;\n]/).map((skill, i) => {
                       const cleaned = skill.replace(/^[*\-•\d\.]+\s*/, '').trim();
                       if (!cleaned) return null;
                       return (
-                        <div key={i} className="flex items-center gap-2.5">
-                          <div className="w-1.5 h-1.5 rounded-full bg-indigo-300" />
-                          <span className="font-medium text-slate-600 group-hover:text-indigo-600 transition-colors uppercase text-[11px] tracking-wide">{cleaned}</span>
+                        <div key={i} className="flex items-center gap-2">
+                          <span className="text-slate-400 text-[10px]">•</span>
+                          <span className="text-slate-700 font-medium">{cleaned}</span>
                         </div>
                       );
                     })}
@@ -236,12 +240,23 @@ const ATSConverter = () => {
                 ) : (
                   <div className="space-y-4">
                     {content.split(/\n\s*\n/).map((block, i) => (
-                      <div key={i} className="relative">
+                      <div key={i} className="mb-2">
                         {block.split('\n').map((line, li) => {
-                          const isHeading = li === 0 && line.length < 100 && (key === 'experience' || key === 'education' || key === 'projects');
+                          const trimmedLine = line.trim();
+                          if (!trimmedLine) return null;
+                          const isBullet = trimmedLine.startsWith('-') || trimmedLine.startsWith('•') || trimmedLine.startsWith('*');
+                          const isHeading = li === 0 && trimmedLine.length < 120 && !isBullet && (key === 'experience' || key === 'education' || key === 'projects');
+
                           return (
-                            <p key={li} className={isHeading ? "font-bold text-slate-900 text-[15.5px] mb-1" : "mb-0.5 last:mb-0"}>
-                              {line}
+                            <p
+                              key={li}
+                              className={`
+                                ${isHeading ? "font-bold text-slate-900 text-[13.5px] mt-2 mb-1" : "text-slate-700"}
+                                ${isBullet ? "pl-5 relative before:content-['•'] before:absolute before:left-1 before:text-slate-500 before:font-bold" : ""}
+                                ${!isHeading && !isBullet ? "text-[12px] mb-1 leading-relaxed" : ""}
+                              `}
+                            >
+                              {isBullet ? trimmedLine.substring(1).trim() : line}
                             </p>
                           );
                         })}
@@ -253,13 +268,6 @@ const ATSConverter = () => {
             </div>
           );
         })}
-
-        {/* Subtle Footer Watermark */}
-        <div className="mt-auto pt-16 text-center opacity-20 pointer-events-none no-print">
-          <p className="text-[10px] font-mono tracking-widest text-slate-400 italic uppercase">
-            ATS OPTIMIZED &bull; PREMIUM STRUCTURED BY INTELLIGENT RESUME SYSTEM
-          </p>
-        </div>
       </div>
     );
   };
@@ -371,9 +379,11 @@ const ATSConverter = () => {
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-h-[700px] overflow-y-auto scrollbar-thin">
-                    <div ref={previewRef}>
-                      <ResumePreview />
+                  <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-h-[750px] overflow-y-auto scrollbar-thin overflow-x-auto">
+                    <div className="min-w-fit p-4 bg-gray-200/50">
+                      <div ref={previewRef} className="shadow-2xl">
+                        <ResumePreview />
+                      </div>
                     </div>
                   </div>
                 </motion.div>
