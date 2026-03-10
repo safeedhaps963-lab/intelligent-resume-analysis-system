@@ -110,11 +110,8 @@ const Dashboard = () => {
       {/* Header Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-          RAS & JR
+          Resume Analysis & Job Recommendation System
         </h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Resume Analysis System & Job Recommendation
-        </p>
       </div>
 
       {/* Quick Stats Grid */}
@@ -298,7 +295,7 @@ const Dashboard = () => {
           <p className="text-sm font-medium">Project Demo Note</p>
         </div>
         <p className="text-xs max-w-lg mx-auto leading-relaxed">
-          The Intelligent Resume Analysis System is a technical demonstration.
+          The Resume Analysis & Job Recommendation System is a technical demonstration.
           AI-based matching, skill extraction, and ATS scoring are simulated for demonstration purposes.
           Job data is fetched from live APIs where available or provided via mock datasets.
         </p>

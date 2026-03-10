@@ -164,6 +164,9 @@ def upload_resume():
     except Exception as e:
         print(f"WARNING: Failed to archive old resumes: {str(e)}")
 
+    # Calculate Initial ATS Score automatically
+    ats_results = ats_scorer.calculate_ats_score(resume_text)
+    
     # Create resume document
     resume_doc = {
         'user_id': user_id,                    # Owner of the resume
@@ -174,6 +177,8 @@ def upload_resume():
         'upload_date': datetime.utcnow(),       # Upload timestamp
         'analyzed': False,                       # Analysis status
         'analysis_results': None,                # Will store analysis
+        'ats_score': ats_results['overall_score'],
+        'ats_breakdown': ats_results['breakdown'],
         'is_active': True                        # Newest is active
     }
     
@@ -317,8 +322,17 @@ def analyze_resume():
             job_description
         )
         
+        # Calculate dynamic ATS score
+        ats_results = ats_scorer.calculate_ats_score(
+            resume_text,
+            job_description
+        )
+        
         # Merge results
         analysis_results['missing_skills_detailed'] = missing_analysis
+        analysis_results['ats_score'] = ats_results['overall_score']
+        analysis_results['ats_breakdown'] = ats_results['breakdown']
+        analysis_results['ats_recommendations'] = ats_results['recommendations']
         
     except Exception as e:
         import traceback
@@ -498,7 +512,8 @@ def calculate_ats_score():
         # Use ATS scorer service
         ats_results = ats_scorer.calculate_ats_score(
             resume['content'],
-            job_description
+            job_description,
+            job_keywords=data.get('job_keywords')
         )
     except Exception as e:
         import traceback
@@ -715,7 +730,11 @@ def analyze_text():
     
     # Perform analysis
     analysis = nlp_analyzer.analyze_resume(resume_text, job_description)
-    ats_results = ats_scorer.calculate_ats_score(resume_text, job_description)
+    ats_results = ats_scorer.calculate_ats_score(
+        resume_text, 
+        job_description,
+        job_keywords=data.get('job_keywords')
+    )
     
     return jsonify({
         'success': True,
@@ -816,24 +835,49 @@ def convert_ats():
         user_name = user_data.get('name', 'Unknown') if user_data else 'Unknown'
         user_email = user_data.get('email', 'Unknown') if user_data else 'Unknown'
 
-        # Ensure contact section has at least the name if extraction failed
+        # Ensure contact section has at least basic info if extraction failed
         if not result.get('sections'):
             result['sections'] = {}
             
-        if not result['sections'].get('contact') or len(result['sections']['contact'].strip()) < 2:
-            # Fallback to user profile name
-            result['sections']['contact'] = user_name
+        contact = result['sections'].get('contact')
+        if not contact:
+            result['sections']['contact'] = {
+                'phone': "000-000-0000",
+                'email': user_email,
+                'linkedin': "linkedin.com/in/profile"
+            }
+        elif isinstance(contact, str):
+            # Convert legacy string format to duct for consistency
+            result['sections']['contact'] = {
+                'phone': "000-000-0000",
+                'email': contact if "@" in contact else user_email,
+                'linkedin': "linkedin.com/in/profile"
+            }
 
-        # Save to database
-        resume_id = str(uuid.uuid4())
+        # Save to ats_resumes collection
+        resume_uuid = str(uuid.uuid4())
         mongo.db.ats_resumes.insert_one({
-            'resume_id': resume_id,
+            'resume_id': resume_uuid,
             'user_id': user_id,
             'user_name': user_name,
             'user_email': user_email,
             'ats_resume': result['ats_resume'],
             'sections': result['sections'],
+            'resumeSource': 'professional_ats_converter',
             'created_at': datetime.utcnow()
+        })
+        
+        # Also save to standard resumes collection so it's scorable
+        mongo.db.resumes.insert_one({
+            'user_id': user_id,
+            'user_name': user_name,
+            'user_email': user_email,
+            'filename': f"ATS_Converted_{filename}",
+            'content': result['ats_resume'],
+            'analyzed': False,
+            'is_active': False, # Don't make it the default latest unless requested
+            'resumeSource': 'professional_ats_converter',
+            'upload_date': datetime.utcnow()
         })
 
         # Clean up temp file
@@ -843,11 +887,16 @@ def convert_ats():
         return jsonify({
             'success': True,
             'data': {
-                'resume_id': resume_id,
+                'resume_id': resume_uuid,
                 'ats_resume': result['ats_resume'],
                 'sections': result['sections'],
                 'original_length': len(resume_text),
-                'converted_length': len(result['ats_resume'])
+                'converted_length': len(result['ats_resume']),
+                'original_score': result.get('original_score', 0),
+                'improved_score': result.get('improved_score', 0),
+                'original_breakdown': result.get('original_breakdown', {}),
+                'improved_breakdown': result.get('improved_breakdown', {}),
+                'improvements': result.get('improvements', [])
             }
         }), 200
         
@@ -864,31 +913,101 @@ def convert_ats():
             'error': 'Conversion failed',
             'message': str(e)
         }), 500
-@resume_bp.route('/download-ats-docx', methods=['POST'])
+@resume_bp.route('/update-ats/<resume_id>', methods=['POST'])
 @jwt_required()
-def download_ats_docx():
-    """Download the converted ATS resume as a DOCX file."""
+def update_ats_resume(resume_id):
+    """Update optimized sections of an ATS resume."""
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    
+    if not data or 'sections' not in data:
+        return jsonify({'error': 'Missing sections data'}), 400
+        
     try:
-        data = request.get_json()
-        sections = data.get('sections')
+        # Update the stored sections in MongoDB
+        result = mongo.db.ats_resumes.update_one(
+            {'resume_id': resume_id, 'user_id': user_id},
+            {'$set': {'sections': data['sections']}}
+        )
         
-        if not sections:
-            # Fallback to parsing text if sections not provided
-            ats_text = data.get('ats_resume')
-            if not ats_text:
-                return jsonify({'error': 'No resume data provided'}), 400
-            sections = ats_converter._extract_sections(ats_text)
+        if result.matched_count == 0:
+            return jsonify({'error': 'Resume not found'}), 404
             
-        docx_bytes = ats_converter.generate_docx(sections)
+        return jsonify({
+            'success': True,
+            'message': 'Resume sections updated successfully'
+        }), 200
         
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@resume_bp.route('/download/<resume_id>', methods=['GET'])
+@jwt_required()
+def download_resume(resume_id):
+    """
+    Download a converted ATS resume in the specified format.
+    
+    Query Parameters:
+        - format: 'pdf' or 'docx' (default: 'pdf')
+    """
+    format_type = request.args.get('format', 'pdf').lower()
+    user_id = get_jwt_identity()
+    
+    try:
+        from app.services.ats_converter import ats_converter
+        # Fetch the stored optimized resume from MongoDB
+        resume_data = mongo.db.ats_resumes.find_one({
+            'resume_id': resume_id,
+            'user_id': user_id
+        })
+        
+        if not resume_data:
+            return jsonify({
+                'success': False,
+                'message': 'Optimized resume not found or access denied.'
+            }), 404
+            
+        sections = resume_data.get('sections')
+        if not sections:
+            return jsonify({
+                'success': False,
+                'message': 'Resume data structure is invalid.'
+            }), 500
+            
+        # Generate file bytes based on requested format
+        if format_type == 'pdf':
+            file_bytes = ats_converter.generate_pdf(sections)
+            mimetype = 'application/pdf'
+            file_extension = 'pdf'
+        elif format_type == 'docx':
+            file_bytes = ats_converter.generate_docx(sections)
+            mimetype = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            file_extension = 'docx'
+        else:
+            return jsonify({
+                'success': False,
+                'message': f'Unsupported format: {format_type}. Supported: pdf, docx'
+            }), 400
+            
+        # Prepare file response
         from flask import send_file
         import io
         
+        filename = f"ATS_Optimized_Resume.{file_extension}"
+        
         return send_file(
-            io.BytesIO(docx_bytes),
-            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            io.BytesIO(file_bytes),
+            mimetype=mimetype,
             as_attachment=True,
-            download_name='ats_friendly_resume.docx'
+            download_name=filename
         )
+        
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        current_app.logger.error(f"Download failed: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': 'An error occurred while preparing your download.',
+            'error': str(e)
+        }), 500
+

@@ -13,6 +13,7 @@ Key Features:
 """
 
 import re
+import random
 from typing import Dict, List, Set, Tuple
 from collections import defaultdict
 
@@ -199,12 +200,6 @@ class MissingSkillsAnalyzer:
                 - matched_skills: Number of matched skills
                 - matched_skills_list: List of matched skill names
                 - has_job_description: Whether job description was provided
-        
-        Example:
-            result = analyzer.analyze(
-                ['Python', 'React', 'AWS'],
-                'Looking for developer with Python, Django, Docker...'
-            )
         """
         # Handle empty job description
         if not job_description or len(job_description.strip()) < 20:
@@ -259,9 +254,9 @@ class MissingSkillsAnalyzer:
             match_percentage = 0
         
         return {
-            'critical': missing_critical[:10],  # Top 10
-            'recommended': missing_recommended[:8],  # Top 8
-            'soft': missing_soft[:5],  # Top 5
+            'critical': missing_critical[:10],
+            'recommended': missing_recommended[:8],
+            'soft': missing_soft[:5],
             'match_percentage': match_percentage,
             'total_job_skills': total_job_skills,
             'matched_skills': matched_count,
@@ -270,28 +265,14 @@ class MissingSkillsAnalyzer:
         }
     
     def _extract_skills_from_text(self, text: str) -> List[str]:
-        """
-        Extract skills mentioned in text using pattern matching.
-        
-        Args:
-            text: Text to analyze (job description)
-        
-        Returns:
-            List of unique skills found in text
-        """
+        """Extract skills mentioned in text using pattern matching."""
         text_lower = text.lower()
         found_skills = set()
         
-        # Search for each skill in our database
         for category, skills in self.skills_database.items():
             for skill in skills:
-                # Create pattern for whole word matching
-                # Handle special characters in skill names
                 skill_pattern = re.escape(skill.lower())
-                
-                # Match as whole word or with common boundaries
                 pattern = r'(?:^|[\s,;:()\[\]./])' + skill_pattern + r'(?:[\s,;:()\[\]./]|$)'
-                
                 if re.search(pattern, text_lower):
                     found_skills.add(skill)
         
@@ -302,75 +283,44 @@ class MissingSkillsAnalyzer:
         skills: List[str],
         job_description: str
     ) -> Dict[str, List[str]]:
-        """
-        Categorize skills by their importance level.
-        
-        Uses context clues in the job description to determine
-        whether skills are required, recommended, or soft skills.
-        
-        Args:
-            skills: List of skills found in job description
-            job_description: Original job description text
-        
-        Returns:
-            Dict with 'critical', 'recommended', 'soft' skill lists
-        """
+        """Categorize skills by importance level."""
         text_lower = job_description.lower()
-        
         critical = []
         recommended = []
         soft = []
         
-        # Check for required/preferred sections
-        has_required_section = any(kw in text_lower for kw in self.required_keywords)
-        has_preferred_section = any(kw in text_lower for kw in self.preferred_keywords)
-        
         for skill in skills:
             skill_lower = skill.lower()
-            
-            # Check if skill is a soft skill
             if skill in self.skills_database.get('soft_skills', []):
                 soft.append(skill)
                 continue
             
-            # Determine if critical or recommended based on context
             is_critical = False
             is_recommended = False
-            
-            # Find skill context in job description
             skill_pattern = re.escape(skill_lower)
             
-            # Look for skill near required keywords
             for keyword in self.required_keywords:
-                # Check if skill is within 200 characters of required keyword
                 keyword_pos = text_lower.find(keyword)
                 if keyword_pos != -1:
                     skill_match = re.search(skill_pattern, text_lower)
-                    if skill_match:
-                        distance = abs(skill_match.start() - keyword_pos)
-                        if distance < 300:
-                            is_critical = True
-                            break
+                    if skill_match and abs(skill_match.start() - keyword_pos) < 300:
+                        is_critical = True
+                        break
             
-            # Look for skill near preferred keywords
             if not is_critical:
                 for keyword in self.preferred_keywords:
                     keyword_pos = text_lower.find(keyword)
                     if keyword_pos != -1:
                         skill_match = re.search(skill_pattern, text_lower)
-                        if skill_match:
-                            distance = abs(skill_match.start() - keyword_pos)
-                            if distance < 300:
-                                is_recommended = True
-                                break
+                        if skill_match and abs(skill_match.start() - keyword_pos) < 300:
+                            is_recommended = True
+                            break
             
-            # Categorize skill
             if is_critical:
                 critical.append(skill)
             elif is_recommended:
                 recommended.append(skill)
             else:
-                # Default: if no clear section, technical skills are critical
                 if skill not in self.skills_database.get('soft_skills', []):
                     critical.append(skill)
                 else:
@@ -381,42 +331,20 @@ class MissingSkillsAnalyzer:
             'recommended': recommended,
             'soft': soft
         }
-    
+
     def _get_default_suggestions(self, resume_skills: List[str], category: str = "Professional") -> Dict:
-        """
-        Get default skill suggestions when no job description provided.
-        
-        Args:
-            resume_skills: Current resume skills
-            category: Profile category (e.g., 'Developer', 'Designer')
-        
-        Returns:
-            Dict with general skill suggestions
-        """
+        """Get default skill suggestions when no job description provided."""
         resume_skills_lower = set(skill.lower() for skill in resume_skills)
-        
-        # Get category-specific skills or default to Professional
         cat_data = self.category_skills.get(category, self.category_skills['Professional'])
         
-        common_critical = cat_data['critical']
-        common_recommended = cat_data['recommended']
-        common_soft = cat_data['soft']
+        avail_critical = [s for s in cat_data['critical'] if s.lower() not in resume_skills_lower]
+        avail_recommended = [s for s in cat_data['recommended'] if s.lower() not in resume_skills_lower]
+        avail_soft = [s for s in cat_data['soft'] if s.lower() not in resume_skills_lower]
         
-        # Filter out skills already in resume
-        missing_critical = [
-            s for s in common_critical 
-            if s.lower() not in resume_skills_lower
-        ][:5]
-        
-        missing_recommended = [
-            s for s in common_recommended 
-            if s.lower() not in resume_skills_lower
-        ][:4]
-        
-        missing_soft = [
-            s for s in common_soft 
-            if s.lower() not in resume_skills_lower
-        ][:3]
+        # Randomly sample to provide variety and address "static" request
+        missing_critical = random.sample(avail_critical, min(len(avail_critical), 7))
+        missing_recommended = random.sample(avail_recommended, min(len(avail_recommended), 6))
+        missing_soft = random.sample(avail_soft, min(len(avail_soft), 4))
         
         return {
             'critical': missing_critical,
@@ -430,35 +358,13 @@ class MissingSkillsAnalyzer:
         }
     
     def get_skill_learning_resources(self, skill: str) -> Dict:
-        """
-        Get learning resources for a specific skill.
-        
-        Args:
-            skill: Skill name to find resources for
-        
-        Returns:
-            Dict with learning resources
-        """
-        # This would integrate with learning platforms API
-        # For now, return placeholder suggestions
+        """Get learning resources for a specific skill."""
         return {
             'skill': skill,
             'resources': [
-                {
-                    'type': 'course',
-                    'platform': 'Udemy',
-                    'name': f'Complete {skill} Masterclass'
-                },
-                {
-                    'type': 'documentation',
-                    'platform': 'Official Docs',
-                    'name': f'{skill} Documentation'
-                },
-                {
-                    'type': 'tutorial',
-                    'platform': 'YouTube',
-                    'name': f'{skill} Tutorial for Beginners'
-                }
+                {'type': 'course', 'platform': 'Udemy', 'name': f'Complete {skill} Masterclass'},
+                {'type': 'documentation', 'platform': 'Official Docs', 'name': f'{skill} Documentation'},
+                {'type': 'tutorial', 'platform': 'YouTube', 'name': f'{skill} Tutorial for Beginners'}
             ]
         }
 

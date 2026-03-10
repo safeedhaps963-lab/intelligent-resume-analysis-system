@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import html2pdf from "html2pdf.js";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -8,7 +8,8 @@ import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaUser, FaCode, FaGraduationCap,
-  FaMagic, FaDownload, FaCertificate
+  FaMagic, FaDownload, FaCertificate,
+  FaChartLine, FaCheckCircle, FaRobot, FaExclamationTriangle
 } from "react-icons/fa";
 
 import ModernTemplate from "./ResumeTemplates/ModernTemplate";
@@ -70,7 +71,58 @@ function Builder() {
     mode: "onChange"
   });
 
+  const [atsScore, setAtsScore] = useState(null);
+  const [atsBreakdown, setAtsBreakdown] = useState(null);
+  const [isScoring, setIsScoring] = useState(false);
+
   const formData = watch();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      calculateLiveScore();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [formData]);
+
+  const calculateLiveScore = async () => {
+    if (!formData.name || !formData.technicalSkills || formData.summary.length < 20) return;
+
+    try {
+      setIsScoring(true);
+      const resumeText = `
+        ${formData.name}
+        ${formData.email} | ${formData.phone}
+        ${formData.linkedin}
+        SUMMARY
+        ${formData.summary}
+        SKILLS
+        ${formData.technicalSkills}
+        ${formData.softSkills}
+        EXPERIENCE
+        ${formData.experience}
+        EDUCATION
+        ${formData.education}
+        PROJECTS
+        ${formData.projects}
+        CERTIFICATIONS
+        ${formData.certifications}
+      `;
+
+      const res = await axios.post(`${API}/api/resume/analyze-text`, {
+        text: resumeText
+      });
+
+      if (res.data.success) {
+        setAtsScore(res.data.data.ats_score);
+        setAtsBreakdown(res.data.data.ats_breakdown);
+      }
+    } catch (err) {
+      console.error("Live scoring failed", err);
+    } finally {
+      setIsScoring(false);
+    }
+  };
 
   const generateSummary = async () => {
     try {
@@ -78,9 +130,10 @@ function Builder() {
       const token = localStorage.getItem("access_token") || localStorage.getItem("authToken") || localStorage.getItem("token");
 
       const payload = {
-        jobTitle: formData.name || '',
+        name: formData.name || '',
         skills: formData.technicalSkills || '',
-        experience: formData.experience || ''
+        experience: formData.experience || '',
+        education: formData.education || ''
       };
 
       const headers = {};
@@ -88,10 +141,52 @@ function Builder() {
 
       const res = await axios.post(`${API}/api/ai/generate-summary`, payload, { headers });
 
-      setValue("summary", res.data.summary, { shouldValidate: true });
-      toast.success("AI Summary Generated!");
+      if (res.data.success) {
+        setValue("summary", res.data.summary, { shouldValidate: true });
+        toast.success("Professional Summary Generated!");
+      } else {
+        throw new Error(res.data.error || "Generation failed");
+      }
     } catch (err) {
-      toast.error("Failed to generate summary");
+      console.error("Summary error:", err);
+      toast.error("Failed to generate summary. Using fallback.");
+      // Minimal fallback if API fails
+      const fallback = "Results-driven professional with a strong commitment to delivering high-quality results. Skilled in problem-solving and collaboration, seeking to contribute technical expertise to a dynamic organization.";
+      setValue("summary", fallback, { shouldValidate: true });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveResume = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("access_token") || localStorage.getItem("authToken") || localStorage.getItem("token");
+
+      const payload = {
+        personal: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          linkedin: formData.linkedin,
+          summary: formData.summary
+        },
+        experience: formData.experience,
+        education: formData.education,
+        skills: {
+          technical: formData.technicalSkills ? formData.technicalSkills.split(',').map(s => s.trim()) : [],
+          soft: formData.softSkills ? formData.softSkills.split(',').map(s => s.trim()) : []
+        },
+        template: selectedTemplate
+      };
+
+      const headers = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      await axios.post(`${API}/api/builder/save`, payload, { headers });
+      toast.success("Resume saved to database!");
+    } catch (err) {
+      toast.error("Failed to save resume");
     } finally {
       setLoading(false);
     }
@@ -237,7 +332,7 @@ function Builder() {
                           disabled={loading}
                           className="bg-purple-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-purple-700 shadow-sm transition-all flex items-center gap-1 active:scale-95 disabled:opacity-50"
                         >
-                          <FaMagic className="text-[10px]" /> {loading ? "Generating..." : "AI AUTO-FILL"}
+                          <FaMagic className="text-[10px]" /> {loading ? "Generating..." : "GENERATE SUMMARY"}
                         </button>
                       </div>
                       <textarea
@@ -324,6 +419,36 @@ function Builder() {
 
             {/* Form Footer Controls */}
             <div className="p-4 bg-gray-50 border-t border-indigo-100 flex flex-col gap-3">
+              {/* Live ATS Score Widget */}
+              {atsScore !== null && (
+                <div className="bg-white rounded-xl p-3 border border-indigo-100 shadow-sm mb-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1">
+                      <FaRobot className="text-indigo-600" /> Live ATS Score
+                    </span>
+                    <span className={`text-sm font-black ${atsScore >= 80 ? 'text-green-600' : 'text-indigo-600'}`}>
+                      {isScoring ? '...' : `${atsScore}%`}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden mb-3">
+                    <div
+                      className={`h-full transition-all duration-1000 ${atsScore >= 80 ? 'bg-green-500' : 'bg-indigo-600'}`}
+                      style={{ width: `${atsScore}%` }}
+                    ></div>
+                  </div>
+
+                  {/* Small Breakdown */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {atsBreakdown && Object.entries(atsBreakdown).slice(0, 4).map(([key, item]) => (
+                      <div key={key} className="text-[9px] flex items-center justify-between">
+                        <span className="text-gray-400 truncate mr-1">{item.label}</span>
+                        <span className="font-bold text-gray-700">{item.score}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold text-gray-500 uppercase whitespace-nowrap">Template:</span>
                 <select
@@ -336,13 +461,22 @@ function Builder() {
                   <option value="minimal">Minimalist Sleek</option>
                 </select>
               </div>
-              <button
-                type="button"
-                onClick={handleSubmit(onSubmit, onInvalid)}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
-              >
-                <FaDownload className="text-sm" /> Download PDF
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={saveResume}
+                  className="flex-1 bg-indigo-50 text-indigo-600 font-bold py-3 rounded-xl hover:bg-indigo-100 transition-all flex items-center justify-center gap-2"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit, onInvalid)}
+                  className="flex-[2] bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-indigo-200 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                >
+                  <FaDownload className="text-sm" /> Download PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>

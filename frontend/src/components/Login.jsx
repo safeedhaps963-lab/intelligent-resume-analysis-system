@@ -189,7 +189,7 @@ const Login = () => {
       </div>
 
       <p className="fixed bottom-6 text-gray-400 text-sm">
-        &copy; 2026 Intelligent Resume Analysis System. All rights reserved.
+        &copy; 2026 Resume Analysis & Job Recommendation System. All rights reserved.
       </p>
     </div>
   );

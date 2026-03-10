@@ -53,8 +53,8 @@ summarizer = None
 def generate_summary():
     """Generate a short professional ATS-friendly resume summary.
 
-    Accepts JSON payload with any of: jobTitle, skills, experience.
-    Tries multiple models (fallback) and returns the generated summary.
+    Accepts JSON payload with: name, skills, experience, education.
+    Adapts to Fresher vs. Experienced and Technical vs. Non-Technical profiles.
     """
     global summarizer
     if summarizer is None:
@@ -62,15 +62,54 @@ def generate_summary():
     
     data = request.get_json()
 
-    job_title = data.get("jobTitle") or data.get("job_title") or "Professional"
+    name = data.get("name") or "Professional"
     skills = data.get("skills", "")
     experience = data.get("experience", "")
+    education = data.get("education", "")
 
-    # Construct input for summarization (T5 model benefits from 'summarize: ' prefix)
-    content = f"summarize: Job Title: {job_title}. Skills: {skills}. Experience: {experience}. Professionally summarize this person's career for a resume."
+    # Determine Profile Type
+    is_fresher = not experience or len(experience.strip()) < 10
+    is_technical = any(tech in skills.lower() for tech in ["python", "java", "react", "sql", "engineer", "developer", "aws", "cloud", "data"])
+
+    # Fallback Template if little data is provided
+    if not skills and not experience and not education:
+        general_summary = "Motivated and detail-oriented professional with strong analytical and problem-solving skills. Experienced in working collaboratively within team environments and committed to delivering high-quality results. Seeking an opportunity to contribute technical expertise and grow within a dynamic organization."
+        return jsonify({"success": True, "summary": general_summary, "type": "generic"})
+
+    # Construct Enhanced Prompt
+    profile_type = "Fresher" if is_fresher else "Experienced"
+    domain = "Technical" if is_technical else "Professional"
+    
+    content = f"summarize: Generate a {profile_type} {domain} resume summary. "
+    if name and name != "Professional": content += f"Candidate: {name}. "
+    if education: content += f"Education: {education}. "
+    if skills: content += f"Top Skills: {skills}. "
+    if experience: content += f"Work History: {experience}. "
+    content += "The summary should be 3-5 lines, professional, highlight strengths and value proposition."
 
     try:
-        summary = summarizer.summarize(content)
-        return jsonify({"success": True, "summary": summary})
+        # Generate using AI
+        summary = summarizer.summarize(content, min_length=50, max_length=200)
+        
+        # Post-processing to ensure professional tone if AI is too creative
+        if len(summary.split()) < 15:
+            # AI produced something too short, use a hybrid approach
+            summary = f"Dedicated {domain} professional {('with a background in ' + education.split(',')[0]) if education else ''}. " \
+                      f"Skilled in {skills.split(',')[0] if ',' in skills else skills or 'various industry tools'}. " \
+                      f"Proven ability to {experience.split('.')[0] if experience else 'deliver high-quality results and contribute to team success'}."
+        
+        return jsonify({
+            "success": True, 
+            "summary": summary,
+            "metadata": {
+                "profile": profile_type,
+                "domain": domain
+            }
+        })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # High-level fallback on failure
+        fallback = "Results-driven professional with a focus on delivering excellence. "
+        if skills: fallback += f"Expertise in {skills.split(',')[0]}. "
+        fallback += "Committed to continuous learning and contributing to organizational goals through dedication and strategic thinking."
+        
+        return jsonify({"success": True, "summary": fallback, "error_note": str(e)})

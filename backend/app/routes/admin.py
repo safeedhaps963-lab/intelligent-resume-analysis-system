@@ -480,13 +480,75 @@ def get_all_recommendations():
 @admin_bp.route('/ats-scores', methods=['GET'])
 @admin_required
 def get_all_ats_scores():
-    """Get all ATS scores calculated across the system."""
+    """Get all ATS scores calculated across the system using aggregation."""
     try:
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 10))
+        search = request.args.get('search', '')
         
-        total_count = mongo.db.ats_results.count_documents({})
-        scores_data = mongo.db.ats_results.find().sort('scored_at', -1).skip((page - 1) * limit).limit(limit)
+        # Build aggregation pipeline
+        pipeline = [
+            # Join with users
+            {
+                '$lookup': {
+                    'from': 'users',
+                    'let': {'u_id': '$user_id'},
+                    'pipeline': [
+                        {'$match': {'$expr': {'$eq': [{'$toString': '$_id'}, '$$u_id']}}},
+                        {'$project': {'name': 1, 'email': 1}}
+                    ],
+                    'as': 'user_info'
+                }
+            },
+            {'$unwind': {'path': '$user_info', 'preserveNullAndEmptyArrays': True}},
+            # Join with resumes
+            {
+                '$lookup': {
+                    'from': 'resumes',
+                    'let': {'r_id': '$resume_id'},
+                    'pipeline': [
+                        {'$match': {'$expr': {'$eq': [{'$toString': '$_id'}, '$$r_id']}}},
+                        {'$project': {'filename': 1}}
+                    ],
+                    'as': 'resume_info'
+                }
+            },
+            {'$unwind': {'path': '$resume_info', 'preserveNullAndEmptyArrays': True}},
+            # Add fields for easier filtering/display
+            {
+                '$addFields': {
+                    'user_name': {'$ifNull': ['$user_info.name', '$user_name', 'Unknown']},
+                    'user_email': {'$ifNull': ['$user_info.email', '$user_email', 'Unknown']},
+                    'filename': {'$ifNull': ['$resume_info.filename', '$filename', 'Unknown']}
+                }
+            }
+        ]
+        
+        # Add search filter
+        if search:
+            pipeline.append({
+                '$match': {
+                    '$or': [
+                        {'user_name': {'$regex': search, '$options': 'i'}},
+                        {'user_email': {'$regex': search, '$options': 'i'}},
+                        {'resume_id': {'$regex': search, '$options': 'i'}}
+                    ]
+                }
+            })
+            
+        # Count total documents for pagination
+        # We need a copy of the pipeline before skip/limit for count
+        count_pipeline = list(pipeline)
+        count_pipeline.append({'$count': 'total'})
+        count_result = list(mongo.db.ats_results.aggregate(count_pipeline))
+        total_count = count_result[0]['total'] if count_result else 0
+        
+        # Final pipeline stages
+        pipeline.append({'$sort': {'scored_at': -1}})
+        pipeline.append({'$skip': (page - 1) * limit})
+        pipeline.append({'$limit': limit})
+        
+        scores_data = list(mongo.db.ats_results.aggregate(pipeline))
         
         scores = []
         for doc in scores_data:
@@ -495,11 +557,9 @@ def get_all_ats_scores():
             if 'scored_at' in doc and hasattr(doc['scored_at'], 'isoformat'):
                 doc['scored_at'] = doc['scored_at'].isoformat()
             
-            # Fetch user info if missing
-            if 'user_name' not in doc:
-                user = mongo.db.users.find_one({'_id': ObjectId(doc['user_id'])})
-                doc['user_name'] = user.get('name') if user else 'Unknown'
-            
+            # Remove nested info objects
+            doc.pop('user_info', None)
+            doc.pop('resume_info', None)
             scores.append(doc)
             
         return jsonify({
@@ -513,18 +573,81 @@ def get_all_ats_scores():
             }
         }), 200
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @admin_bp.route('/skill-analyses', methods=['GET'])
 @admin_required
 def get_all_skill_analyses():
-    """Get all skill analyses performed across the system."""
+    """Get all skill analyses performed across the system using aggregation."""
     try:
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 10))
+        search = request.args.get('search', '')
         
-        total_count = mongo.db.skill_analysis.count_documents({})
-        analyses_data = mongo.db.skill_analysis.find().sort('analyzed_at', -1).skip((page - 1) * limit).limit(limit)
+        # Build aggregation pipeline
+        pipeline = [
+            # Join with users
+            {
+                '$lookup': {
+                    'from': 'users',
+                    'let': {'u_id': '$user_id'},
+                    'pipeline': [
+                        {'$match': {'$expr': {'$eq': [{'$toString': '$_id'}, '$$u_id']}}},
+                        {'$project': {'name': 1, 'email': 1}}
+                    ],
+                    'as': 'user_info'
+                }
+            },
+            {'$unwind': {'path': '$user_info', 'preserveNullAndEmptyArrays': True}},
+            # Join with resumes
+            {
+                '$lookup': {
+                    'from': 'resumes',
+                    'let': {'r_id': '$resume_id'},
+                    'pipeline': [
+                        {'$match': {'$expr': {'$eq': [{'$toString': '$_id'}, '$$r_id']}}},
+                        {'$project': {'filename': 1}}
+                    ],
+                    'as': 'resume_info'
+                }
+            },
+            {'$unwind': {'path': '$resume_info', 'preserveNullAndEmptyArrays': True}},
+            # Add fields
+            {
+                '$addFields': {
+                    'user_name': {'$ifNull': ['$user_info.name', '$user_name', 'Unknown']},
+                    'user_email': {'$ifNull': ['$user_info.email', '$user_email', 'Unknown']},
+                    'filename': {'$ifNull': ['$resume_info.filename', '$filename', 'Unknown']}
+                }
+            }
+        ]
+        
+        # Add search filter
+        if search:
+            pipeline.append({
+                '$match': {
+                    '$or': [
+                        {'user_name': {'$regex': search, '$options': 'i'}},
+                        {'user_email': {'$regex': search, '$options': 'i'}},
+                        {'resume_id': {'$regex': search, '$options': 'i'}}
+                    ]
+                }
+            })
+            
+        # Count total
+        count_pipeline = list(pipeline)
+        count_pipeline.append({'$count': 'total'})
+        count_result = list(mongo.db.skill_analysis.aggregate(count_pipeline))
+        total_count = count_result[0]['total'] if count_result else 0
+        
+        # Final pipeline
+        pipeline.append({'$sort': {'analyzed_at': -1}})
+        pipeline.append({'$skip': (page - 1) * limit})
+        pipeline.append({'$limit': limit})
+        
+        analyses_data = list(mongo.db.skill_analysis.aggregate(pipeline))
         
         analyses = []
         for doc in analyses_data:
@@ -533,11 +656,8 @@ def get_all_skill_analyses():
             if 'analyzed_at' in doc and hasattr(doc['analyzed_at'], 'isoformat'):
                 doc['analyzed_at'] = doc['analyzed_at'].isoformat()
                 
-            # Fetch user info if missing
-            if 'user_name' not in doc:
-                user = mongo.db.users.find_one({'_id': ObjectId(doc['user_id'])})
-                doc['user_name'] = user.get('name') if user else 'Unknown'
-                
+            doc.pop('user_info', None)
+            doc.pop('resume_info', None)
             analyses.append(doc)
             
         return jsonify({
@@ -551,4 +671,6 @@ def get_all_skill_analyses():
             }
         }), 200
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500

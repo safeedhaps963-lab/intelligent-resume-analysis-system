@@ -1,432 +1,609 @@
-/**
- * ATSConverter.jsx - ATS Resume Converter Component
- * ================================================
- */
-
-import React, { useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
-  FaArrowLeft, FaFileAlt, FaMagic, FaUpload, FaCheckCircle,
-  FaGlobe, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaLinkedin,
-  FaFilePdf, FaFileWord, FaInfoCircle, FaSync
+    FaUpload, FaCheckCircle, FaRocket,
+    FaSyncAlt, FaExclamationTriangle, FaDownload,
+    FaFileWord, FaRobot, FaMagic, FaPlus, FaTimes, FaFilePdf,
+    FaChartPie, FaEdit, FaSave, FaTrash
 } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
-import { AppContext } from '../../App';
 import { resumeAPI } from '../../services/api';
-import html2pdf from 'html2pdf.js';
+import toast from 'react-hot-toast';
 
 const ATSConverter = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [jobKeywords, setJobKeywords] = useState('');
-  const [convertedResume, setConvertedResume] = useState('');
-  const [isConverting, setIsConverting] = useState(false);
-  const [conversionStats, setConversionStats] = useState(null);
-  const previewRef = useRef(null);
-  const navigate = useNavigate();
+    const [file, setFile] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editableSections, setEditableSections] = useState(null);
+    const [step, setStep] = useState('upload'); // upload, processing, result
 
-  const [sections, setSections] = useState(null);
-  const { userName } = useContext(AppContext);
-  const displayFallbackName = userName || localStorage.getItem('userName') || 'Professional Candidate';
-
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const allowedExtensions = ['.pdf', '.docx', '.txt'];
-      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-
-      if (!allowedExtensions.includes(fileExtension)) {
-        toast.error('Please select a valid resume file (PDF, DOCX, or TXT)');
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('File size must be less than 10MB');
-        return;
-      }
-
-      setSelectedFile(file);
-      setConvertedResume('');
-      setConversionStats(null);
-      setSections(null); // Clear sections on new file select
-    }
-  };
-
-  const handleConvert = async () => {
-    if (!selectedFile) {
-      toast.error('Please select a resume file first');
-      return;
-    }
-
-    setIsConverting(true);
-    const loadingToast = toast.loading('Transforming your resume...');
-
-    try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-
-      if (jobKeywords.trim()) {
-        const keywords = jobKeywords.split(',').map(k => k.trim()).filter(k => k);
-        formData.append('job_keywords', JSON.stringify(keywords));
-      }
-
-      const data = await resumeAPI.convertATS(formData);
-
-      if (data.success) {
-        setConvertedResume(data.data.ats_resume);
-        setSections(data.data.sections);
-        setConversionStats({
-          originalLength: data.data.original_length,
-          convertedLength: data.data.converted_length
-        });
-        toast.success('Resume converted to professional format!', { id: loadingToast });
-      } else {
-        toast.error(data.message || 'Conversion failed', { id: loadingToast });
-      }
-    } catch (error) {
-      console.error('Conversion error:', error);
-      toast.error('Failed to convert resume. Please try again.', { id: loadingToast });
-    } finally {
-      setIsConverting(false);
-    }
-  };
-
-  const downloadPDF = () => {
-    if (!sections) return;
-
-    const element = previewRef.current;
-    const opt = {
-      margin: 0,
-      filename: `${selectedFile.name.split('.')[0]}_Professional.pdf`,
-      image: { type: 'jpeg', quality: 1.0 },
-      html2canvas: {
-        scale: 2, // Scale 2 is usually enough for high quality without huge file size
-        useCORS: true,
-        letterRendering: true,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 794, // Force window width to match element width for consistent rendering
-      },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            if (selectedFile.size > 5 * 1024 * 1024) {
+                toast.error("File size exceeds 5MB limit");
+                return;
+            }
+            setFile(selectedFile);
+        }
     };
 
-    toast.promise(
-      html2pdf().set(opt).from(element).save(),
-      {
-        loading: 'Generating High-Fidelity PDF...',
-        success: 'Professional PDF Downloaded!',
-        error: 'Failed to generate PDF. Please try again.'
-      }
-    );
-  };
+    const handleConvert = async () => {
+        if (!file) {
+            toast.error("Please select a resume file first");
+            return;
+        }
 
-  const downloadDOCX = async () => {
-    if (!sections) return;
+        setLoading(true);
+        setStep('processing');
 
-    try {
-      const response = await resumeAPI.downloadATSDocx(sections);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${selectedFile.name.split('.')[0]}_Professional.docx`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      toast.success('Professional DOCX Downloaded!');
-    } catch (error) {
-      toast.error('Failed to download DOCX');
-    }
-  };
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
 
-  const downloadTXT = () => {
-    if (!convertedResume) return;
-    const blob = new Blob([convertedResume], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${selectedFile.name.split('.')[0]}_ATS.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('ATS Plain Text Downloaded!');
-  };
+            const response = await resumeAPI.convertATS(formData);
 
-  // Helper to render sections professionally
-  const ResumePreview = () => {
-    if (!sections) return null;
+            if (response.success) {
+                setResult(response.data);
+                setEditableSections(response.data.sections);
+                setStep('result');
+                toast.success("Resume optimized successfully!");
+            } else {
+                throw new Error(response.message || "Optimization failed");
+            }
+        } catch (error) {
+            console.error("Conversion error:", error);
+            const msg = error.response?.data?.message || error.message || "Failed to convert resume";
+            toast.error(msg);
+            setStep('upload');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const renderContactLine = (line) => {
-      const isEmail = line.toLowerCase().includes('@') || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(line.trim());
-      const isPhone = /[\d\-\+\(\)]{7,}/.test(line);
-      const isLink = line.toLowerCase().includes('http') || line.toLowerCase().includes('linkedin.com') || line.toLowerCase().includes('github.com');
+    const downloadOptimizedDOCX = async () => {
+        if (!result || !result.resume_id) return;
+        setLoading(true);
+        try {
+            const response = await resumeAPI.download(result.resume_id, 'docx');
+            const blob = new Blob([response.data], {
+                type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            });
+            const url = window.URL.createObjectURL(blob);
 
-      let Icon = FaGlobe;
-      if (isEmail) Icon = FaEnvelope;
-      else if (isPhone) Icon = FaPhoneAlt;
-      else if (isLink) Icon = (line.toLowerCase().includes('linkedin')) ? FaLinkedin : FaGlobe;
+            // Trigger open/download
+            window.open(url, '_blank');
 
-      return (
-        <span className="flex items-center gap-1.5 min-w-0">
-          <Icon className="text-gray-600 text-[10px] flex-shrink-0" />
-          <span className="truncate hover:whitespace-normal transition-all">{line.trim()}</span>
-        </span>
-      );
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ATS_Optimized_${result.resume_id.substring(0, 8)}.docx`;
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            }, 1000);
+
+            toast.success("DOCX download started");
+        } catch (e) {
+            console.error(e);
+            toast.error("DOCX download failed");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const downloadOptimizedPDF = async () => {
+        if (!result || !result.resume_id) return;
+        setLoading(true);
+        try {
+            const response = await resumeAPI.download(result.resume_id, 'pdf');
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+
+            // Open in new tab so user can "see" it immediately
+            window.open(url, '_blank');
+
+            // Also trigger download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ATS_Optimized_${result.resume_id.substring(0, 8)}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            }, 1000); // Give more time for the browser to start the download
+
+            toast.success("PDF opened and download started");
+        } catch (e) {
+            console.error(e);
+            toast.error("PDF download failed");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const addEducation = () => {
+        const newEdu = {
+            degree: '',
+            field: '',
+            institution: '',
+            start_year: '',
+            end_year: '',
+            grade: ''
+        };
+        setEditableSections({
+            ...editableSections,
+            education: [...(editableSections.education || []), newEdu]
+        });
+    };
+
+    const updateEducation = (index, field, value) => {
+        const newEduList = [...editableSections.education];
+        newEduList[index] = { ...newEduList[index], [field]: value };
+        setEditableSections({ ...editableSections, education: newEduList });
+    };
+
+    const removeEducation = (index) => {
+        const newEduList = editableSections.education.filter((_, i) => i !== index);
+        setEditableSections({ ...editableSections, education: newEduList });
+    };
+
+    const handleSaveChanges = async () => {
+        setLoading(true);
+        try {
+            const response = await resumeAPI.updateATS(result.resume_id, editableSections);
+            if (response.data.success) {
+                setResult({ ...result, sections: editableSections });
+                setIsEditing(false);
+                toast.success("Changes saved successfully!");
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+            toast.error("Failed to save changes");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const reset = () => {
+        setFile(null);
+        setResult(null);
+        setEditableSections(null);
+        setIsEditing(false);
+        setStep('upload');
     };
 
     return (
-      <div
-        id="professional-resume"
-        className="bg-white text-slate-800 font-sans shadow-none w-[794px] mx-auto p-[0.75in] flex flex-col gap-6 break-words"
-        style={{ minHeight: '1123px' }} // A4 height at 96 DPI
-      >
-        {/* Contact Info Header */}
-        <div className="text-center border-b-2 border-slate-900 pb-6">
-          <h2 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight uppercase">
-            {(() => {
-              const contactLines = sections.contact ? sections.contact.split('\n').filter(line => line.trim()) : [];
-              const genericTerms = ['RESUME', 'CURRICULUM VITAE', 'CV', 'PROFILE', 'CONTACT', 'PERSONAL DETAILS'];
-              const filteredLines = contactLines.filter(l => !genericTerms.includes(l.toUpperCase()));
-              return filteredLines[0] || displayFallbackName;
-            })()}
-          </h2>
-          {sections.contact && (
-            <div className="text-[11px] text-slate-600 flex flex-wrap justify-center items-center gap-x-4 gap-y-1 font-medium">
-              {sections.contact.split('\n').filter(line => {
-                const l = line.trim();
-                const genericTerms = ['RESUME', 'CURRICULUM VITAE', 'CV', 'PROFILE', 'CONTACT', 'PERSONAL DETAILS'];
-                return l && !genericTerms.includes(l.toUpperCase());
-              }).slice(1).map((line, i) => (
-                <div key={i} className="flex items-center">
-                  {renderContactLine(line)}
-                  {i < sections.contact.split('\n').filter(l => l.trim()).slice(1).length - 1 && (
-                    <span className="ml-4 text-slate-300">|</span>
-                  )}
+        <div className="max-w-5xl mx-auto space-y-8 py-8 px-4">
+            <div className="text-center space-y-4">
+                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-purple-50 text-purple-600 text-sm font-bold border border-purple-100">
+                    <FaMagic className="mr-2" /> AI-Powered Optimization
                 </div>
-              ))}
+                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">ATS Resume Converter</h1>
+
             </div>
-          )}
-        </div>
 
-        {/* Dynamic Sections (Single Column) */}
-        {Object.entries(sections).map(([key, content]) => {
-          if (key === 'contact' || !content || content.trim().length < 3) return null;
-
-          const title = key === 'summary' ? 'PROFESSIONAL SUMMARY' : key.toUpperCase();
-
-          return (
-            <div key={key} className="break-inside-avoid">
-              <div className="flex items-center mb-2 border-b border-slate-200">
-                <h3 className="text-[13px] font-bold text-slate-900 tracking-wider">
-                  {title}
-                </h3>
-              </div>
-
-              <div className="text-[12px] leading-normal text-slate-700 whitespace-pre-wrap">
-                {key.toLowerCase().includes('skills') ? (
-                  <div className="grid grid-cols-2 gap-y-1 gap-x-8">
-                    {content.split(/[,;\n]/).map((skill, i) => {
-                      const cleaned = skill.replace(/^[*\-•\d\.]+\s*/, '').trim();
-                      if (!cleaned) return null;
-                      return (
-                        <div key={i} className="flex items-center gap-2">
-                          <span className="text-slate-400 text-[10px]">•</span>
-                          <span className="text-slate-700 font-medium">{cleaned}</span>
+            {step === 'upload' && (
+                <div className="max-w-2xl mx-auto">
+                    <div className="bg-white rounded-3xl shadow-xl shadow-purple-500/5 p-8 border border-gray-100">
+                        <div
+                            onDragOver={(e) => e.preventDefault()}
+                            className={`relative border-2 border-dashed rounded-2xl p-12 transition-all duration-300 ${file ? 'border-green-200 bg-green-50' : 'border-purple-200 bg-purple-50 hover:bg-purple-100/50'}`}
+                        >
+                            <input
+                                type="file"
+                                id="resume-upload"
+                                className="hidden"
+                                accept=".pdf,.docx,.doc"
+                                onChange={handleFileChange}
+                            />
+                            <label htmlFor="resume-upload" className="flex flex-col items-center justify-center cursor-pointer">
+                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-lg ${file ? 'bg-green-500 text-white' : 'bg-purple-600 text-white'}`}>
+                                    {file ? <FaCheckCircle className="text-2xl" /> : <FaUpload className="text-2xl" />}
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-800">{file ? file.name : "Select Resume File"}</h3>
+                                <p className="text-gray-500 mt-2">Support for PDF, DOCX (Max 5MB)</p>
+                            </label>
                         </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {content.split(/\n\s*\n/).map((block, i) => (
-                      <div key={i} className="mb-2">
-                        {block.split('\n').map((line, li) => {
-                          const trimmedLine = line.trim();
-                          if (!trimmedLine) return null;
-                          const isBullet = trimmedLine.startsWith('-') || trimmedLine.startsWith('•') || trimmedLine.startsWith('*');
-                          const isHeading = li === 0 && trimmedLine.length < 120 && !isBullet && (key === 'experience' || key === 'education' || key === 'projects');
 
-                          return (
-                            <p
-                              key={li}
-                              className={`
-                                ${isHeading ? "font-bold text-slate-900 text-[13.5px] mt-2 mb-1" : "text-slate-700"}
-                                ${isBullet ? "pl-5 relative before:content-['•'] before:absolute before:left-1 before:text-slate-500 before:font-bold" : ""}
-                                ${!isHeading && !isBullet ? "text-[12px] mb-1 leading-relaxed" : ""}
-                              `}
+                        {file && (
+                            <button
+                                onClick={handleConvert}
+                                disabled={loading}
+                                className="w-full mt-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-3 shadow-xl shadow-purple-200"
                             >
-                              {isBullet ? trimmedLine.substring(1).trim() : line}
-                            </p>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                                {loading ? <FaSyncAlt className="animate-spin" /> : <FaRocket />}
+                                <span>{loading ? 'Optimizing...' : 'Generate Optimized ATS Resume'}</span>
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {step === 'processing' && (
+                <div className="bg-white rounded-3xl shadow-2xl p-16 text-center max-w-2xl mx-auto border border-gray-50">
+                    <div className="relative w-24 h-24 mx-auto mb-8">
+                        <div className="absolute inset-0 border-4 border-purple-100 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="absolute inset-0 flex items-center justify-center text-purple-600">
+                            <FaRobot className="text-3xl" />
+                        </div>
+                    </div>
+                    <h2 className="text-3xl font-extrabold text-gray-900 mb-4 animate-pulse">Engineering Your Future...</h2>
+                    <p className="text-gray-600">Our AI is restructuring your skills, experience, and achievements into a format ATS systems love.</p>
+                </div>
+            )}
+
+            {step === 'result' && result && (
+                <div className="space-y-8 animate-in slide-in-from-bottom-8 duration-500 pb-20">
+                    {/* Header Controls */}
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-3xl shadow-xl border border-purple-100">
+                        <div className="flex items-center space-x-4">
+                            <div className="bg-purple-100 p-3 rounded-2xl">
+                                <FaCheckCircle className="text-purple-600 text-xl" />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900">Optimization Complete</h2>
+                                <p className="text-sm text-gray-500">Your ATS optimized resume is ready for download.</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                            <button onClick={reset} className="px-4 py-2 text-gray-500 hover:text-purple-600 font-bold transition flex items-center">
+                                <FaSyncAlt className="mr-2" /> Reset
+                            </button>
+                            <button
+                                onClick={downloadOptimizedPDF}
+                                disabled={loading}
+                                className="bg-red-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-red-700 transition flex items-center disabled:opacity-50"
+                            >
+                                <FaFilePdf className="mr-2" /> {loading ? 'Preparing...' : 'Download PDF'}
+                            </button>
+                            <button
+                                onClick={downloadOptimizedDOCX}
+                                disabled={loading}
+                                className="bg-blue-600 text-white px-5 py-3 rounded-xl font-bold hover:bg-blue-700 transition flex items-center disabled:opacity-50"
+                            >
+                                <FaFileWord className="mr-2" /> {loading ? 'Preparing...' : 'Download DOCX'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {/* Left Column: Metrics & Improvements */}
+                        <div className="lg:col-span-4 space-y-6">
+                            {/* Score Card */}
+                            <div className="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-3xl p-8 text-white shadow-2xl">
+                                <div className="text-center space-y-4">
+                                    <p className="text-indigo-200 text-xs font-bold uppercase tracking-widest">ATS Compatibility Score</p>
+                                    <div className="relative inline-flex items-center justify-center">
+                                        <svg className="w-32 h-32">
+                                            <circle className="text-white/10" strokeWidth="8" stroke="currentColor" fill="transparent" r="58" cx="64" cy="64" />
+                                            <circle className="text-green-400" strokeWidth="8" strokeDasharray={58 * 2 * Math.PI} strokeDashoffset={58 * 2 * Math.PI * (1 - result.improved_score / 100)} strokeLinecap="round" stroke="currentColor" fill="transparent" r="58" cx="64" cy="64" />
+                                        </svg>
+                                        <div className="absolute flex flex-col items-center">
+                                            <span className="text-4xl font-black">{result.improved_score === 100 ? '100+' : result.improved_score}</span>
+                                            <span className="text-[10px] opacity-70">TOP 1% ELITE</span>
+                                        </div>
+                                    </div>
+                                    <div className="pt-4 border-t border-white/10">
+                                        <div className="flex justify-between text-xs mb-2">
+                                            <span className="text-indigo-200">Before: {result.original_score}%</span>
+                                            <span className="text-green-300">Improvement: +{result.improved_score - result.original_score}%</span>
+                                        </div>
+                                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-full bg-green-400" style={{ width: `${result.improved_score}%` }}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Improvements List */}
+                            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-lg">
+                                <h3 className="font-bold text-gray-900 mb-4 flex items-center">
+                                    <FaChartPie className="mr-2 text-purple-600" /> Score Breakdown
+                                </h3>
+                                <div className="space-y-4">
+                                    {result.improved_breakdown && Object.entries(result.improved_breakdown).map(([key, item]) => (
+                                        <div key={key} className="space-y-1">
+                                            <div className="flex justify-between text-xs">
+                                                <span className="text-gray-600 font-medium">{item.label}</span>
+                                                <span className="font-bold text-purple-700">{item.score}%</span>
+                                            </div>
+                                            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-gradient-to-r from-purple-400 to-indigo-600 transition-all duration-1000"
+                                                    style={{ width: `${item.score}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Improvements List */}
+                            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-lg">
+                                <h3 className="font-bold text-gray-900 mb-4 flex items-center">
+                                    <FaMagic className="mr-2 text-purple-600" /> Improvement Log
+                                </h3>
+                                <div className="space-y-4">
+                                    {result.improvements && result.improvements.map((imp, i) => (
+                                        <div key={i} className="flex items-start space-x-3 text-sm">
+                                            <div className="mt-1 w-5 h-5 bg-green-50 text-green-500 rounded-full flex items-center justify-center shrink-0">
+                                                <FaCheckCircle size={10} />
+                                            </div>
+                                            <p className="text-gray-600">{imp}</p>
+                                        </div>
+                                    ))}
+                                    {(!result.improvements || result.improvements.length === 0) && (
+                                        <p className="text-gray-400 italic text-sm text-center py-4">Optimization summary generated...</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Format Checklist */}
+                            <div className="bg-purple-50 rounded-3xl p-6 border border-purple-100">
+                                <h4 className="text-sm font-bold text-purple-900 mb-3">ATS Format Engine:</h4>
+                                <ul className="text-xs text-purple-700 space-y-2">
+                                    <li className="flex items-center"><FaCheckCircle className="mr-2 opacity-50" /> Single-column layout preserved</li>
+                                    <li className="flex items-center"><FaCheckCircle className="mr-2 opacity-50" /> Table-free structure generated</li>
+                                    <li className="flex items-center"><FaCheckCircle className="mr-2 opacity-50" /> Standard web-safe fonts only</li>
+                                    <li className="flex items-center"><FaCheckCircle className="mr-2 opacity-50" /> Header hierarchy optimized</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Resume Preview */}
+                        <div className="lg:col-span-8">
+                            <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden">
+                                <div className="bg-gray-50 border-b border-gray-100 px-6 py-4 flex justify-between items-center">
+                                    <div className="flex items-center space-x-2">
+                                        <div className="flex space-x-1.5">
+                                            <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                                            <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                                            <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                                        </div>
+                                        <span className="text-xs font-medium text-gray-400 ml-4">ATS-FRIENDLY PREVIEW</span>
+                                    </div>
+                                    <div className="flex items-center space-x-4">
+                                        {!isEditing ? (
+                                            <button
+                                                onClick={() => setIsEditing(true)}
+                                                className="text-xs font-bold text-gray-600 hover:text-purple-600 flex items-center transition-colors"
+                                            >
+                                                <FaEdit className="mr-1" /> EDIT VERSION
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={handleSaveChanges}
+                                                className="text-xs font-bold text-green-600 hover:text-green-700 flex items-center transition-colors"
+                                            >
+                                                <FaSave className="mr-1" /> SAVE CHANGES
+                                            </button>
+                                        )}
+                                        <button onClick={downloadOptimizedPDF} className="text-xs font-bold text-purple-600 hover:underline flex items-center">
+                                            <FaDownload className="mr-1" /> Export
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* The Actual Resume Body - Single Column ATS Layout */}
+                                <div className="bg-white overflow-y-auto max-h-[800px] resume-preview scrollbar-thin">
+                                    <div className="p-12 space-y-8 max-w-4xl mx-auto">
+                                        {/* Name & Contact */}
+                                        <div className="text-center space-y-2 pb-6 border-b border-gray-100">
+                                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight uppercase">
+                                                {result.sections?.name || "Candidate Name"}
+                                            </h1>
+                                            <p className="text-sm text-gray-600 flex justify-center gap-4">
+                                                <span>{result.sections?.contact?.email}</span>
+                                                <span className="text-gray-300">|</span>
+                                                <span>{result.sections?.contact?.phone}</span>
+                                                <span className="text-gray-300">|</span>
+                                                <span className="truncate">{result.sections?.contact?.linkedin}</span>
+                                            </p>
+                                        </div>
+
+                                        {/* Summary */}
+                                        <section>
+                                            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-b-2 border-gray-900 pb-1 mb-4">
+                                                Professional Summary
+                                            </h2>
+                                            <p className="text-sm text-gray-700 leading-relaxed">
+                                                {result.sections?.summary}
+                                            </p>
+                                        </section>
+
+                                        {/* Tech Skills */}
+                                        <section>
+                                            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-b-2 border-gray-900 pb-1 mb-4">
+                                                Technical Skills
+                                            </h2>
+                                            <p className="text-sm text-gray-700 leading-relaxed">
+                                                {Array.isArray(result.sections?.tech_skills)
+                                                    ? result.sections.tech_skills.join(', ')
+                                                    : String(result.sections?.tech_skills || 'N/A')}
+                                            </p>
+                                        </section>
+
+                                        {/* Experience */}
+                                        <section>
+                                            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-b-2 border-gray-900 pb-1 mb-6">
+                                                Professional Experience
+                                            </h2>
+                                            <div className="space-y-6">
+                                                {Array.isArray(result.sections?.experience) && result.sections.experience.map((exp, i) => (
+                                                    <div key={i} className="space-y-2">
+                                                        <div className="flex justify-between items-baseline">
+                                                            <h3 className="text-sm font-bold text-gray-900 uppercase">{exp.title}</h3>
+                                                            <span className="text-xs font-bold text-gray-500">{exp.date}</span>
+                                                        </div>
+                                                        <p className="text-xs font-bold text-gray-600 italic mb-1">{exp.company}</p>
+                                                        <p className="text-sm text-gray-700 leading-relaxed pl-4 relative">
+                                                            <span className="absolute left-0 top-1.5 w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                                                            {exp.description}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </section>
+
+                                        {/* Education */}
+                                        <section>
+                                            <div className="flex justify-between items-center border-b-2 border-gray-900 mb-4 pb-1">
+                                                <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest">
+                                                    Education
+                                                </h2>
+                                                {isEditing && (
+                                                    <button onClick={addEducation} className="text-[10px] font-bold text-purple-600 flex items-center hover:bg-purple-50 px-2 py-0.5 rounded transition-all">
+                                                        <FaPlus className="mr-1" /> ADD ENTRY
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            <div className="space-y-6">
+                                                {!isEditing ? (
+                                                    // Display Mode
+                                                    Array.isArray(result.sections?.education) && result.sections.education.map((edu, i) => (
+                                                        <div key={i} className="space-y-1">
+                                                            <div className="flex justify-between items-start">
+                                                                <div>
+                                                                    <p className="text-sm font-bold text-gray-900">
+                                                                        {edu.degree}{edu.field ? ` in ${edu.field}` : ''}
+                                                                    </p>
+                                                                    <p className="text-sm text-gray-700">{edu.institution}</p>
+                                                                </div>
+                                                                <span className="text-xs font-bold text-gray-500">
+                                                                    {edu.start_year ? `${edu.start_year} - ${edu.end_year}` : edu.end_year || edu.year}
+                                                                </span>
+                                                            </div>
+                                                            {edu.grade && (
+                                                                <p className="text-xs text-gray-600 font-medium">Grade/GPA: {edu.grade}</p>
+                                                            )}
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    // Edit Mode
+                                                    Array.isArray(editableSections?.education) && editableSections.education.map((edu, i) => (
+                                                        <div key={i} className="relative bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300 space-y-3">
+                                                            <button
+                                                                onClick={() => removeEducation(i)}
+                                                                className="absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center hover:bg-red-200 transition-colors"
+                                                            >
+                                                                <FaTrash size={10} />
+                                                            </button>
+
+                                                            <div className="grid grid-cols-2 gap-3">
+                                                                <div className="col-span-1">
+                                                                    <label className="text-[10px] uppercase font-bold text-gray-400">Degree</label>
+                                                                    <input
+                                                                        className="w-full text-xs bg-white border border-gray-200 rounded p-1.5 focus:border-purple-300 outline-none"
+                                                                        value={edu.degree}
+                                                                        onChange={(e) => updateEducation(i, 'degree', e.target.value)}
+                                                                        placeholder="e.g. B.S."
+                                                                    />
+                                                                </div>
+                                                                <div className="col-span-1">
+                                                                    <label className="text-[10px] uppercase font-bold text-gray-400">Field of Study</label>
+                                                                    <input
+                                                                        className="w-full text-xs bg-white border border-gray-200 rounded p-1.5 focus:border-purple-300 outline-none"
+                                                                        value={edu.field}
+                                                                        onChange={(e) => updateEducation(i, 'field', e.target.value)}
+                                                                        placeholder="e.g. Computer Science"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-1">
+                                                                <label className="text-[10px] uppercase font-bold text-gray-400">Institution</label>
+                                                                <input
+                                                                    className="w-full text-xs bg-white border border-gray-200 rounded p-1.5 focus:border-purple-300 outline-none"
+                                                                    value={edu.institution}
+                                                                    onChange={(e) => updateEducation(i, 'institution', e.target.value)}
+                                                                    placeholder="e.g. Stanford University"
+                                                                />
+                                                            </div>
+
+                                                            <div className="grid grid-cols-3 gap-3">
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase font-bold text-gray-400">Start Year</label>
+                                                                    <input
+                                                                        className="w-full text-xs bg-white border border-gray-200 rounded p-1.5 focus:border-purple-300 outline-none"
+                                                                        value={edu.start_year}
+                                                                        onChange={(e) => updateEducation(i, 'start_year', e.target.value)}
+                                                                        placeholder="2018"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase font-bold text-gray-400">End Year</label>
+                                                                    <input
+                                                                        className="w-full text-xs bg-white border border-gray-200 rounded p-1.5 focus:border-purple-300 outline-none"
+                                                                        value={edu.end_year}
+                                                                        onChange={(e) => updateEducation(i, 'end_year', e.target.value)}
+                                                                        placeholder="2022"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="text-[10px] uppercase font-bold text-gray-400">Grade/GPA</label>
+                                                                    <input
+                                                                        className="w-full text-xs bg-white border border-gray-200 rounded p-1.5 focus:border-purple-300 outline-none"
+                                                                        value={edu.grade}
+                                                                        onChange={(e) => updateEducation(i, 'grade', e.target.value)}
+                                                                        placeholder="3.8 / 4.0"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </section>
+
+                                        {/* Projects & Certs */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            {result.sections?.projects && result.sections.projects.length > 0 && (
+                                                <section>
+                                                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-b-2 border-gray-900 pb-1 mb-4">
+                                                        Projects
+                                                    </h2>
+                                                    <ul className="space-y-2">
+                                                        {result.sections.projects.map((p, i) => (
+                                                            <li key={i} className="text-sm text-gray-700 pl-4 relative">
+                                                                <span className="absolute left-0 top-2 w-1 h-1 bg-gray-400 rounded-full"></span>
+                                                                {p}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </section>
+                                            )}
+                                            {result.sections?.certifications && result.sections.certifications.length > 0 && (
+                                                <section>
+                                                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-b-2 border-gray-900 pb-1 mb-4">
+                                                        Certifications
+                                                    </h2>
+                                                    <ul className="space-y-2">
+                                                        {result.sections.certifications.map((c, i) => (
+                                                            <li key={i} className="text-sm text-gray-700 pl-4 relative">
+                                                                <span className="absolute left-0 top-2 w-1 h-1 bg-gray-400 rounded-full"></span>
+                                                                {c}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </section>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
-  };
-
-  return (
-    <div className="max-w-6xl mx-auto pb-12">
-      <motion.button
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        onClick={() => navigate('/')}
-        className="flex items-center text-gray-600 hover:text-purple-600 mb-6 transition-colors font-medium"
-      >
-        <FaArrowLeft className="mr-2" /> Back to Dashboard
-      </motion.button>
-
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-        <div className="bg-gradient-to-r from-purple-800 to-indigo-900 px-8 py-10 text-white">
-          <div className="flex items-center mb-4">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-4">
-              <FaMagic className="text-2xl" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Premium Resume Converter</h1>
-              <p className="text-purple-100">Professional template design with 100% ATS compatibility</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-8">
-          <div className="grid lg:grid-cols-12 gap-12">
-            {/* Input Side (Left) */}
-            <div className="lg:col-span-4 space-y-8">
-              <section>
-                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                  <FaUpload className="mr-2 text-purple-600" /> 1. Resume File
-                </h3>
-                <div className="border-2 border-dashed border-purple-100 bg-purple-50/30 rounded-2xl p-6 text-center hover:border-purple-400 transition-all group">
-                  <input
-                    type="file"
-                    onChange={handleFileSelect}
-                    accept=".pdf,.docx,.txt"
-                    className="hidden"
-                    id="resume-upload"
-                  />
-                  <label htmlFor="resume-upload" className="cursor-pointer block">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-110 transition-transform">
-                      <FaFileAlt className="text-purple-600 text-xl" />
-                    </div>
-                    <p className="text-gray-700 font-bold text-sm truncate px-4">
-                      {selectedFile ? selectedFile.name : 'Click to Upload'}
-                    </p>
-                  </label>
-                </div>
-              </section>
-
-              <section>
-                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                  <FaCheckCircle className="mr-2 text-indigo-600" /> 2. Keywords
-                </h3>
-                <textarea
-                  value={jobKeywords}
-                  onChange={(e) => setJobKeywords(e.target.value)}
-                  placeholder="Paste job keywords here..."
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 text-sm h-32"
-                />
-              </section>
-
-              <button
-                onClick={handleConvert}
-                disabled={!selectedFile || isConverting}
-                className={`w-full py-4 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg transition-all ${!selectedFile || isConverting
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-purple-600 text-white hover:bg-purple-700 hover:-translate-y-1'
-                  }`}
-              >
-                {isConverting ? <FaSync className="animate-spin" /> : <FaMagic />}
-                {isConverting ? 'Generating...' : 'Transform Resume'}
-              </button>
-            </div>
-
-            {/* Preview Side (Right) */}
-            <div className="lg:col-span-8 bg-gray-50 rounded-3xl p-6 border border-gray-100 shadow-inner">
-              {!sections ? (
-                <div className="h-full min-h-[600px] flex flex-col items-center justify-center text-gray-400 text-center">
-                  <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 shadow-sm">
-                    <FaFileAlt className="text-3xl opacity-20" />
-                  </div>
-                  <h4 className="font-bold text-gray-600 mb-2 text-xl">Document Preview</h4>
-                  <p className="text-sm max-w-xs">Your professional resume template will appear here after conversion.</p>
-                </div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="space-y-6"
-                >
-                  <div className="flex items-center justify-between px-2">
-                    <h3 className="font-bold text-gray-800">High-Fidelity Preview</h3>
-                    <div className="flex gap-2">
-                      <button onClick={downloadPDF} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200" title="Download PDF">
-                        <FaFilePdf />
-                      </button>
-                      <button onClick={downloadDOCX} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200" title="Download Word">
-                        <FaFileWord />
-                      </button>
-                      <button onClick={downloadTXT} className="p-2 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300" title="Download Text">
-                        <FaFileAlt />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-h-[750px] overflow-y-auto scrollbar-thin overflow-x-auto">
-                    <div className="min-w-fit p-4 bg-gray-200/50">
-                      <div ref={previewRef} className="shadow-2xl">
-                        <ResumePreview />
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8 grid md:grid-cols-3 gap-6">
-        {[
-          { title: "Standard Headers", desc: "Uses machine-readable section keys like EXPERIENCE and EDUCATION", icon: "📑" },
-          { title: "Format Normalization", desc: "Removes complex tables/graphics that choke parsing systems", icon: "✨" },
-          { title: "Keyword Injector", desc: "Semantically integrates job requirements into your profile", icon: "🎯" }
-        ].map((feat, i) => (
-          <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-start">
-            <span className="text-2xl mr-4">{feat.icon}</span>
-            <div>
-              <h4 className="font-bold text-gray-800 text-sm mb-1">{feat.title}</h4>
-              <p className="text-xs text-gray-500 leading-relaxed">{feat.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <style jsx="true">{`
-        .scrollbar-thin::-webkit-scrollbar {
-          width: 8px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 10px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: #a0aec0;
-        }
-      `}</style>
-    </div>
-  );
 };
 
 export default ATSConverter;
+

@@ -17,6 +17,7 @@ flask-jwt-extended==4.6.0
 bcrypt==4.1.2
 
 # NLP & AI - Local Offline Models
+spacy==3.7.2
 transformers==4.36.2
 torch==2.1.2 --index-url https://download.pytorch.org/whl/cpu
 nltk==3.8.1

@@ -1,216 +1,122 @@
+/**
+ * ATSResumeList.jsx - Admin view of optimized resumes
+ * ===================================================
+ */
+
 import React, { useState, useEffect } from 'react';
-import {
-    FaFileAlt, FaUser, FaEnvelope, FaCalendar,
-    FaTrash, FaEye, FaSearch, FaArrowLeft,
-    FaChevronLeft, FaChevronRight, FaFileContract
-} from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { adminAPI } from '../../services/api';
+import { FaFileWord, FaDownload, FaEye, FaSearch, FaUser } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 const ATSResumeList = () => {
-    const [atsResumes, setAtsResumes] = useState([]);
+    const [resumes, setResumes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, pages: 1 });
-    const [search, setSearch] = useState('');
-
-    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetchATSResumes();
-    }, [pagination.page]);
-
-    const fetchATSResumes = async () => {
-        setLoading(true);
-        try {
-            const queryParams = new URLSearchParams({
-                page: pagination.page,
-                limit: pagination.limit,
-                search
-            });
-
-            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
-            const res = await fetch(`/api/admin/ats-resumes?${queryParams.toString()}`, {
-                headers: {
-                    'Authorization': token ? `Bearer ${token}` : ''
+        const fetchResumes = async () => {
+            try {
+                const response = await adminAPI.getATSResumes();
+                if (response.success) {
+                    setResumes(response.data || []);
                 }
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                setAtsResumes(data.data);
-                setPagination(data.pagination);
-            } else {
-                toast.error(data.error || 'Failed to fetch ATS conversions');
+            } catch (error) {
+                console.error("Fetch error:", error);
+                setResumes([]);
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            toast.error('Network error');
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this ATS conversion record?')) return;
+        fetchResumes();
+    }, []);
 
-        try {
-            const token = localStorage.getItem('access_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
-            const res = await fetch(`/api/admin/ats-resumes/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': token ? `Bearer ${token}` : ''
-                }
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                toast.success('ATS Record deleted successfully');
-                fetchATSResumes();
-            } else {
-                toast.error(data.error || 'Failed to delete record');
-            }
-        } catch (err) {
-            toast.error('Delete failed');
-        }
-    };
-
-    const handleSearch = (e) => {
-        e.preventDefault();
-        setPagination({ ...pagination, page: 1 });
-        fetchATSResumes();
-    };
+    const filteredResumes = (resumes || []).filter(r =>
+        (r.user_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.user_email || '').toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate('/admin')}
-                        className="p-2 hover:bg-gray-100 rounded-full transition"
-                    >
-                        <FaArrowLeft />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-800">ATS Conversions</h1>
-                        <p className="text-sm text-gray-500">Manage optimized resume conversions</p>
-                    </div>
+        <div className="p-8 space-y-8 animate-in fade-in duration-500">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">ATS Optimized Resumes</h1>
+                    <p className="text-gray-500">History of all resumes processed through the converter engine.</p>
                 </div>
-                <div className="bg-green-50 text-green-600 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
-                    <FaFileContract /> Total conversions: {pagination.total}
+
+                <div className="relative w-full md:w-96">
+                    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder="Search candidate or email..."
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
             </div>
 
-            {/* Quick Search */}
-            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <form onSubmit={handleSearch} className="flex gap-4">
-                    <div className="flex-1 relative">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search by user name or email..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
-                    >
-                        Search
-                    </button>
-                </form>
-            </div>
-
-            {/* Content Table */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                    <table className="w-full text-left">
+                        <thead className="bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Conversion ID</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date Created</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                <th className="px-8 py-5">Candidate</th>
+                                <th className="px-8 py-5">Optimized DOCX</th>
+                                <th className="px-8 py-5">Generation Date</th>
+                                <th className="px-8 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="4" className="px-6 py-10 text-center">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-                                    </td>
-                                </tr>
-                            ) : atsResumes.length === 0 ? (
-                                <tr>
-                                    <td colSpan="4" className="px-6 py-10 text-center text-gray-500">
-                                        No conversions found
-                                    </td>
-                                </tr>
-                            ) : atsResumes.map((doc) => (
-                                <tr key={doc.id} className="hover:bg-gray-50 transition">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center">
-                                            <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                                                <FaUser size={14} />
+                        <tbody className="divide-y divide-gray-50">
+                            {filteredResumes.length > 0 ? filteredResumes.map((resume) => (
+                                <tr key={resume.resume_id} className="hover:bg-gray-50/50 transition-colors group">
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
+                                                <FaUser />
                                             </div>
-                                            <div className="ml-3">
-                                                <div className="text-sm font-medium text-gray-900">{doc.user_name}</div>
-                                                <div className="text-xs text-gray-500">{doc.user_email}</div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900 mb-0.5">{resume.user_name}</p>
+                                                <p className="text-xs text-gray-400 font-medium">{resume.user_email}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
-                                            {doc.resume_id}
-                                        </code>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                                            <FaCalendar className="text-gray-400" />
-                                            {new Date(doc.created_at).toLocaleString()}
+                                    <td className="px-8 py-5">
+                                        <div className="flex items-center gap-2">
+                                            <FaFileWord className="text-blue-500" />
+                                            <span className="text-xs font-bold text-gray-600">{resume.filename || 'ATS_Optimized.docx'}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex justify-end gap-2">
-                                            <button
-                                                onClick={() => handleDelete(doc.id)}
-                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                                                title="Delete Record"
-                                            >
-                                                <FaTrash />
+                                    <td className="px-8 py-5">
+                                        <p className="text-xs font-bold text-gray-500">{new Date(resume.created_at).toLocaleDateString()}</p>
+                                        <p className="text-[10px] text-gray-300 font-medium">{new Date(resume.created_at).toLocaleTimeString()}</p>
+                                    </td>
+                                    <td className="px-8 py-5 text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button className="p-2 border border-gray-100 rounded-lg text-gray-400 hover:text-purple-600 hover:bg-white hover:shadow-sm transition-all">
+                                                <FaEye size={14} />
+                                            </button>
+                                            <button className="p-2 border border-gray-100 rounded-lg text-gray-400 hover:text-green-600 hover:bg-white hover:shadow-sm transition-all">
+                                                <FaDownload size={14} />
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                            )) : (
+                                <tr>
+                                    <td colSpan="4" className="px-8 py-20 text-center">
+                                        <div className="max-w-xs mx-auto space-y-4">
+                                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto text-gray-200">
+                                                <FaFileWord size={24} />
+                                            </div>
+                                            <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">No optimization history found.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
-
-                {/* Pagination */}
-                {!loading && pagination.pages > 1 && (
-                    <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                        <div className="text-sm text-gray-500">
-                            Page <span className="font-medium">{pagination.page}</span> of <span className="font-medium">{pagination.pages}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => setPagination({ ...pagination, page: Math.max(1, pagination.page - 1) })}
-                                disabled={pagination.page === 1}
-                                className="p-1 border rounded disabled:opacity-50"
-                            >
-                                <FaChevronLeft />
-                            </button>
-                            <button
-                                onClick={() => setPagination({ ...pagination, page: Math.min(pagination.pages, pagination.page + 1) })}
-                                disabled={pagination.page === pagination.pages}
-                                className="p-1 border rounded disabled:opacity-50"
-                            >
-                                <FaChevronRight />
-                            </button>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

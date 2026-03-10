@@ -108,14 +108,14 @@ const AdminDashboard = () => {
                     value={stats?.total_ats_scores || 0}
                     icon={<FaChartLine />}
                     color="text-indigo-500"
-                    onClick={() => navigate('/admin/resumes')} // Fallback or new view
+                    onClick={() => navigate('/admin/ats-scores')}
                 />
                 <StatCard
                     title="Skill Analyses"
                     value={stats?.total_skill_analyses || 0}
                     icon={<FaChartLine />}
                     color="text-blue-500"
-                    onClick={() => navigate('/admin/resumes')} // Fallback or new view
+                    onClick={() => navigate('/admin/skill-analysis')}
                 />
                 <StatCard
                     title="Job Matches"
@@ -126,43 +126,6 @@ const AdminDashboard = () => {
                 />
             </div>
 
-            <div className="grid gap-8">
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-xl font-bold mb-4">Quick Links</h2>
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <button
-                            onClick={() => navigate('/admin/users')}
-                            className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition"
-                        >
-                            <div className="flex items-center gap-3">
-                                <FaUsers className="text-blue-500" />
-                                <span>Manage Users</span>
-                            </div>
-                            <span className="text-gray-400">→</span>
-                        </button>
-                        <button
-                            onClick={() => navigate('/admin/feedback')}
-                            className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition"
-                        >
-                            <div className="flex items-center gap-3">
-                                <FaComments className="text-orange-500" />
-                                <span>Review Feedback</span>
-                            </div>
-                            <span className="text-gray-400">→</span>
-                        </button>
-                        <button
-                            onClick={() => navigate('/admin/recommendations')}
-                            className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition"
-                        >
-                            <div className="flex items-center gap-3">
-                                <FaChartLine className="text-purple-500" />
-                                <span>Matching Stats</span>
-                            </div>
-                            <span className="text-gray-400">→</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

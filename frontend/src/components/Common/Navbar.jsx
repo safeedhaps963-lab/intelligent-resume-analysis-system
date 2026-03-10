@@ -45,7 +45,7 @@ const Navbar = () => {
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <FaBrain className="text-purple-600 text-xl" />
             </div>
-            <span className="text-xl font-bold">RAS & JR</span>
+            <span className="text-xl font-bold">Resume Analysis & Job Recommendation System</span>
           </Link>
 
           {/* Desktop Menu */}

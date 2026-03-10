@@ -373,13 +373,18 @@ export const resumeAPI = {
   },
 
   /**
-   * Download ATS-friendly resume as DOCX
-   * @param {string} resumeText - Converted ATS text
+   * Download converted ATS resume
+   * @param {string} resumeId - UUID of the optimized resume
+   * @param {string} format - 'pdf' or 'docx'
    */
-  downloadATSDocx: async (resumeText) => {
-    return api.post('/resume/download-ats-docx', { ats_resume: resumeText }, {
+  download: async (resumeId, format = 'pdf') => {
+    return api.get(`/resume/download/${resumeId}`, {
+      params: { format },
       responseType: 'blob'
     });
+  },
+  updateATS: async (resumeId, sections) => {
+    return api.post(`/resume/update-ats/${resumeId}`, { sections });
   }
 };
 
@@ -518,6 +523,29 @@ export const jobsAPI = {
    */
   getSaved: async () => {
     const response = await api.get('/jobs/saved');
+    return response.data;
+  }
+};
+
+// ==========================================
+// Admin API
+// ==========================================
+
+export const adminAPI = {
+  /**
+   * Get all ATS-optimized resumes in the system
+   * @param {Object} params - Search and pagination params
+   */
+  getATSResumes: async (params = {}) => {
+    const response = await api.get('/admin/ats-resumes', { params });
+    return response.data;
+  },
+
+  /**
+   * Get system statistics
+   */
+  getStats: async () => {
+    const response = await api.get('/admin/stats');
     return response.data;
   }
 };

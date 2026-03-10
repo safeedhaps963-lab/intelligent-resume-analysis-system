@@ -156,6 +156,43 @@ const SkillAnalysisPage = () => {
             {
                 results && (
                     <div className="animate-fadeIn space-y-8 pb-12">
+                        {/* AI Insights Summary */}
+                        <div className="bg-white rounded-3xl p-8 shadow-xl border border-indigo-50 border-l-8 border-l-indigo-600">
+                            <h3 className="text-xl font-black text-gray-800 mb-4 flex items-center">
+                                <FaBrain className="mr-3 text-indigo-600" /> AI Professional Insight
+                            </h3>
+                            <div className="text-gray-600 leading-relaxed space-y-4">
+                                <p>
+                                    Based on our deep NLP analysis of your resume and the target {results.category || 'Professional'} profile, we've identified a
+                                    <span className="mx-1 font-bold text-indigo-600">{
+                                        results.match_percentage >= 80 ? 'highly competitive' :
+                                            results.match_percentage >= 50 ? 'well-rounded' : 'developing'
+                                    }</span>
+                                    {Object.entries(results.skills || {}).filter(([_, d]) => d.skills && d.skills.length > 0).length > 0 ? (
+                                        <>
+                                            technical foundation. Your strongest area appears to be
+                                            <span className="mx-1 font-bold text-gray-800">{
+                                                Object.entries(results.skills)
+                                                    .filter(([_, d]) => d.skills && d.skills.length > 0)
+                                                    .sort((a, b) => b[1].skills.length - a[1].skills.length)[0][0]
+                                                    .replace('_', ' ')
+                                            }</span>,
+                                            where you demonstrate significant depth.
+                                        </>
+                                    ) : (
+                                        "professional profile. We have detected several areas for growth to better align with current industry standards."
+                                    )}
+                                </p>
+                                {results.missing_skills?.critical?.length > 0 && (
+                                    <p>
+                                        To reach the elite 1% of applicants for this category, we recommend prioritizing the acquisition of
+                                        <span className="mx-1 font-bold text-red-600">{results.missing_skills.critical.slice(0, 3).join(', ')}</span>.
+                                        These are currently the most significant gaps preventing a perfect ATS match.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
                         {/* Header Stats */}
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-8 rounded-3xl shadow-xl text-white">
@@ -171,26 +208,58 @@ const SkillAnalysisPage = () => {
                                 <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center">
                                     <FaChartBar className="text-2xl text-indigo-500" />
                                 </div>
-                                <div>
+                                <div className="flex-1">
                                     <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Skill Gap</p>
-                                    <h4 className="text-3xl font-black text-gray-800">
+                                    <h4 className="text-2xl font-black text-gray-800">
                                         {results.missing_skills.critical.length + results.missing_skills.recommended.length} Detected
                                     </h4>
+                                    <p className="text-[10px] text-red-500 font-bold mt-1 truncate">
+                                        PRIORITY MISSES: {results.missing_skills.critical.slice(0, 2).join(', ')}...
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="grid lg:grid-cols-2 gap-8">
-                            <AnalysisSection title="Technical Skills" icon={<FaCogs />} color="text-purple-600">
-                                {Object.entries(results.skills)
-                                    .filter(([cat]) => cat !== 'soft_skills')
-                                    .map(([_, data]) => data.skills.map(s => <SkillItem key={s} name={s} type="technical" />))}
+                            <AnalysisSection title="Categorized Expertise" icon={<FaCogs />} color="text-purple-600">
+                                <div className="space-y-6 w-full">
+                                    {Object.entries(results.skills)
+                                        .filter(([cat, data]) => cat !== 'soft_skills' && data.skills.length > 0)
+                                        .map(([category, data]) => (
+                                            <div key={category} className="space-y-2">
+                                                <div className="flex justify-between items-center px-1">
+                                                    <span className="text-[10px] font-black uppercase text-gray-400 tracking-tighter">
+                                                        {category.replace('_', ' ')}
+                                                    </span>
+                                                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${data.skills.length > 3 ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'
+                                                        }`}>
+                                                        {data.skills.length > 3 ? 'Strong Depth' : 'Foundational'}
+                                                    </span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {data.skills.map(s => <SkillItem key={s} name={s} type="technical" />)}
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
                             </AnalysisSection>
 
-                            <AnalysisSection title="Soft Skills" icon={<FaUserTie />} color="text-indigo-600">
-                                {results.skills.soft_skills?.skills.map(s => <SkillItem key={s} name={s} type="soft" />) || (
-                                    <p className="text-gray-400 italic">No soft skills explicitly detected.</p>
-                                )}
+                            <AnalysisSection title="Professional Soft Skills" icon={<FaUserTie />} color="text-indigo-600">
+                                <div className="space-y-4 w-full">
+                                    <p className="text-xs text-indigo-500 font-medium italic mb-2">
+                                        These interpersonal traits were detected via semantic context in your experience descriptions.
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {results.skills.soft_skills?.skills.length > 0 ? (
+                                            results.skills.soft_skills.skills.map(s => <SkillItem key={s} name={s} type="soft" />)
+                                        ) : (
+                                            <div className="w-full p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center">
+                                                <p className="text-gray-400 text-sm">No soft skills explicitly detected.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </AnalysisSection>
                         </div>
 

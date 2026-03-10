@@ -23,6 +23,8 @@ import FeedbackList from "./components/Admin/FeedbackList";
 import ResumeList from "./components/Admin/ResumeList";
 import ATSResumeList from "./components/Admin/ATSResumeList";
 import RecommendationList from "./components/Admin/RecommendationList";
+import AdminSkillAnalysis from "./components/Admin/AdminSkillAnalysis";
+import AdminATSScore from "./components/Admin/AdminATSScore";
 
 import "./index.css";
 
@@ -251,6 +253,22 @@ function AppContent() {
               element={
                 <AdminGuard>
                   <RecommendationList />
+                </AdminGuard>
+              }
+            />
+            <Route
+              path="/admin/skill-analysis"
+              element={
+                <AdminGuard>
+                  <AdminSkillAnalysis />
+                </AdminGuard>
+              }
+            />
+            <Route
+              path="/admin/ats-scores"
+              element={
+                <AdminGuard>
+                  <AdminATSScore />
                 </AdminGuard>
               }
             />
